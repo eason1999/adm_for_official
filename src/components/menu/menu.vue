@@ -32,9 +32,9 @@
 	<el-submenu index="6">
 	  <template slot="title"><i class="el-icon-message"></i>屏蔽黑名单</template>
 	  <el-menu-item-group>
-	    <el-menu-item index="/adm/dev/app">用户黑名单</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">地域屏蔽</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">黑名单查询</el-menu-item>
+	    <el-menu-item index="/adm/shield/user">用户黑名单</el-menu-item>
+	    <el-menu-item index="/adm/shield/regional">地域屏蔽</el-menu-item>
+	    <el-menu-item index="/adm/shield/search">黑名单查询</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
 	<el-submenu index="7">

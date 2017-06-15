@@ -28,6 +28,16 @@ import otaWhitelist from '../pages/adm/otaputout/whitelist.vue';
 
 import otaAddwhite from '../pages/adm/otaputout/config/addwhite.vue';
 
+import regional from '../pages/adm/shielding/regional.vue';
+
+import adduser from '../pages/adm/shielding/config/adduser.vue';
+
+import usershield from '../pages/adm/shielding/usershield.vue';
+
+import addregional from '../pages/adm/shielding/config/addregional.vue';
+
+import shieldSearch from '../pages/adm/shielding/config/searchblack.vue';
+
 import config from '../config.js';
 
 const routes = [{
@@ -78,6 +88,21 @@ const routes = [{
   }, {
     path: 'otaoutput/otaclient/configuration',
     component: otaConfiguration
+  }, {
+    path: 'shield/search',
+    component: shieldSearch
+  }, {
+    path: 'shield/regional',
+    component: regional
+  }, {
+    path: 'shield/regional/addregional',
+    component: addregional
+  }, {
+    path: 'shield/user',
+    component: usershield
+  }, {
+    path: 'shield/user/adduser',
+    component: adduser
   }]
 }];
 
