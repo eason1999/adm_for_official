@@ -1,0 +1,104 @@
+<template>
+  <el-menu :unique-opened="true" router default-active="/adm/adv/data" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+	<el-submenu index="1">
+	  <template slot="title"><i class="el-icon-message"></i>广告主管理</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/adv/data">数据管理</el-menu-item>
+	    <el-menu-item index="/adm/adv/campaign">广告计划</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>广告源配置</el-menu-item>
+	<el-submenu index="3">
+	  <template slot="title"><i class="el-icon-message"></i>开发者管理</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">应用管理</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">数据管理</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="4">
+	  <template slot="title"><i class="el-icon-message"></i>自定义功能</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/selfdefined/monitor">代码监测</el-menu-item>
+	    <el-menu-item index="/adm/selfdefined/daterecord">数据录入</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="5">
+	  <template slot="title"><i class="el-icon-message"></i>OTA外放功能</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/otaoutput/otaclient">OTA客户配置</el-menu-item>
+	    <el-menu-item index="/adm/otaoutput/whitelist">应用白名单</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="6">
+	  <template slot="title"><i class="el-icon-message"></i>屏蔽黑名单</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">用户黑名单</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">地域屏蔽</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">黑名单查询</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="7">
+	  <template slot="title"><i class="el-icon-message"></i>数据监控</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">开发者总览</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">开发者明细</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">黑名单查询</el-menu-item>
+	    <el-menu-item index="/adm/dev/app">广告主总览</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">广告主明细</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">过滤数据</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">外发监测</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="8">
+	  <template slot="title"><i class="el-icon-message"></i>财务管理</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">开发者财务信息</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">广告主财务信息</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">广告源财务信息</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">提现/充值</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">命中/退款</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>Dashboard</el-menu-item>
+	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>SDK/API文档</el-menu-item>
+	<el-submenu index="11">
+	  <template slot="title"><i class="el-icon-message"></i>账户权限</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">开发者账户</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">广告主账户</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">管理员账户</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">角色权限</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+	<el-submenu index="12">
+	  <template slot="title"><i class="el-icon-message"></i>广告审核</template>
+	  <el-menu-item-group>
+	    <el-menu-item index="/adm/dev/app">创意</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">策略</el-menu-item>
+	    <el-menu-item index="/adm/dev/data">计划</el-menu-item>
+	  </el-menu-item-group>
+	</el-submenu>
+  </el-menu>
+</template>
+
+<script type="esmascript-6">
+export default {
+  data () {
+    return {
+    };
+  },
+  methods: {
+	handleOpen (key, keyPath) {
+	  console.log(key, keyPath);
+	},
+	handleClose (key, keyPath) {
+	  console.log(key, keyPath);
+	}
+  }
+};
+</script>
+
+<style lang="stylus" rel="stylesheet/stylus">
+	.el-menu
+		height: 100%
+</style>

@@ -1,0 +1,49 @@
+<template>
+  <div class="pager-content">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="pageNum"
+      :page-size="pageSize"
+      layout="total, prev, pager, next"
+      :total="totalRecords">
+    </el-pagination>
+  </div>
+</template>
+
+<script type="ecmascript-6">
+export default {
+  data () {
+    return {
+      total: this.totalRecords,	
+      pageSize: this.pageSizes,
+      pageNum: this.pageNums
+    };
+  },
+  props: {
+  	"totalRecords": {
+  		type: Number
+  	},
+  	"pageSizes": {
+  		type: Number
+  	},
+  	"pageNums": {
+  		type: Number,
+  		default: 1
+  	}
+  },
+  methods: {
+  	handleSizeChange (val) {
+  	  console.log(`每页${val}条`);
+  	},
+  	handleCurrentChange (val) {
+  	  console.log(`当前页：${val}`);
+  	}
+  }
+};
+</script>
+
+<style lang="stylus" rel="stylesheet/stylus">
+  .pager-content
+  	float: right
+</style>
