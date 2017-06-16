@@ -1,24 +1,26 @@
 <template>
   <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane :label="item.text" :name="item.name" v-for="item in tabs" :key="item.name"></el-tab-pane>
+    <el-tab-pane :label="item.text" :name="item.name" v-for="item in items" :key="item.name"></el-tab-pane>
   </el-tabs>
 </template>
 
 <script type="ecmascript-6">
 export default {
+  props: {
+    tabs: {
+      type: Array
+    }
+  },
   data () {
     return {
-      tabs: [
-        {name: 'first', text: '全部'},
-        {name: 'second', text: '命中'},
-        {name: 'third', text: '解绑'}
-      ],
+      items: this.tabs,
       activeName: 'first'
     };
   },
   methods: {
     handleClick (tab, event) {
-      console.log(tab, event);
+      this.$emit('tabchange', tab.name);
+      console.log(tab);
     }
   }
 };

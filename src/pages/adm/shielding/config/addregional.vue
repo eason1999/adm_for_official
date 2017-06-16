@@ -12,7 +12,7 @@
         <span class="list-title">应用名称：</span>
         <selects></selects>
       </div>
-      <div class="plan-select dowm-forward">
+      <div class="shield-regional dowm-forward">
         <span class="list-title">屏蔽地域：</span>
         <transfer></transfer>
       </div>
@@ -53,8 +53,8 @@ export default {
         margin-bottom: 10px
         width: 260px 
         position: relative 
-        &:last-child
-          width: 500px  
+      .shield-regional
+        width: 500px  
         .el-select
           display: block     
 </style>

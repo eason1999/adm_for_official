@@ -8,6 +8,8 @@ import advSelfind from '../pages/adm/adver/config/selfind.vue';
 
 import advResource from '../pages/adm/adresource/adresource.vue';
 
+import addSloteid from '../pages/adm/adresource/config/addsloteid.vue';
+
 import devApps from '../pages/adm/dever/apps.vue';
 
 import devData from '../pages/adm/dever/data.vue';
@@ -38,6 +40,30 @@ import addregional from '../pages/adm/shielding/config/addregional.vue';
 
 import shieldSearch from '../pages/adm/shielding/config/searchblack.vue';
 
+import monitorAdvdata from '../pages/adm/datamonitor/advdata.vue';
+
+import monitorDevdata from '../pages/adm/datamonitor/devdata.vue';
+
+import monitorAdvdetail from '../pages/adm/datamonitor/config/advdetail.vue';
+
+import monitorDevdetail from '../pages/adm/datamonitor/config/devdetail.vue';
+
+import monitorDevfile from '../pages/adm/datamonitor/config/devfile.vue';
+
+import monitorAdvfile from '../pages/adm/datamonitor/config/advfile.vue';
+
+import outMonitor from '../pages/adm/datamonitor/outmonitor.vue';
+
+import advfinance from '../pages/adm/finance/advfinance.vue';
+
+import devfinance from '../pages/adm/finance/devfinance.vue';
+
+import slotefinance from '../pages/adm/finance/slotefinance.vue';
+
+import drawvouchor from '../pages/adm/finance/drawvouchor.vue';
+
+import hitback from '../pages/adm/finance/hitback.vue';
+
 import config from '../config.js';
 
 const routes = [{
@@ -67,6 +93,9 @@ const routes = [{
   }, {
     path: 'resource',
     component: advResource
+  }, {
+    path: 'resource/addid',
+    component: addSloteid
   }, {
     path: 'selfdefined/daterecord',
     component: selfDaterecord
@@ -103,6 +132,42 @@ const routes = [{
   }, {
     path: 'shield/user/adduser',
     component: adduser
+  }, {
+    path: 'datamonitor/advdata',
+    component: monitorAdvdata
+  }, {
+    path: 'datamonitor/devdata',
+    component: monitorDevdata
+  }, {
+    path: 'datamonitor/advdata/advdetail',
+    component: monitorAdvdetail
+  }, {
+    path: 'datamonitor/devdata/devdetail',
+    component: monitorDevdetail
+  }, {
+    path: 'datamonitor/devdata/devfile',
+    component: monitorDevfile
+  }, {
+    path: 'datamonitor/advdata/advfile',
+    component: monitorAdvfile
+  }, {
+    path: 'datamonitor/outmonitor',
+    component: outMonitor
+  }, {
+    path: 'finance/adv',
+    component: advfinance
+  }, {
+    path: 'finance/dev',
+    component: devfinance
+  }, {
+    path: 'finance/slote',
+    component: slotefinance
+  }, {
+    path: 'finance/vouchor',
+    component: drawvouchor
+  }, {
+    path: 'finance/hitback',
+    component: hitback
   }]
 }];
 

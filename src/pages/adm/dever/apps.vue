@@ -11,7 +11,7 @@
       <el-table :data="tableData5" style="width: 100%">
         <el-table-column type="expand">
           <template scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
+            <el-form label-position="left" inline class="demo-table-expand sub-app-form">
               <el-form-item label="提交时间:">
                 <span>{{ props.row.time }}</span>
               </el-form-item>
@@ -29,10 +29,60 @@
               </el-form-item>
               <el-form-item label="操作:">
                 <template scope="scope">
-                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">配置广告源API</el-button>
-                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">配置广告源SDK</el-button>
-                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">频次控制</el-button>
-                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">分成配置</el-button>
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">API源</el-button>
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">SDK源</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">频次</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">分成</el-button>
+                </template>
+              </el-form-item>
+            </el-form>
+            <el-form label-position="left" inline class="demo-table-expand sub-app-form">
+              <el-form-item label="提交时间:">
+                <span>{{ props.row.time }}</span>
+              </el-form-item>
+              <el-form-item label="广告类型:">
+                <span>{{ props.row.shop }}</span>
+              </el-form-item>
+              <el-form-item label="广告位ID:">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="广告位名称:" title="广告位名称">
+                <span>{{ props.row.shopId }}</span>
+              </el-form-item>
+              <el-form-item label="分成/固定单价:" title="分成/固定单价">
+                <span>{{ props.row.category }}</span>
+              </el-form-item>
+              <el-form-item label="操作:">
+                <template scope="scope">
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">API源</el-button>
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">SDK源</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">频次</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">分成</el-button>
+                </template>
+              </el-form-item>
+            </el-form>
+            <el-form label-position="left" inline class="demo-table-expand sub-app-form">
+              <el-form-item label="提交时间:">
+                <span>{{ props.row.time }}</span>
+              </el-form-item>
+              <el-form-item label="广告类型:">
+                <span>{{ props.row.shop }}</span>
+              </el-form-item>
+              <el-form-item label="广告位ID:">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="广告位名称:" title="广告位名称">
+                <span>{{ props.row.shopId }}</span>
+              </el-form-item>
+              <el-form-item label="分成/固定单价:" title="分成/固定单价">
+                <span>{{ props.row.category }}</span>
+              </el-form-item>
+              <el-form-item label="操作:">
+                <template scope="scope">
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">API源</el-button>
+                  <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">SDK源</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">频次</el-button>
+                  <el-button size="small" type="info" @click="handleDelete(scope.$index, scope.row)">分成</el-button>
                 </template>
               </el-form-item>
             </el-form>
@@ -64,7 +114,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">配置分成比例</el-button>
+            <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">分成</el-button>
             <el-switch v-model="value2" on-color="#13ce66" off-color="#ff4949"></el-switch>
           </template>
         </el-table-column>
@@ -152,20 +202,25 @@ export default {
           border-radius: 0 4px 4px 0
     .apps-data-table
       font-size: 0
-      label
-        width: 75px
-        overflow: hidden
-        white-space: nowrap
-        text-overflow: ellipsis
-        color: #99a9bf
-      .el-form-item
-        margin-right: 0
-        margin-bottom: 0
-        width: 48%
       .el-select
         width: 90px
         .el-input__inner
-          height: 28px  
+          height: 28px
+      .sub-app-form
+        padding: 10px
+        border-bottom: 1px dashed #bbb
+        label
+          width: 75px
+          overflow: hidden
+          white-space: nowrap
+          text-overflow: ellipsis
+          color: #99a9bf
+        .el-form-item
+          margin-right: 0
+          margin-bottom: 0
+          width: 48%  
+      .sub-app-form:last-child
+        border: none           
     .pager-wrapper
       margin-top: 15px      
 </style>

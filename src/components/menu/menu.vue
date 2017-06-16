@@ -40,23 +40,19 @@
 	<el-submenu index="7">
 	  <template slot="title"><i class="el-icon-message"></i>数据监控</template>
 	  <el-menu-item-group>
-	    <el-menu-item index="/adm/dev/app">开发者总览</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">开发者明细</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">黑名单查询</el-menu-item>
-	    <el-menu-item index="/adm/dev/app">广告主总览</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">广告主明细</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">过滤数据</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">外发监测</el-menu-item>
+	    <el-menu-item index="/adm/datamonitor/devdata">DEV实时数据</el-menu-item>
+	    <el-menu-item index="/adm/datamonitor/advdata">ADV实时数据</el-menu-item>
+	    <el-menu-item index="/adm/datamonitor/outmonitor">外发监测</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
 	<el-submenu index="8">
 	  <template slot="title"><i class="el-icon-message"></i>财务管理</template>
 	  <el-menu-item-group>
-	    <el-menu-item index="/adm/dev/app">开发者财务信息</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">广告主财务信息</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">广告源财务信息</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">提现/充值</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">命中/退款</el-menu-item>
+	    <el-menu-item index="/adm/finance/dev">开发者财务信息</el-menu-item>
+	    <el-menu-item index="/adm/finance/adv">广告主财务信息</el-menu-item>
+	    <el-menu-item index="/adm/finance/slote">广告源财务信息</el-menu-item>
+	    <el-menu-item index="/adm/finance/vouchor">提现/充值</el-menu-item>
+	    <el-menu-item index="/adm/finance/hitback">命中/退款</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
 	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>Dashboard</el-menu-item>

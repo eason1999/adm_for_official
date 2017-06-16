@@ -1,19 +1,22 @@
 <template>
-  <div class="adv-resource-wrapper">
-    <h2>广告源配置</h2>
-    <div class="tab-page-wrapper">
-      <tabpage :tabs="tabs"></tabpage>
-    </div>
-    <div class="resource-top-wrapper clearfix">
-      <el-button type="primary" class="pull-left"><router-link class="search" to="resource/addid">新建广告位ID</router-link></el-button>
-      <div class="resource-search pull-right">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">搜索</el-button>
+  <div class="finance-slote-wrapper">
+    <h2>广告源财务信息</h2>
+    <div class="slote-top-wrapper clearfix">
+      <el-button type="primary" class="pull-left">命中/激励</el-button>
+      <el-button type="primary" class="pull-left">触发收入金额</el-button>
+      <div class="slote-search pull-right">
+        <selects class="pull-left"></selects>
+        <div class="pull-right">
+          <datepicker :datepickers="datepickers1"></datepicker>
+          <span class="center-span">至</span>
+          <datepicker :datepickers="datepickers2"></datepicker>
+          <el-button type="primary">搜索</el-button>
+        </div>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="date" label="日期"  width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+      <el-table-column prop="date" label="日期"></el-table-column>
+      <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="address" label="地址"></el-table-column>
     </el-table>
     <div class="pager-wrapper clearfix">
@@ -24,7 +27,8 @@
 
 <script type="ecmascript-6">
 import pager from '../../../components/pager/pager.vue';
-import tabpage from '../../../components/tabpage/tabpage.vue';
+import datepicker from '../../../components/datepicker/datepicker.vue';
+import selects from '../../../components/selects/select.vue';
 export default {
   data () {
     return {
@@ -45,30 +49,32 @@ export default {
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
         }],
-        tabs: [
-          {name: 'first', text: '全部'},
-          {name: 'second', text: '命中'},
-          {name: 'third', text: '解绑'}
-        ],
         totalRecords: 100,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        datepickers1: {value:'', align: 'left', type: 'month'},
+        datepickers2: {value:'', align: 'left', type: 'month'}
     };
   },
-  components: { pager, tabpage }
+  components: { pager, datepicker, selects }
 };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .adv-resource-wrapper
+  .finance-slote-wrapper
     overflow: hidden
-    .resource-top-wrapper
+    .slote-top-wrapper
       margin-bottom: 15px
-      .search 
-        color: #fff
-      .resource-search
-        max-width: 300px
+      .slote-search
+        min-width: 300px
         font-size: 0
+        .center-span
+          display: inline-block
+          border: 1px solid #bbb
+          font-size: 14px
+          padding: 10px
+          border-left: none
+          border-right: none
         .el-input
           width: 230px
           input
