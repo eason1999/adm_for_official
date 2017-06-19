@@ -5,7 +5,7 @@
       <tabpage :tabs="tabs" @tabchange="change"></tabpage>
     </div>
     <div class="resource-top-wrapper clearfix">
-      <el-button type="primary" class="pull-left"><router-link class="search" to="resource/addid">新增</router-link></el-button>
+      <el-button type="primary" class="pull-left"><router-link class="search" to="vouchor/addvouch">新增</router-link></el-button>
       <div class="resource-search pull-right">
         <el-input placeholder="请输入内容"></el-input>
         <el-button type="primary">搜索</el-button>

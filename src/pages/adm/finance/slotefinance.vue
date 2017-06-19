@@ -7,9 +7,9 @@
       <div class="slote-search pull-right">
         <selects class="pull-left"></selects>
         <div class="pull-right">
-          <datepicker :datepickers="datepickers1"></datepicker>
+          <datepicker :datepickers="datepickers1" :picker-options="pickerOptions"></datepicker>
           <span class="center-span">至</span>
-          <datepicker :datepickers="datepickers2"></datepicker>
+          <datepicker :datepickers="datepickers2" :picker-option="pickerOptions"></datepicker>
           <el-button type="primary">搜索</el-button>
         </div>
       </div>
@@ -53,7 +53,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         datepickers1: {value:'', align: 'left', type: 'month'},
-        datepickers2: {value:'', align: 'left', type: 'month'}
+        datepickers2: {value:'', align: 'left', type: 'month'},
+        pickerOptions: {}
     };
   },
   components: { pager, datepicker, selects }

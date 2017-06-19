@@ -6,7 +6,7 @@
     <div class="data-title-wrapper">
       <div class="datepicker-wrapper dowm-forward">
         <span class="list-title">时间范围：</span>
-        <datepicker :datepickers="datepickers"></datepicker>
+        <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
       <div class="create-select dowm-forward">
         <span class="list-title">目标对象：</span>
@@ -93,7 +93,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       breadContent: [{ text: '数据管理', path: '/adm/dev/data'}, { text: '自定义查询'}],
-      datepickers: {value:'', align: 'left', type: 'daterange'}
+      datepickers: {value:'', align: 'left', type: 'daterange'},
+      pickerOptions: {}
     };
   },
   mounted () {

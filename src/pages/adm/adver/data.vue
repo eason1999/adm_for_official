@@ -14,7 +14,7 @@
           <selects></selects>
         </div>
         <div class="datepicker-wrapper inline-block">
-          <datepicker :datepickers="datepickers"></datepicker>
+          <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
         </div>
       </div>
     </div>
@@ -100,7 +100,8 @@ export default {
       totalRecords: 100,
       pageNum: 1,
       pageSize: 10,
-      datepickers: {value:'', align: 'right', type: 'daterange'}
+      datepickers: {value:'', align: 'right', type: 'daterange'},
+      pickerOptions: {}
     };
   },
   mounted () {

@@ -55,23 +55,15 @@
 	    <el-menu-item index="/adm/finance/hitback">命中/退款</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
-	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>Dashboard</el-menu-item>
-	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>SDK/API文档</el-menu-item>
+	<el-menu-item index="/adm/dashboard"><i class="el-icon-menu"></i>Dashboard</el-menu-item>
+	<el-menu-item index="/adm/sdkapi"><i class="el-icon-menu"></i>SDK/API文档</el-menu-item>
 	<el-submenu index="11">
 	  <template slot="title"><i class="el-icon-message"></i>账户权限</template>
 	  <el-menu-item-group>
-	    <el-menu-item index="/adm/dev/app">开发者账户</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">广告主账户</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">管理员账户</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">角色权限</el-menu-item>
-	  </el-menu-item-group>
-	</el-submenu>
-	<el-submenu index="12">
-	  <template slot="title"><i class="el-icon-message"></i>广告审核</template>
-	  <el-menu-item-group>
-	    <el-menu-item index="/adm/dev/app">创意</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">策略</el-menu-item>
-	    <el-menu-item index="/adm/dev/data">计划</el-menu-item>
+	    <el-menu-item index="/adm/devaccount">开发者账户</el-menu-item>
+	    <el-menu-item index="/adm/advaccount">广告主账户</el-menu-item>
+	    <el-menu-item index="/adm/admaccount">管理员账户</el-menu-item>
+	    <el-menu-item index="/adm/rolemanage">角色权限</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
   </el-menu>

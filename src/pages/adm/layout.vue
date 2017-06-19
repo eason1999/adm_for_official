@@ -6,11 +6,13 @@
         <l-menu></l-menu>
       </div>
       <div class="main-content-wrapper">
-        <div class="main-view-area">
-          <router-view></router-view>
-          <div class="adm-footer">
-            <l-footer></l-footer>
+        <div class="main-view-area clearfix">
+          <div class="sub-view-area">
+            <router-view></router-view>
           </div>
+        </div>
+        <div class="adm-footer">
+          <l-footer></l-footer>
         </div>
       </div>
   	</div>
@@ -59,12 +61,17 @@ export default {
         height: 100%
         background: #fafafa
         overflow: auto
-        .main-view-area 
-          padding: 25px 28px 30px
-          .adm-footer
-            width: 100%
-            line-height: 30px
-            margin-top: 20px
-            font-size: 14px
+        .main-view-area
+          min-height: 100% 
+          .sub-view-area
+            padding: 25px 28px 150px
+        .adm-footer
+          position: relative
+          margin-top: -150px
+          height: 150px
+          width: 100%
+          line-height: 100px
+          font-size: 14px
+          clear: both
 </style>
 

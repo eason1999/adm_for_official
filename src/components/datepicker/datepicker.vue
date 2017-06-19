@@ -3,6 +3,7 @@
     v-model="dateData.value"
     :type="dateData.type"
     :align="dateData.align"
+    :picker-options="pickerOptions2"
     placeholder="选择日期范围">
   </el-date-picker>
 </template>
@@ -12,11 +13,15 @@ export default {
   props: {
     datepickers: {
       type: Object
+    },
+    pickerOptions: {
+      type: Object
     }
   },
   data () {
     return {
-      dateData: this.datepickers
+      dateData: this.datepickers,
+      pickerOptions2: this.pickerOptions
     };
   }
 };

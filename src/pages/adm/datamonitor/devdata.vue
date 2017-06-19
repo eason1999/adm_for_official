@@ -7,7 +7,7 @@
         <el-button type="primary"><router-link to="devdata/devfile" class="search">过滤查询</router-link></el-button>
       </div>
       <div class="pull-right">
-        <datepicker :datepickers="datepickers"></datepicker>
+        <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
@@ -47,7 +47,8 @@ export default {
         totalRecords: 100,
         pageNum: 1,
         pageSize: 10,
-        datepickers: {value:'', align: 'right', type: 'date'}
+        datepickers: {value:'', align: 'right', type: 'date'},
+        pickerOptions: {}
     };
   },
   components: { pager, datepicker }

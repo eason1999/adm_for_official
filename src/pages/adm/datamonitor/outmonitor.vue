@@ -3,7 +3,7 @@
     <h2>外发监测</h2>
     <div class="outmonitor-top-wrapper clearfix">
       <div class="pull-right">
-        <datepicker :datepickers="datepickers"></datepicker>
+        <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
@@ -53,7 +53,8 @@ export default {
         totalRecords: 100,
         pageNum: 1,
         pageSize: 10,
-        datepickers: {value:'', align: 'right', type: 'date'}
+        datepickers: {value:'', align: 'right', type: 'date'},
+        pickerOptions: {}
     };
   },
   components: { pager, datepicker }

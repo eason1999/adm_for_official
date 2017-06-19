@@ -62,7 +62,31 @@ import slotefinance from '../pages/adm/finance/slotefinance.vue';
 
 import drawvouchor from '../pages/adm/finance/drawvouchor.vue';
 
+import addvouchor from '../pages/adm/finance/config/addvouch.vue';
+
 import hitback from '../pages/adm/finance/hitback.vue';
+
+import addhit from '../pages/adm/finance/config/addhit.vue';
+
+import dashboard from '../pages/adm/dashboard/dashboard.vue';
+
+import sdkapi from '../pages/adm/sdkapi/sdkapi.vue';
+
+import updateSDKAPI from '../pages/adm/sdkapi/config/update.vue';
+
+import admaccount from '../pages/adm/accountmanage/admaccount.vue';
+
+import advaccount from '../pages/adm/accountmanage/advaccount.vue';
+
+import devaccount from '../pages/adm/accountmanage/devaccount.vue';
+
+import rolemanage from '../pages/adm/accountmanage/rolemanage.vue';
+
+import addmanage from '../pages/adm/accountmanage/config/addmanage.vue';
+
+import configadv from '../pages/adm/accountmanage/config/configadv.vue';
+
+import configdev from '../pages/adm/accountmanage/config/configdev.vue';
 
 import config from '../config.js';
 
@@ -166,8 +190,44 @@ const routes = [{
     path: 'finance/vouchor',
     component: drawvouchor
   }, {
+    path: 'finance/vouchor/addvouch',
+    component: addvouchor
+  }, {
     path: 'finance/hitback',
     component: hitback
+  }, {
+    path: 'finance/hitback/addhit',
+    component: addhit
+  }, {
+    path: 'dashboard',
+    component: dashboard
+  }, {
+    path: 'sdkapi',
+    component: sdkapi
+  }, {
+    path: 'sdkapi/update',
+    component: updateSDKAPI
+  }, {
+    path: 'admaccount/addmanage',
+    component: addmanage
+  }, {
+    path: 'admaccount',
+    component: admaccount
+  }, {
+    path: 'advaccount',
+    component: advaccount
+  }, {
+    path: 'advaccount/config',
+    component: configadv
+  }, {
+    path: 'devaccount',
+    component: devaccount
+  }, {
+    path: 'devaccount/config',
+    component: configdev
+  }, {
+    path: 'rolemanage',
+    component: rolemanage
   }]
 }];
 
