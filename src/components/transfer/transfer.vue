@@ -1,37 +1,39 @@
 <template>
   <el-transfer
     filterable
-    :titles="['省市','已选省市']"
+    :titles="[titles,'已选'+titles]"
     :filter-method="filterMethod"
-    filter-placeholder="请输入城市拼音"
+    filter-placeholder="请输入搜索项"
     v-model="value2"
-    :data="data2">
+    :data="data2"
+    @change="changes">
   </el-transfer>
 </template>
 
 <script type="ecmascript-6">
 export default {
+  props: {
+    cities: {
+      type: Array
+    },
+    transferTitle: {
+      type: String
+    }
+  },
   data () {
-    const generateData2 = _ => {
-    const data = [];
-    const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都'];
-    const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu'];
-    cities.forEach((city, index) => {
-        data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
-        });
-      });
-      return data;
-    };
     return {
-      data2: generateData2(),
-      value2: [],
+      data2: this.cities,
+      titles: this.transferTitle,
+      value2: [10001],
       filterMethod(query, item) {
-        return item.pinyin.indexOf(query) > -1;
+        return item.city.indexOf(query) > -1;
       }
     };
+  },
+  methods: {
+    changes (data) {
+      console.log(data);
+    }
   }
 };
 </script>

@@ -6,6 +6,8 @@ import advData from '../pages/adm/adver/data.vue';
 
 import advSelfind from '../pages/adm/adver/config/selfind.vue';
 
+import orientconfig from '../pages/adm/adver/config/orientconfig.vue';
+
 import advResource from '../pages/adm/adresource/adresource.vue';
 
 import addSloteid from '../pages/adm/adresource/config/addsloteid.vue';
@@ -15,6 +17,8 @@ import devApps from '../pages/adm/dever/apps.vue';
 import devData from '../pages/adm/dever/data.vue';
 
 import devSelfind from '../pages/adm/dever/config/selfind.vue';
+
+import devConfigur from '../pages/adm/dever/config/configur.vue';
 
 import selfDaterecord from '../pages/adm/selfdefined/daterecord.vue';
 
@@ -88,6 +92,8 @@ import configadv from '../pages/adm/accountmanage/config/configadv.vue';
 
 import configdev from '../pages/adm/accountmanage/config/configdev.vue';
 
+import roledit from '../pages/adm/accountmanage/config/roledit.vue';
+
 import config from '../config.js';
 
 const routes = [{
@@ -106,6 +112,9 @@ const routes = [{
       path: 'adv/data/selfind',
       component: advSelfind
   }, {
+      path: 'adv/data/config',
+      component: orientconfig
+  }, {
     path: 'dev/app',
     component: devApps
   }, {
@@ -114,6 +123,9 @@ const routes = [{
   }, {
       path: 'dev/data/selfind',
       component: devSelfind
+  }, {
+      path: 'dev/app/configur',
+      component: devConfigur
   }, {
     path: 'resource',
     component: advResource
@@ -228,6 +240,9 @@ const routes = [{
   }, {
     path: 'rolemanage',
     component: rolemanage
+  }, {
+    path: 'rolemanage/roledit',
+    component: roledit
   }]
 }];
 

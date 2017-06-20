@@ -4,7 +4,7 @@
 	  <template slot="title"><i class="el-icon-message"></i>广告主管理</template>
 	  <el-menu-item-group>
 	    <el-menu-item index="/adm/adv/data">数据管理</el-menu-item>
-	    <el-menu-item index="/adm/adv/campaign">广告计划</el-menu-item>
+	    <el-menu-item index="/adm/adv/campaign">广告管理</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
 	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>广告源配置</el-menu-item>
