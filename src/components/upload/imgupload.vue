@@ -3,7 +3,7 @@
     <el-upload
       class="upload-wrapper"
       accept=".jpg,.png,.jpeg,.gif"
-      action="https://jsonplaceholder.typicode.com/posts/"
+      :action="uploadurl"
       list-type="picture"
       :multiple="false"
       :file-list="fileList"
@@ -18,18 +18,24 @@
       </div>
     </el-upload>
     <el-dialog v-model="dialogVisible" size="tiny">
-      <img width="100%" :src="dialogImageUrl" alt="">
+      <img width="100%" :src="dialogImageUrl">
     </el-dialog>
   </div>  
 </template>
 
 <script type="ecmascript-6">
 export default {
+  props: {
+    urls: {
+      type:String
+    }
+  },
   data () {
     return {
-      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+      fileList: [{name: '丰田致炫-800-120.png',url: 'http://192.168.1.54:9001/./res/zya_certificate_material/16/31159054019322_505951065_63de7e4c.png'}],
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      uploadurl: this.urls
     };
   },
   methods: {
@@ -44,10 +50,10 @@ export default {
       console.log(data);
     },
     error (data) {
-      console.log(data);
+      // console.log(data);
     },
     change (data) {
-      console.log(data);
+      // console.log(data);
     }
   }
 };

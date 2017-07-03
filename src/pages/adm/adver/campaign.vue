@@ -3,30 +3,30 @@
     <h2>计划</h2>
     <div class="campaign-top-wrapper clearfix">
       <div class="campaign-search pull-right">
-        <el-input placeholder="请输入内容"></el-input>
+        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
         <el-button type="primary">搜索</el-button>
       </div>
     </div>
     <div class="apps-data-table">
-      <el-table :data="tableData5" style="width: 100%">
+      <el-table @expand="getDetail" :data="tableData" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
         <el-table-column type="expand">
           <template scope="props">
-            <el-form label-position="left" inline class="demo-table-expand sub-app-form">
+            <el-form v-for="item in props.row.expandData" label-position="left" inline class="demo-table-expand sub-app-form">
               <el-form-item label="提交时间:">
-                <span>{{ props.row.time }}</span>
+                <span>{{ item.createTime }}</span>
               </el-form-item>
               <el-form-item label="广告类型:">
-                <span>{{ props.row.shop }}</span>
+                <span>{{ item.adTypeOnProduct }}</span>
               </el-form-item>
               <el-form-item label="创意ID:">
-                <span>{{ props.row.id }}</span>
+                <span>{{ item.id }}</span>
               </el-form-item>
               <el-form-item label="创意名称:" title="创意名称">
-                <span>{{ props.row.shopId }}</span>
+                <span>{{ item.codeName }}</span>
               </el-form-item>
               <el-form-item label="预览:">
                 <template scope="scope">
-                  <el-button type="info" size="small" @click="previewImg(scope.$index, scope.row)">预览</el-button>
+                  <el-button type="info" size="small" @click="previewImg(scope.$index, props)">预览</el-button>
                 </template>
               </el-form-item>
               <el-form-item label="配置:">
@@ -35,10 +35,10 @@
                 </template>
               </el-form-item>
               <el-form-item label="投放状态:" title="投放状态">
-                <span>{{ props.row.category }}</span>
+                <span>{{ item.availabilityStatus }}</span>
               </el-form-item>
               <el-form-item label="审核状态:" title="审核状态">
-                <span>{{ props.row.category }}</span>
+                <span>{{ item.verificationStatus }}</span>
               </el-form-item>
               <el-form-item label="操作:">
                 <template scope="scope">
@@ -54,15 +54,15 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="计划投放时间" prop="id"></el-table-column>
-        <el-table-column label="公司名称" prop="name"></el-table-column>
-        <el-table-column label="计划ID" prop="name"></el-table-column>
-        <el-table-column label="计划名称" prop="name"></el-table-column>
-        <el-table-column label="预算(￥)" prop="name"></el-table-column>
-        <el-table-column label="每日预算(￥)" prop="name"></el-table-column>
-        <el-table-column label="单价(￥)" prop="name"></el-table-column>
-        <el-table-column label="审核状态" prop="name"></el-table-column>
-        <el-table-column label="投放状态" prop="name"></el-table-column>
+        <el-table-column label="计划投放时间" show-overflow-tooltip prop="startDate"></el-table-column>
+        <el-table-column label="公司名称" show-overflow-tooltip sortable prop="company"></el-table-column>
+        <el-table-column label="计划ID" show-overflow-tooltip prop="id"></el-table-column>
+        <el-table-column label="计划名称" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="预算(￥)" show-overflow-tooltip sortable prop="budgetAmountTotal"></el-table-column>
+        <el-table-column label="每日预算(￥)" show-overflow-tooltip sortable prop="budgetAmountDaily"></el-table-column>
+        <el-table-column label="单价(￥)" show-overflow-tooltip sortable prop="bidPrice"></el-table-column>
+        <el-table-column label="审核状态" show-overflow-tooltip prop="verificationStatus"></el-table-column>
+        <el-table-column label="投放状态" show-overflow-tooltip prop="availabilityStatus"></el-table-column>
         <el-table-column label="审核">
           <template scope="scope">
             <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
@@ -90,14 +90,14 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData5: [{
+      tableData: [{
         id: '12987122',
         time: '2017-03-06',
         category: '江浙小吃、小吃零食',
         address: '上海市普陀区真北路',
         shop: '王小虎夫妻店',
         shopId: '10333',
-        name: '发展有限'
+        name: '发展saf有限'
       }, {
         id: '12987123',
         time: '2017-03-06',
@@ -105,7 +105,7 @@ export default {
         address: '上海市普陀区真北路',
         shop: '王小虎夫妻店',
         shopId: '10333',
-        name: '发展有限'
+        name: 'wer发展有限'
       }, {
         id: '12987125',
         time: '2017-03-06',
@@ -113,7 +113,7 @@ export default {
         address: '上海市普陀区真北路',
         shop: '王小虎夫妻店',
         shopId: '10333',
-        name: '发展有限'
+        name: '展有限'
       }, {
         id: '12987126',
         time: '2017-03-06',
@@ -121,8 +121,9 @@ export default {
         address: '上海市普陀区真北路',
         shop: '王小虎夫妻店',
         shopId: '10333',
-        name: '发展有限'
+        name: '是展有限'
       }],
+      keyword: '',
       totalRecords: 100,
       pageNum: 1,
       pageSize: 10,
@@ -131,17 +132,79 @@ export default {
       pageNum: 1,
       pageSize: 10,
       dialogVisible: false,
-      dialogImageUrl: ''
+      dialogImageUrl: '',
+      loadings: false
     };
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.load(1);
+    });
   },
   components: { pager },
   methods: {
-    previewImg () {
+    previewImg (index, data) {
+      console.log(index)
+      console.log(data)
       this.dialogVisible = true;
       this.dialogImageUrl = '';
     },
     config () {
       this.$router.push({ path: 'data/config', query: { plan: '123' }});
+    },
+    load (pageNum) {
+      let params = {};
+      params.keyword = this.keyword;
+      params.pageSize = this.pageSize;
+      params.pageNum = pageNum || this.pageNum;
+      params.startDate = 12343354;
+      params.endDate = 45345355;
+      this.loadings = true;
+      this.$http.get('/v1/adm/campaigns/{pageNum}/{pageSize}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        this.pageNum = result.pageNum;        
+        this.pageSize = result.pageSize;
+        this.totalRecords = result.totalRecords;
+        this.tableData = result.results;
+        for (let i=0;i<this.tableData.length;i++) {
+          this.tableData[i].expandData = [];
+        }
+      }, () => {
+        this.loadings = false;
+      });
+    },
+    getDetail (row,expanded) {
+      console.log(row)
+      if (expanded) {
+        let params = {};
+        params.campaignId = row.id;
+        params.advId = row.advId;
+        this.loadings = true;
+        this.$http.get('/v1/adm/campaigns/{campaignId}/creatives', {params: params}).then((res) => {
+          this.loadings = false;
+          let data = res.body;
+          if (data.ret!=1) {
+            this.$alert(data.message, '提示：', {
+              confirmButtonText: '确定'
+            });
+          }
+          let result = data.result;
+          for (let i=0;i<this.tableData.length;i++) {
+            if (row.advId === this.tableData[i].advId) {
+              this.tableData[i].expandData = result;
+            }
+          }
+        }, () => {
+          this.loadings = false;
+        });
+      }
     }
   }
 };

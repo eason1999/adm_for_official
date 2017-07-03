@@ -6,15 +6,15 @@
     <div class="data-title-wrapper">
       <div class="datepicker-wrapper dowm-forward">
         <span class="list-title">应用名称：</span>
-        <selects></selects>
+        <el-input v-model="appName" placeholder="请输入内容"></el-input>
       </div>
       <div class="create-select dowm-forward">
         <span class="list-title">包名称：</span>
-        <selects></selects>
+        <el-input v-model="packageName" placeholder="请输入内容"></el-input>
       </div>
       <div class="plan-select dowm-forward">
         <span class="list-title">应用背景图：</span>
-        <imgupload></imgupload>
+        <imgupload :urls="urls"></imgupload>
       </div>
       <el-button type="primary">新建</el-button>
       <el-button type="primary">取消</el-button>
@@ -23,21 +23,22 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../../components/selects/select.vue';
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 import imgupload from '../../../../components/upload/imgupload.vue';
+import apiUtil from '../../../../util/api.js';
 export default {
   data () {
     return {
       breadContent: [{ text: '应用白名单', path: '/adm/otaoutput/whitelist'}, { text: '新增白名单'}],
-      input: '',
-      textarea: ''
+      packageName: '',
+      appName: '',
+      urls: apiUtil.url('/v1/adm/ota/whiteapp/material')
     };
   },
   mounted () {
     
   },
-  components: { selects, breadcrumb, imgupload }
+  components: { breadcrumb, imgupload }
 };
 </script>
 
@@ -52,7 +53,7 @@ export default {
       border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
-        width: 260px 
+        width: 300px 
         position: relative 
         .el-select
           display: block

@@ -35,10 +35,11 @@ export default {
   },
   methods: {
   	handleSizeChange (val) {
-  	  console.log(`每页${val}条`);
+      this.$emit('pagechange', 1, val);
+      this.pageSize = val;
   	},
   	handleCurrentChange (val) {
-  	  console.log(`当前页：${val}`);
+      this.$emit('pagechange', val, this.pageSize);
   	}
   }
 };

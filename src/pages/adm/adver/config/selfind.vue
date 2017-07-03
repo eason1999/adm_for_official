@@ -115,9 +115,12 @@ export default {
       border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
-        width: 260px 
+        width: 300px 
         .el-select 
           display: block
+        .el-input
+          display: block
+          width: 100%  
     .data-table-wrapper
       margin-bottom: 20px     
 </style>

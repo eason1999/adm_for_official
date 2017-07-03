@@ -88,13 +88,13 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="提交时间" prop="time"></el-table-column>
-        <el-table-column label="公司名称" prop="name"></el-table-column>
-        <el-table-column label="应用ID" prop="appid"></el-table-column>
-        <el-table-column label="应用名称" prop="appname"></el-table-column>
-        <el-table-column label="操作系统" prop="os"></el-table-column>
-        <el-table-column label="分成/固定单价" prop="price"></el-table-column>
-        <el-table-column label="平台/外放">
+        <el-table-column label="提交时间" show-overflow-tooltip prop="time"></el-table-column>
+        <el-table-column label="公司名称" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="应用ID" show-overflow-tooltip prop="appid"></el-table-column>
+        <el-table-column label="应用名称" show-overflow-tooltip prop="appname"></el-table-column>
+        <el-table-column label="操作系统" show-overflow-tooltip prop="os"></el-table-column>
+        <el-table-column label="分成/固定单价" show-overflow-tooltip prop="price"></el-table-column>
+        <el-table-column label="平台/外放" show-overflow-tooltip>
           <template scope="scope">
             <el-select v-model="value" placeholder="请选择">
               <el-option
@@ -106,13 +106,13 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column label="应用下载">
+        <el-table-column label="应用下载" show-overflow-tooltip>
           <template scope="scope">
             <el-button type="info" size="small" @click="handleEdit(scope.$index, scope.row)">下载</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" prop="state"></el-table-column>
-        <el-table-column label="投放状态" prop="state1"></el-table-column>
+        <el-table-column label="审核状态" show-overflow-tooltip prop="state"></el-table-column>
+        <el-table-column label="投放状态" show-overflow-tooltip prop="state1"></el-table-column>
         <el-table-column label="审核">
           <template scope="scope">
             <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>

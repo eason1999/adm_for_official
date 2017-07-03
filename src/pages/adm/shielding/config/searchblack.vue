@@ -117,7 +117,7 @@ export default {
       border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
-        width: 260px  
+        width: 300px  
         .el-select
           display: block
     .shield-table-wrapper

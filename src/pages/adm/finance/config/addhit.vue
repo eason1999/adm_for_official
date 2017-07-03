@@ -89,7 +89,7 @@ export default {
       border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
-        width: 280px
+        width: 300px
         .el-date-editor.el-input
           width: 100% 
         .el-select

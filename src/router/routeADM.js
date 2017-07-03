@@ -1,5 +1,7 @@
 import layout from '../pages/adm/layout.vue';
 
+import login from '../pages/adm/login.vue';
+
 import advCampaign from '../pages/adm/adver/campaign.vue';
 
 import advData from '../pages/adm/adver/data.vue';
@@ -29,6 +31,8 @@ import selfMonitor from '../pages/adm/selfdefined/monitor.vue';
 import otaClient from '../pages/adm/otaputout/otaclient.vue';
 
 import otaConfiguration from '../pages/adm/otaputout/config/configuration.vue';
+
+import otaConfigs from '../pages/adm/otaputout/config/configs.vue';
 
 import otaWhitelist from '../pages/adm/otaputout/whitelist.vue';
 
@@ -100,6 +104,9 @@ const routes = [{
   path: '/',
   redirect: config.index
 }, {
+  path: '/adm/login',
+  component: login
+}, {
   path: '/adm/',
   component: layout,
   children: [{
@@ -153,6 +160,9 @@ const routes = [{
   }, {
     path: 'otaoutput/otaclient/configuration',
     component: otaConfiguration
+  }, {
+    path: 'otaoutput/otaclient/configs',
+    component: otaConfigs
   }, {
     path: 'shield/search',
     component: shieldSearch

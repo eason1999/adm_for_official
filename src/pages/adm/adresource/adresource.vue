@@ -2,29 +2,19 @@
   <div class="adv-resource-wrapper">
     <h2>广告源配置</h2>
     <div class="tab-page-wrapper">
-      <tabpage :tabs="tabs"></tabpage>
+      <tabpage :tabs="tabs" :currentab="currentabs" @update:currentab="val => currentabs = val"></tabpage>
     </div>
-    <div class="resource-top-wrapper clearfix">
-      <el-button type="primary" class="pull-left"><router-link class="search" to="resource/addid">新建广告位ID</router-link></el-button>
-      <div class="resource-search pull-right">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">搜索</el-button>
-      </div>
-    </div>
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="date" label="日期"  width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-    </el-table>
-    <div class="pager-wrapper clearfix">
-      <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
-    </div>
+    <alldata v-if="currentabs==='first'"></alldata>
+    <hitdata v-if="currentabs==='second'"></hitdata>
+    <unbind v-if="currentabs==='third'"></unbind>
   </div>
 </template>
 
 <script type="ecmascript-6">
-import pager from '../../../components/pager/pager.vue';
 import tabpage from '../../../components/tabpage/tabpage.vue';
+import alldata from './config/alldata.vue';
+import hitdata from './config/hitdata.vue';
+import unbind from './config/unbind.vue';
 export default {
   data () {
     return {
@@ -50,12 +40,13 @@ export default {
           {name: 'second', text: '命中'},
           {name: 'third', text: '解绑'}
         ],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10
+        currentabs: 'first'
     };
   },
-  components: { pager, tabpage }
+  components: { tabpage, alldata, hitdata, unbind },
+  mounted () {
+    
+  }
 };
 </script>
 

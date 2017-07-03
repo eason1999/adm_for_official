@@ -9,18 +9,21 @@ export default {
   props: {
     tabs: {
       type: Array
+    },
+    currentab: {
+      type: String
     }
   },
   data () {
     return {
       items: this.tabs,
-      activeName: 'first'
+      activeName: this.currentab
     };
   },
   methods: {
     handleClick (tab, event) {
-      this.$emit('tabchange', tab.name);
-      console.log(tab);
+      this.activeName = tab.name;
+      this.$emit('update:currentab', tab.name);
     }
   }
 };

@@ -1,5 +1,6 @@
 <template>
   <el-date-picker
+    :editable="false"
     v-model="dateData.value"
     :type="dateData.type"
     :align="dateData.align"

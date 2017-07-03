@@ -17,7 +17,7 @@
         <transfer :cities="cities" :transfer-title="transferTitle"></transfer>
       </div>
       <el-button type="primary">新建</el-button>
-      <el-button type="text">取消</el-button>
+      <el-button type="default">取消</el-button>
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ export default {
       border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
-        width: 260px 
+        width: 300px 
         position: relative 
       .shield-regional
         width: 500px  
