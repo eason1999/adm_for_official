@@ -25,7 +25,7 @@
     </el-dialog>
     <div class="pager-wrapper clearfix">
       <div class="pull-right">
-        <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+        <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
     </div>
   </div>
@@ -73,6 +73,8 @@ export default {
     load (pageNum, pageSize) {
       let params = {};
       this.loadings = true;
+      this.pageNum = pageNum;
+      this.pageSize = pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.pageSize = pageSize || this.pageSize;
       this.$http.get('/v1/adm/ota/{pageNum}/{pageSize}/whiteapps', {params: params}).then((res) => {
@@ -90,9 +92,30 @@ export default {
       }, () => {this.loadings = false;});
     },
     handleEdit (id) {
-      console.log(id);
+      this.$router.push({
+        path: 'whitelist/addwhite',
+        query: {
+          id: id
+        }
+      });
     },
-    handleDelete (index, id) {}
+    handleDelete (index, id) {
+      this.$alert('确定删除吗？').then(() => {
+        this.loadings = true;
+        let params = {};
+        params.id = id;
+        this.$http.get('/v1/adm/ota/whiteapp/delete', {params: params}).then((res) => {
+          this.loadings = false;
+          let data = res.body;
+          if (data.ret!=1) {
+            return this.$alert(data.message, '提示：', {
+              confirmButtonText: '确定'
+            });
+          }
+          this.load(this.pageNum, this.pageSize);
+        });
+      }, () => {this.loadings = false;});
+    }
   }
 };
 </script>

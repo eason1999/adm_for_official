@@ -99,7 +99,7 @@ export default {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
-          return $alert(data.message, '提示：', {
+          return this.$alert(data.message, '提示：', {
             confirmButtonText: '确定'
           });
         }
@@ -122,7 +122,7 @@ export default {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
-          this.$alert(data.message, '提示：', {
+          return this.$alert(data.message, '提示：', {
             confirmButtonText: '确定'
           });
         }
@@ -139,7 +139,7 @@ export default {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
-          this.$alert(data.message, '提示：', {
+          return this.$alert(data.message, '提示：', {
             confirmButtonText: '确定'
           });
         }
@@ -168,7 +168,7 @@ export default {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
-          this.$alert(data.message, '提示：', {
+          return this.$alert(data.message, '提示：', {
             confirmButtonText: '确定'
           });
         }

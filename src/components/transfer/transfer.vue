@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     changes (data) {
-      console.log(data);
+      // console.log(data);
     }
   }
 };

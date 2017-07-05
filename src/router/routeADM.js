@@ -22,6 +22,8 @@ import devSelfind from '../pages/adm/dever/config/selfind.vue';
 
 import devConfigur from '../pages/adm/dever/config/configur.vue';
 
+import devSlotlist from '../pages/adm/dever/config/slotlist.vue';
+
 import selfDaterecord from '../pages/adm/selfdefined/daterecord.vue';
 
 import createMonitor from '../pages/adm/selfdefined/config/createmonitor.vue';
@@ -133,6 +135,9 @@ const routes = [{
   }, {
       path: 'dev/app/configur',
       component: devConfigur
+  }, {
+      path: 'dev/app/slotlist',
+      component: devSlotlist
   }, {
     path: 'resource',
     component: advResource

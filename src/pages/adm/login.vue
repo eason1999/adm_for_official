@@ -95,6 +95,7 @@ export default {
     height: 100%
     width: 100%
     background: #eee
+    background-size: cover
     .login-wrapper
         width: 430px
         margin: 80px auto 0

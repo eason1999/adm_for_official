@@ -1,6 +1,7 @@
 <template>
   <div class="img-upload-wrapper">
     <el-upload
+      :disabled="this.item!=''||this.fileList.length===1"
       class="upload-wrapper"
       accept=".jpg,.png,.jpeg,.gif"
       :action="uploadurl"
@@ -28,29 +29,43 @@ export default {
   props: {
     urls: {
       type:String
+    },
+    fileLists: {
+      type: Array,
+      default: []
     }
   },
   data () {
     return {
-      fileList: [{name: '丰田致炫-800-120.png',url: 'http://192.168.1.54:9001/./res/zya_certificate_material/16/31159054019322_505951065_63de7e4c.png'}],
+      fileList: this.fileLists,
       dialogImageUrl: '',
       dialogVisible: false,
-      uploadurl: this.urls
+      uploadurl: this.urls,
+      item: ''
     };
   },
   methods: {
     remove (file, fileList) {
-      console.log(file, fileList);
+      this.item='';
+      this.fileList = fileList;
     },
     preview (file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     success (data) {
-      console.log(data);
+      this.item = data.result;
+      if (data.ret!=1) {
+        return this.$alert(data.message, '提示：', {
+          confirmButtonText: '确定'
+        });
+      }
+      this.$emit('get-file', data.result.fileName, data.result.fileUrl);
     },
     error (data) {
-      // console.log(data);
+      return this.$alert(data.message, '提示：', {
+        confirmButtonText: '确定'
+      });
     },
     change (data) {
       // console.log(data);

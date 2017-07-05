@@ -10,8 +10,8 @@
     <div class="apps-data-table">
       <el-table @expand="getDetail" :data="tableData" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
         <el-table-column type="expand">
-          <template scope="props">
-            <el-form v-for="item in props.row.expandData" label-position="left" inline class="demo-table-expand sub-app-form">
+          <template scope="scope">
+            <el-form v-for="item in scope.row.expandData" label-position="left" inline class="demo-table-expand sub-app-form">
               <el-form-item label="提交时间:">
                 <span>{{ item.createTime }}</span>
               </el-form-item>
@@ -90,39 +90,7 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-        id: '12987122',
-        time: '2017-03-06',
-        category: '江浙小吃、小吃零食',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333',
-        name: '发展saf有限'
-      }, {
-        id: '12987123',
-        time: '2017-03-06',
-        category: '江浙小吃、小吃零食',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333',
-        name: 'wer发展有限'
-      }, {
-        id: '12987125',
-        time: '2017-03-06',
-        category: '江浙小吃、小吃零食',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333',
-        name: '展有限'
-      }, {
-        id: '12987126',
-        time: '2017-03-06',
-        category: '江浙小吃、小吃零食',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333',
-        name: '是展有限'
-      }],
+      tableData: [],
       keyword: '',
       totalRecords: 100,
       pageNum: 1,
@@ -197,7 +165,7 @@ export default {
           }
           let result = data.result;
           for (let i=0;i<this.tableData.length;i++) {
-            if (row.advId === this.tableData[i].advId) {
+            if (row.id === this.tableData[i].id) {
               this.tableData[i].expandData = result;
             }
           }
