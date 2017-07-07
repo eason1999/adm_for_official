@@ -35,11 +35,12 @@ export default {
   },
   methods: {
   	handleSizeChange (val) {
-      this.$emit('pagechange', 1, val);
+      this.$emit('pagechange', this.pageNum, val);
       this.pageSize = val;
   	},
   	handleCurrentChange (val) {
       this.$emit('pagechange', val, this.pageSize);
+      this.pageNum = val;
   	}
   }
 };

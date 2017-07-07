@@ -21,9 +21,10 @@
                 <span>{{ props.row.slotShareNum }}</span>
               </el-form-item>
               <el-form-item label="操作:">
-                <el-button type="info" size="small" @click="configs(props.row.devId, props.row.devName, props.row.id, props.row.appName, props.row.appShareNum, props.row.appShareType)">配置广告源API</el-button>
-                <el-button type="info" size="small" @click="configs(props.row.devId, props.row.devName, props.row.id, props.row.appName, props.row.appShareNum, props.row.appShareType)">频次控制</el-button>
-                <el-button type="info" size="small" @click="configs(props.row.devId, props.row.devName, props.row.id, props.row.appName, props.row.appShareNum, props.row.appShareType)">分成配置</el-button>
+                <span :class="{ 'el-icon-circle-cross': props.row.configuredResource === false, 'el-icon-circle-check': props.row.configuredResource === true }"></span>
+                <el-button type="info" size="small" @click="APIconfigs()">配置广告源API</el-button>
+                <el-button type="info" size="small" @click="timeConfigs()">频次控制</el-button>
+                <el-button type="info" size="small" @click="divideConfigs()">分成配置</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -35,7 +36,6 @@
     </div>
   </div>
 </template>
-
 <script type="ecmascript-6">
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
@@ -45,6 +45,7 @@ export default {
       tableData: [],
       appId: this.$route.query.appId,
       devId: this.$route.query.devId,
+      verificationStatus: this.$route.query.verificationStatus,
       loadings: false
     };
   },
@@ -110,10 +111,6 @@ export default {
     .apps-data-table
       font-size: 0
       margin-top: 20px
-      .el-select
-        width: 90px
-        .el-input__inner
-          height: 28px
       .sub-app-form
         padding: 10px
         border-bottom: 1px dashed #bbb
@@ -129,9 +126,10 @@ export default {
           width: 48%  
       .sub-app-form:last-child
         border: none
-      .table-app-name
-        color: #5AB4DC
-        display: block              
+      .el-icon-circle-check
+        color: #13CE66
+      .el-icon-circle-cross
+        color: #FF4949                 
     .pager-wrapper
       margin-top: 15px      
 </style>

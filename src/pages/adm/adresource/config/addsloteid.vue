@@ -5,16 +5,16 @@
     </div>
     <div class="data-title-wrapper">
       <div class="tab-page-wrapper">
-        <tabpage :tabs="tabs" @tabchange="change"></tabpage>
+        <tabpage :currentab="currentabs" :tabs="tabs"  @update:currentab="val => currentabs = val"></tabpage>
       </div>
-      <div v-if="actives==='first'">
+      <div v-if="currentabs==='first'">
         <onedata></onedata>
       </div>
       <div v-else class="batchdata-wrapper">
         <batchdata></batchdata>
       </div>
       <el-button type="primary">新建</el-button>
-      <el-button type="primary">取消</el-button>
+      <el-button type="default">取消</el-button>
     </div>
   </div>
 </template>
@@ -32,7 +32,8 @@ export default {
         {name: 'first', text: '单条数据'},
         {name: 'second', text: '批量数据'}
       ],
-      actives: 'first'
+      currentabs: 'first',
+      id: this.$route.query.id
     };
   },
   mounted () {
@@ -40,8 +41,31 @@ export default {
   },
   components: { breadcrumb, tabpage, onedata, batchdata },
   methods: {
-    change (msg) {
-      this.actives = msg;
+    update () {
+      if (this.id) {
+        let params = {};
+        params.id = this.id;
+        this.$http.get('/v1/source/sourceBo/one/{id}', {params: params}).then((res) => {
+          let data = res.body;
+          if (data.ret!=1) {
+            return this.$alert(data.message, '提示：', {
+              confirmButtonText: '确定'
+            });
+          }
+          let result = data.result;
+          this.accessFormat = result.accessFormat;
+          this.adslotId = result.adslotId;
+          this.slotname = result.adslotName;
+          this.slottype = result.adslotType;
+          this.appId = result.appId;
+          this.appName = result.appName;
+          this.appPkg = result.appPkg;
+          this.adName = result.channelCode;
+          this.deviceType = result.deviceType;
+          this.idAttr = result.idBelongTo;
+          this.extProps = result.extProps;
+        }, () => {});
+      }
     }
   }
 };

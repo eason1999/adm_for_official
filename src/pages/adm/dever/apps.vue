@@ -4,7 +4,7 @@
     <div class="apps-top-wrapper clearfix">
       <div class="apps-search pull-right">
         <el-input placeholder="请输入内容" v-model="keyword"></el-input>
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click.enter="load()">搜索</el-button>
       </div>
     </div>
     <div class="apps-data-table">
@@ -16,7 +16,7 @@
                 <span>{{ props.row.platForm }}</span>
               </el-form-item>
               <el-form-item label="分成/固定单价:">
-                <span>{{ props.row.appShareNum }}</span>
+                <span>{{ props.row.appShareNum }} <i class="el-icon-edit" @click="showDialog(props.$index, props.row.devId, props.row.id, props.row.appShareNum, props.row.appShareType)"></i></span>
               </el-form-item>
               <el-form-item label="平台/外放:">
                 <el-select @change="sendplatform(props.row.id, props.row.idBlongTo)" v-model="props.row.idBlongTo" placeholder="请选择" :disabled="props.row.verificationStatus==='APPROVED'">
@@ -44,9 +44,6 @@
               <el-form-item label="投放:">
                 <el-switch v-model="props.row.availabilityStatus" on-color="#13ce66" off-color="#ff4949" on-value="ALLOWED" off-value="DISALLOWED" @change="sendAvail(props.row.id, props.row.availabilityStatus)"></el-switch>
               </el-form-item>
-              <el-form-item label="操作:">
-                <el-button type="info" size="small" @click="configs(props.row.devId, props.row.devName, props.row.id, props.row.appName, props.row.appShareNum, props.row.appShareType)">分成配置</el-button>
-              </el-form-item>
             </el-form>
           </template>
         </el-table-column>
@@ -59,6 +56,28 @@
     <div class="pager-wrapper clearfix">
       <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
+    <el-dialog title="ADroi映射" :visible.sync="dialogVisible">
+      <div class="inner-contain">
+        <div class="shield-regional dowm-forward">
+          <span class="list-title">分成类型：</span>
+          <div class="radio-wrapper">
+            <el-radio class="radio" v-model="shareType" label="ECPM">固定单价（eCPM）</el-radio>
+            <el-radio class="radio" v-model="shareType" label="CPC">固定单价（CPC）</el-radio>
+            <el-radio class="radio" v-model="shareType" label="PERCENT">百分比</el-radio>
+          </div>
+        </div>
+        <div class="dowm-forward" v-if="shareType==='PERCENT'">
+          <span class="list-title">分成比例：</span>
+          <el-input v-model="shareNum" placeholder="请输入内容"></el-input>
+        </div>
+        <div class="dowm-forward" v-else>
+          <span class="list-title">单价：</span>
+          <el-input v-model="shareNum" placeholder="请输入内容"></el-input>
+        </div>
+        <el-button type="primary" @click="configs()">新建</el-button>
+        <el-button type="default" @click="this.dialogVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,20 +87,26 @@ export default {
   data () {
     return {
       tableData: [],
-        totalRecords: -1,
-        pageNum: 1,
-        pageSize: 20,
-        options: [{
-          value: 'selfuse',
-          label: '平台'
-        }, {
-          value: 'otheruse',
-          label: '外放'
-        }],
-        keyword: '',
-        loadings: false,
-        startDate: new Date(0).getTime(),
-        endDate: new Date().getTime()
+      dialogVisible: false,
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      options: [{
+        value: 'selfuse',
+        label: '平台'
+      }, {
+        value: 'otheruse',
+        label: '外放'
+      }],
+      keyword: '',
+      shareType: 'ECPM',
+      shareNum: '',
+      devId: -1,
+      appId: -1,
+      $index: -1,
+      loadings: false,
+      startDate: new Date(0).getTime(),
+      endDate: new Date().getTime()
     };
   },
   filters: {
@@ -115,7 +140,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.load(1, 20);
+      this.load();
     });
   },
   components: { pager },
@@ -143,7 +168,7 @@ export default {
             list[i].idBlongTo = 'selfuse';
           }
         }
-        this.tableData = result.list;
+        this.tableData = list;
         this.pageNum = result.pageNum;
         this.pageSize = result.pageSize;
         this.totalRecords = result.totalRecords;
@@ -183,20 +208,32 @@ export default {
     handleDelete (index, row) {
       console.log(index, row);
     },
-    configs (devId, devName, id, appName, divide, shareType) {
-      this.$router.push({
-        path: 'app/configur',
-        query: {
-          devId: devId,
-          devName: devName,
-          id: id,
-          appName: appName,
-          divide: divide,
-          shareType: shareType
-        }
-      });
+    showDialog (index, devId, id, divide, shareType) {
+      this.devId = devId;
+      this.appId = id;
+      this.shareType = shareType;
+      this.shareNum = divide;
+      this.$index = index;
+      this.dialogVisible = true;
     },
-    sendplatform (id, platform) {
+    configs () {
+      let params = {};
+      params.appShareNum = this.shareNum;
+      params.appShareType = this.shareType;
+      this.loadings = true;
+      this.$http.post('/v1/adm/apps/'+this.devId+'/'+this.appId+'/setAppShare', params).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.dialogVisible = false;
+        this.tableData[this.$index].appShareNum = this.shareNum;
+      }, () => {this.loadings = false;});
+    },
+    sendplatform (index,id, platform) {
       this.loadings = true;
       this.$http.post('/v1/adm/dev/'+id+'/'+platform+'/apps').then((res) => {
         this.loadings = false;
@@ -209,13 +246,15 @@ export default {
       }, () => {this.loadings = false;});
     },
     getslots (row, column, cell, event) {
+      console.log(row);
       let item = cell.className.indexOf('el-table__expand-column');
       if (item === -1) {
         this.$router.push({
           path: 'app/slotlist',
           query: {
             appId: row.id,
-            devId: row.devId
+            devId: row.devId,
+            verificationStatus: row.verificationStatus
           }
         });
       }
@@ -260,7 +299,14 @@ export default {
       .sub-app-form:last-child
         border: none
       .el-table__row
-        cursor: pointer              
+        cursor: pointer   
+      .el-icon-edit
+        cursor: pointer
+        color: #61B3D7              
     .pager-wrapper
-      margin-top: 15px      
+      margin-top: 15px  
+  .el-dialog  
+    .inner-contain
+      .dowm-forward
+        margin-bottom: 10px       
 </style>

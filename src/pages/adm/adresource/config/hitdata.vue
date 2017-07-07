@@ -3,21 +3,25 @@
     <div class="resource-top-wrapper clearfix">
       <div class="resource-search pull-right">
         <el-input placeholder="请输入内容" v-model="keywords"></el-input>
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click="load(1, 20)">搜索</el-button>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
       <el-table-column prop="adName" label="广告源" show-overflow-tooltip></el-table-column>
       <el-table-column label="应用名称&ID" show-overflow-tooltip>
         <template scope="scope">
-          <p>{{scope.row.appName}}</p>
-          <p>ID: {{scope.row.appId}}</p>
+          <a href="javascript:;" @click="getDetail(scope.row.adslotId,scope.row.slotStatus)">
+            <p>{{scope.row.appName}}</p>
+            <p>ID: {{scope.row.appId}}</p>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="address" label="广告位名称&ID" show-overflow-tooltip>
         <template scope="scope">
-          <p>{{scope.row.slotname}}</p>
-          <p>ID: {{scope.row.adslotId}}</p>
+          <a href="javascript:;" @click="getDetail(scope.row.adslotId,scope.row.slotStatus)">
+            <p>{{scope.row.slotname}}</p>
+            <p>ID: {{scope.row.adslotId}}</p>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="deviceType" label="流量类型" show-overflow-tooltip></el-table-column>
@@ -29,8 +33,25 @@
       </el-table-column>
     </el-table>
     <div class="pager-wrapper clearfix">
-      <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+      <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
+    <el-dialog title="ADroi映射" :visible.sync="dialogVisible">
+      <el-table :data="gridData">
+        <el-table-column property="company" label="广告源" show-overflow-tooltip></el-table-column>
+        <el-table-column label="应用名称&ID" show-overflow-tooltip>
+          <template scope="scope">
+            <p>{{scope.row.appName}}</p>
+            <p>ID: {{scope.row.appId}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="广告位名称&ID" show-overflow-tooltip>
+          <template scope="scope">
+            <p>{{scope.row.adslotName}}</p>
+            <p>ID: {{scope.row.adslotId}}</p>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -39,29 +60,15 @@ import pager from '../../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10,
-        type: 'HIT',
-        keywords: '',
-        loadings: false
+      tableData: [],
+      dialogVisible: false,
+      gridData: [],
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      type: 'HIT',
+      keywords: '',
+      loadings: false
     };
   },
   components: { pager },
@@ -71,11 +78,11 @@ export default {
     });
   },
   methods: {
-    load (pageNum) {
+    load (pageNum, pageSize) {
       this.loadings = true;
       let params = {};
       params.keywords = this.keywords;
-      params.pageSize = this.pageSize;
+      params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.type = this.type;
       this.$http.get('/v1/source/sourceList/{pageNum}/{pageSize}', {params: params}).then((res) => {
@@ -94,6 +101,24 @@ export default {
       }, () => {
         this.loadings = false;
       });
+    },
+    getDetail (id,accessFormat) {
+      let params = {};
+      params.dspadslotid = id;
+      params.slotStatus = accessFormat;
+      this.loadings = true;
+      this.$http.get('/v1/source/subList', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret !=1 ) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.dialogVisible = true;
+        let result = data.result;
+        this.gridData = result;
+      }, () => {this.loadings = false;});
     }
   }
 };

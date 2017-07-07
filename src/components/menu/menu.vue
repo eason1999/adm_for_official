@@ -1,5 +1,5 @@
 <template>
-  <el-menu :unique-opened="true" router default-active="/adm/adv/data" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+  <el-menu :unique-opened="true" @select="handleSelect" router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
 	<el-submenu index="1">
 	  <template slot="title"><i class="el-icon-message"></i>广告主管理</template>
 	  <el-menu-item-group>
@@ -73,9 +73,13 @@
 export default {
   data () {
     return {
+    	
     };
   },
   methods: {
+  	handleSelect (index, indexPath) {
+  		
+  	},
 	handleOpen (key, keyPath) {
 	  console.log(key, keyPath);
 	},

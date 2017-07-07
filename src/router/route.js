@@ -55,14 +55,28 @@ Vue.http.interceptors.push((request, next) => {
     var data = response.data || {};
     // 后台session失效
     if (data.ret === 999) {
-      var login = config.login;
       sessionUtil.clear();
-      this.$router.push(login);
+      this.$router.push(config.login);
     } else {
       sessionUtil.resetTimestamp();
     }
   });
 });
+// router.beforeEach((to, from, next) => {
+//   console.log(to);
+//   console.log(from);
+//   console.log(next);
+//   let auth = to.auth;
+//   let toPath = to.path;
+//   let isLogin = sessionUtil.isLogin();
+  // 重置用户登录时间戳
+  // isLogin && sessionUtil.resetTimestamp();
+  // 记录用户最后一次访问地址,在浏览器重启后，正确跳转
+  // (auth === false || isLogin) && sessionUtil.setLastPath(toPath);
+  // if (auth === false) {
+    // return next();
+  // }
+// });
 
 /* eslint-disable no-unused-vars */
 const app = new Vue({

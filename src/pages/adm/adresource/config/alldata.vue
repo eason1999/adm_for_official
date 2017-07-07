@@ -4,41 +4,77 @@
       <el-button type="primary" class="pull-left"><router-link class="search" to="resource/addid">新建广告位ID</router-link></el-button>
       <div class="resource-search pull-right">
         <el-input placeholder="请输入内容" v-model="keywords"></el-input>
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click="load(1, 20)">搜索</el-button>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+      <el-table-column type="expand">
+        <template scope="props">
+          <el-form label-position="left" inline class="demo-table-expand sub-app-form">
+            <el-form-item label="广告位类型:">
+              <span>{{ props.row.slottype }}</span>
+            </el-form-item>
+            <el-form-item label="接入形式:">
+              <span>{{ props.row.accessFormat }}</span>
+            </el-form-item>
+            <el-form-item label="ID归属:">
+              <span>{{ props.row.idBelongTo | idBelongTo }}</span>
+            </el-form-item>
+            <el-form-item label="流量类型:">
+              <span>{{ props.row.deviceType }}</span>
+            </el-form-item>
+            <el-form-item label="状态:">
+              <span>{{ props.row.slotStatus | status }}</span>
+            </el-form-item>
+            <el-form-item label="操作:">
+              <el-button type="primary" size="small" @click="handleEdit(props.$index, props.row.id)">编辑</el-button>
+              <el-button type="primary" size="small" @click="handleHit(props.$index, props.row)">命中</el-button>
+              <el-button :disabled="props.row.slotStatus==='SLOTONSTATUS'" type="primary" size="small" @click="handleUnbind(props.$index, props.row.id)">解绑</el-button>
+              <el-button :disabled="props.row.optimizeStatus!='0'" type="primary" size="small" @click="handleSEO(props.$index, props.row.id)">优化</el-button>
+              <el-button type="danger" size="small" @click="handleDelete(props.$index, props.row.id)">删除</el-button>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column prop="createdDate" label="创建日期" show-overflow-tooltip sortable></el-table-column>
       <el-table-column prop="adName" label="广告源" show-overflow-tooltip></el-table-column>
       <el-table-column label="应用名称&ID" show-overflow-tooltip>
         <template scope="scope">
-          <p>{{scope.row.appName}}</p>
-          <p>ID: {{scope.row.appId}}</p>
+          <a href="javascript:;" @click="getDetail(scope.$index,scope.row.adslotId,scope.row.slotStatus)">
+            <p>{{scope.row.appName}}</p>
+            <p>ID: {{scope.row.appId}}</p>
+          </a>
         </template>
       </el-table-column>
       <el-table-column prop="address" label="广告位名称&ID" show-overflow-tooltip>
         <template scope="scope">
-          <p>{{scope.row.slotname}}</p>
-          <p>ID: {{scope.row.adslotId}}</p>
-        </template>
-      </el-table-column>
-      <el-table-column prop="slottype" label="广告位类型" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="accessFormat" label="接入形式" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="idBelongTo" label="ID归属" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="deviceType" label="流量类型" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="slotStatus" label="状态" show-overflow-tooltip></el-table-column>
-      <el-table-column label="操作" show-overflow-tooltip>
-        <template scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">命中</el-button><br/>
-          <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">解绑</el-button>
-          <el-button type="danger" size="mini" @click="handleEdit(scope.$index, scope.row)">删除</el-button>
+          <a href="javascript:;" @click="getDetail(index,scope.row.adslotId,scope.row.slotStatus)">
+            <p>{{scope.row.slotname}}</p>
+            <p>ID: {{scope.row.adslotId}}</p>
+          </a>  
         </template>
       </el-table-column>
     </el-table>
     <div class="pager-wrapper clearfix">
-      <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+      <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
+    <el-dialog title="ADroi映射" :visible.sync="dialogVisible">
+      <el-table :data="gridData">
+        <el-table-column property="company" label="广告源"></el-table-column>
+        <el-table-column label="应用名称&ID" show-overflow-tooltip>
+          <template scope="scope">
+            <p>{{scope.row.appName}}</p>
+            <p>ID: {{scope.row.appId}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="广告位名称&ID" show-overflow-tooltip>
+          <template scope="scope">
+            <p>{{scope.row.adslotName}}</p>
+            <p>ID: {{scope.row.adslotId}}</p>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,43 +83,55 @@ import pager from '../../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10,
-        type: 'ALL',
-        keywords: '',
-        loadings: false
+      tableData: [],
+      gridData: [],
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      type: 'ALL',
+      keywords: '',
+      dialogVisible: false,
+      loadings: false
     };
+  },
+  filters: {
+    idBelongTo (val) {
+      let item;
+      switch (val) {
+        case 'selfuse':
+          item = '平台';
+          break;
+        case 'otheruse':
+          item = '外放';
+          break;  
+      }
+      return item;
+    },
+    status (val) {
+      let item;
+      switch (val) {
+        case 'SLOTONSTATUS':
+          item = '已使用';
+          break;
+        case 'SLOTB4STATUS':
+          item = '待使用';
+          break;  
+      }
+      return item;
+    }
   },
   components: { pager },
   mounted () {
     this.$nextTick(() => {
-      this.load(1);
+      this.load();
     });
   },
   methods: {
-    load (pageNum) {
+    load (pageNum, pageSize) {
       this.loadings = true;
       let params = {};
       params.keywords = this.keywords;
-      params.pageSize = this.pageSize;
+      params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.type = this.type;
       this.$http.get('/v1/source/sourceList/{pageNum}/{pageSize}', {params: params}).then((res) => {
@@ -102,6 +150,83 @@ export default {
       }, () => {
         this.loadings = false;
       });
+    },
+    getDetail (index,id,accessFormat) {
+      let params = {};
+      params.dspadslotid = id;
+      params.slotStatus = accessFormat;
+      this.loadings = true;
+      this.$http.get('/v1/source/subList', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret !=1 ) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.dialogVisible = true;
+        let result = data.result;
+        this.gridData = result;
+      }, () => {this.loadings = false;});
+    },
+    handleEdit (index, id) {
+      this.$router.push({
+        path: '/adm/resource/addid',
+        query: {
+          id: id
+        }
+      });
+    },
+    handleUnbind (index, id) {
+      this.$confirm('确定解绑吗？？？').then((res) => {
+        if (res === 'confirm') {
+          this.loadings = true;
+          this.$http.post('/v1/source/sourceBo/free/'+id).then((res) => {
+            this.loadings = false;
+            let data = res.body;
+            if (data.ret!=1) {
+              return this.$alert(data.message, '提示：', {
+                confirmButtonText: '确定'
+              });
+            }
+            this.load();
+          }, ()=> {this.loadings = false;});
+        }
+      }).catch((res) => {console.log(res)});
+    },
+    handleSEO (index, id) {
+      this.$confirm('确定优化吗？？？').then((res) => {
+        if (res === 'confirm') {
+          this.loadings = true;
+          this.$http.post('/v1/source/sourceBo/optimize/'+id).then((res) => {
+            this.loadings = false;
+            let data = res.body;
+            if (data.ret!=1) {
+              return this.$alert(data.message, '提示：', {
+                confirmButtonText: '确定'
+              });
+            }
+            this.load();
+          }, ()=> {this.loadings = false;});
+        }
+      }).catch((res) => {console.log(res)});
+    },
+    handleDelete (index, id) {
+      this.$confirm('确定删除吗？？？').then((res) => {
+        if (res === 'confirm') {
+          this.loadings = true;
+          this.$http.post('/v1/source/'+id+'/adchannel').then((res) => {
+            this.loadings = false;
+            let data = res.body;
+            if (data.ret!=1) {
+              return this.$alert(data.message, '提示：', {
+                confirmButtonText: '确定'
+              });
+            }
+            this.load();
+          }, ()=> {this.loadings = false;});
+        }
+      }).catch((res) => {console.log(res)});
     }
   }
 };
@@ -127,5 +252,17 @@ export default {
       margin-top: 15px  
     .el-table
       .el-button
-        margin: 2px      
+        margin: 2px   
+    .sub-app-form
+        padding: 10px
+        label
+          width: 75px
+          overflow: hidden
+          white-space: nowrap
+          text-overflow: ellipsis
+          color: #99a9bf
+        .el-form-item
+          margin-right: 0
+          margin-bottom: 0
+          width: 48%         
 </style>

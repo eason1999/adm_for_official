@@ -7,7 +7,7 @@
 	  </el-col>
     <el-col :span="12">
       <div class="grid-content bg-purple-dark">
-        <ul class="menu-wrapper clearfix">
+        <ul class="menu-wrapper clearfix" v-if="userName!=''">
           <li class="sub-menu pull-left">
             <el-dropdown>
               <span class="el-dropdown-link">
@@ -29,12 +29,12 @@
             </el-dropdown>
           </li>
           <li class="sub-menu pull-left">
-            <el-dropdown>
+            <el-dropdown @command="handleCommand" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
               <span class="el-dropdown-link">
                 {{userName}}<i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>建设中...</el-dropdown-item>
+                <el-dropdown-item>退出...</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </li>
@@ -45,12 +45,39 @@
 </template>
 
 <script>
+import config from '../../config.js';
+import sessionUtil from '../../util/session.js';
 export default {
   name: 'hello',
   data () {
     return {
-      userName: '游客'
+      userName: '',
+      loadings: false
     };
+  },
+  mounted () {
+    this.$nextTick(() => {
+      let user = sessionUtil.getUser();
+      user ? this.userName = user.name : false;
+    });
+  },
+  methods: {
+    handleCommand () {
+      this.loadings = true;
+      this.$http.post('/v1/logout/adm').then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret !== 1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        sessionUtil.clear();
+        this.$router.replace({
+          path: config.login
+        });
+      }, () => { this.loadings = false; });
+    }
   }
 };
 </script>

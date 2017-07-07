@@ -5,6 +5,7 @@
     :type="dateData.type"
     :align="dateData.align"
     :picker-options="pickerOptions2"
+    @change="getDate"
     placeholder="选择日期范围">
   </el-date-picker>
 </template>
@@ -24,6 +25,11 @@ export default {
       dateData: this.datepickers,
       pickerOptions2: this.pickerOptions
     };
+  },
+  methods: {
+    getDate (data) {
+      console.log(data);
+    }
   }
 };
 </script>
