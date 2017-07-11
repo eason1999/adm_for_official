@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     getDate (data) {
-      console.log(data);
+      this.$emit('datechange');
     }
   }
 };

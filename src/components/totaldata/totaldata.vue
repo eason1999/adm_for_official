@@ -50,7 +50,7 @@ export default {
       right: 30px
       top: 30px 
       .grid-num
-        font-size: 30px
+        font-size: 20px
         font-weight: 700
         color: #666f7b 
         margin-bottom: 5px
@@ -60,5 +60,5 @@ export default {
         color: #797979
   .total-data-content:hover
       .grid-num 
-        font-size: 36px   
+        font-size: 22px   
 </style>

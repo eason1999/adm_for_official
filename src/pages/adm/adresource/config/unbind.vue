@@ -18,7 +18,7 @@
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="adName" label="广告源" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="adName" label="广告源" sortable show-overflow-tooltip></el-table-column>
       <el-table-column label="应用名称&ID" show-overflow-tooltip>
         <template scope="scope">
           <a href="javascript:;" @click="getDetail(scope.row.adslotId,scope.row.slotStatus)">

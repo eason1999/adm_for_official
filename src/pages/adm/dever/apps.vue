@@ -75,7 +75,7 @@
           <el-input v-model="shareNum" placeholder="请输入内容"></el-input>
         </div>
         <el-button type="primary" @click="configs()">新建</el-button>
-        <el-button type="default" @click="this.dialogVisible = false">取消</el-button>
+        <el-button type="default" @click="dialogVisible = false">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -304,7 +304,9 @@ export default {
         cursor: pointer
         color: #61B3D7              
     .pager-wrapper
-      margin-top: 15px  
+      margin-top: 15px 
+    .el-tooltip
+      color: #7e8c8d  
   .el-dialog  
     .inner-contain
       .dowm-forward

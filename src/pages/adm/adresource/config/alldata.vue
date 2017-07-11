@@ -28,8 +28,8 @@
             </el-form-item>
             <el-form-item label="操作:">
               <el-button type="primary" size="small" @click="handleEdit(props.$index, props.row.id)">编辑</el-button>
-              <el-button type="primary" size="small" @click="handleHit(props.$index, props.row)">命中</el-button>
-              <el-button :disabled="props.row.slotStatus==='SLOTONSTATUS'" type="primary" size="small" @click="handleUnbind(props.$index, props.row.id)">解绑</el-button>
+              <el-button type="primary" :disabled="props.row.slotStatus==='SLOTHITSTATUS'" size="small" @click="handleHit(props.$index, props.row.id)">命中</el-button>
+              <el-button :disabled="props.row.slotStatus!=='SLOTONSTATUS'" type="primary" size="small" @click="handleUnbind(props.$index, props.row.id)">解绑</el-button>
               <el-button :disabled="props.row.optimizeStatus!='0'" type="primary" size="small" @click="handleSEO(props.$index, props.row.id)">优化</el-button>
               <el-button type="danger" size="small" @click="handleDelete(props.$index, props.row.id)">删除</el-button>
             </el-form-item>
@@ -37,7 +37,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="createdDate" label="创建日期" show-overflow-tooltip sortable></el-table-column>
-      <el-table-column prop="adName" label="广告源" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="adName" label="广告源" show-overflow-tooltip sortable></el-table-column>
       <el-table-column label="应用名称&ID" show-overflow-tooltip>
         <template scope="scope">
           <a href="javascript:;" @click="getDetail(scope.$index,scope.row.adslotId,scope.row.slotStatus)">
@@ -75,11 +75,24 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <el-dialog class="hit-date-range" title="命中周期" :visible.sync="dateVisible">
+      <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+        <el-form-item label="起始时间：">
+          <datepicker :datepickers="firsts" :picker-options="firstoptions"></datepicker>
+        </el-form-item>
+        <el-form-item label="结束时间：">
+          <datepicker :datepickers="lasts" :picker-options="lastoptions"></datepicker>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="uphitdate">确 定</el-button>
+      <el-button @click="dateVisible = false">取 消</el-button>
+    </el-dialog>
   </div>
 </template>
 
 <script type="ecmascript-6">
 import pager from '../../../../components/pager/pager.vue';
+import datepicker from '../../../../components/datepicker/datepicker.vue';
 export default {
   data () {
     return {
@@ -91,7 +104,23 @@ export default {
       type: 'ALL',
       keywords: '',
       dialogVisible: false,
-      loadings: false
+      dateVisible: false,
+      loadings: false,
+      // 命中时间参数
+      hitid: -1,
+      labelPosition: 'top',
+      firsts: {value: new Date(new Date().getTime()), align: 'left', type: 'date'},
+      firstoptions: {
+        disabledDate (time) {
+          return time.getTime() > new Date().getTime();
+        }
+      },
+      lasts: {value: new Date(new Date().getTime()), align: 'left', type: 'date'},
+      lastoptions: {
+        disabledDate (time) {
+          return time.getTime() > new Date().getTime();
+        }
+      }
     };
   },
   filters: {
@@ -120,7 +149,7 @@ export default {
       return item;
     }
   },
-  components: { pager },
+  components: { pager, datepicker },
   mounted () {
     this.$nextTick(() => {
       this.load();
@@ -227,6 +256,33 @@ export default {
           }, ()=> {this.loadings = false;});
         }
       }).catch((res) => {console.log(res)});
+    },
+    handleHit (index, id) {
+      this.hitid = id;
+      this.dateVisible = true;
+    },
+    uphitdate () {
+      if(this.firsts.value > this.lasts.value){
+        return this.$alert('起始时间不能大于结束时间！', '提示：', {
+          confirmButtonText: '确定'
+        });
+      }
+      let params = {};
+      params.id=this.hitid;
+      params.startDate = this.firsts.value.getTime();
+      params.endDate = this.lasts.value.getTime();
+      this.loadings = true;
+      this.$http.get('/v1/source/sourceBo/hit/{id}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.dateVisible = false;
+        this.load();
+      }, () => {this.loadings = false;});
     }
   }
 };
@@ -264,5 +320,8 @@ export default {
         .el-form-item
           margin-right: 0
           margin-bottom: 0
-          width: 48%         
+          width: 48% 
+    .hit-date-range
+      .el-date-editor
+        width: 300px               
 </style>

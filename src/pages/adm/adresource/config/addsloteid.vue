@@ -13,8 +13,6 @@
       <div v-else class="batchdata-wrapper">
         <batchdata></batchdata>
       </div>
-      <el-button type="primary">新建</el-button>
-      <el-button type="default">取消</el-button>
     </div>
   </div>
 </template>

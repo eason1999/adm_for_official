@@ -73,5 +73,6 @@ export default {
           line-height: 100px
           font-size: 14px
           clear: both
+    .el-table__empty-block
+      min-height: 350px      
 </style>
-

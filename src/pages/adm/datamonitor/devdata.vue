@@ -10,13 +10,13 @@
         <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
     </div>
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
       <el-table-column prop="address" label="公司名称"></el-table-column>
       <el-table-column prop="name" label="展现数"></el-table-column>
       <el-table-column prop="date" label="点击数"></el-table-column>
     </el-table>
     <div class="pager-wrapper clearfix">
-      <pager class="pull-right" :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+      <pager class="pull-right" :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
   </div>
 </template>
@@ -47,11 +47,46 @@ export default {
         totalRecords: 100,
         pageNum: 1,
         pageSize: 10,
-        datepickers: {value:'', align: 'right', type: 'date'},
-        pickerOptions: {}
+        datepickers: {value: new Date(), align: 'right', type: 'date'},
+        pickerOptions: {
+          disabledDate (time) {
+            return time.getTime() > new Date().getTime();
+          },
+          onPick (data) {
+            console.log(data);
+          }
+        },
+        loadings: false
     };
   },
-  components: { pager, datepicker }
+  mounted () {
+    this.$nextTick(() => {
+      this.load();
+    });
+  },
+  components: { pager, datepicker },
+  methods: {
+    load (pageNum, pageSize) {
+      let params = {};
+      params.pageNum = pageNum || this.pageNum;
+      params.pageSize = pageSize || this.pageSize;
+      // params.date = this.datepickers.value[0].getTime();
+      this.loadings = true;
+      this.$http.get('/v1/adm/monitor/devs/{pageNum}/{pageSize}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        this.tableData = result.list;
+        this.pageSize = result.pageSize;
+        this.totalRecords = result.totalRecords;
+      }, () => {this.loadings = false;});
+    }
+  }
 };
 </script>
 

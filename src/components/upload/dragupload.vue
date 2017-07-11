@@ -3,7 +3,8 @@
     class="upload-wrapper"
     drag
     accept=".xls,.xlsx"
-    action="https://jsonplaceholder.typicode.com/posts/"
+    :disabled="this.item!=''||this.fileList.length===1"
+    :action="uploadurl"
     :multiple="false"
     :file-list="fileList"
     :on-remove="remove"
@@ -14,30 +15,73 @@
     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
     <div class="el-upload__tip" slot="tip">
       只能上传*.xls/*.xlsx文件  
-      <a href="javascript:;" class="upload-model">*模板文件</a>
+      <a :href="modeldata" class="upload-model">*模板文件</a>
     </div>
   </el-upload>
 </template>
 
 <script type="ecmascript-6">
 export default {
+  props: {
+    urls: {
+      type:String
+    },
+    fileLists: {
+      type: Array,
+      default: []
+    },
+    goPaths: {
+      type: Boolean,
+      default: false
+    },
+    paths: {
+      type: String
+    },
+    modeldatas: {
+      type: String
+    }
+  },
   data () {
     return {
-      fileList: []
+      fileList: this.fileLists,
+      uploadurl: this.urls,
+      item: '',
+      goPath: this.goPaths,
+      path: this.paths,
+      modeldata: this.modeldatas
     };
   },
   methods: {
-    remove (data) {
-      console.log(data);
+    remove (file, fileList) {
+      this.item='';
+      this.fileList = fileList;
     },
     success (data) {
-      console.log(data);
+      this.item = data.result;
+      if (data.ret!=1) {
+        return this.$alert(data.message, '提示：', {
+          confirmButtonText: '确定'
+        });
+      } 
+      if (this.goPath) {
+        return this.$alert(data.result, '提示：', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.$router.push({
+              path: this.path
+            });
+          }
+        });
+      }
+
     },
     error (data) {
-      console.log(data);
+      return this.$alert(data.message, '提示：', {
+        confirmButtonText: '确定'
+      });
     },
     change (data) {
-      console.log(data);
+      // console.log(data);
     }
   }
 };

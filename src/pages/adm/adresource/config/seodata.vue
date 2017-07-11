@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-hit-wrapper">
+  <div class="resource-seo-wrapper">
     <div class="resource-top-wrapper clearfix">
       <div class="resource-search pull-right">
         <el-input placeholder="请输入内容" v-model="keywords"></el-input>
@@ -24,11 +24,9 @@
           </a>
         </template>
       </el-table-column>
-      <el-table-column prop="deviceType" label="流量类型" show-overflow-tooltip></el-table-column>
-      <el-table-column label="命中周期" show-overflow-tooltip>
+      <el-table-column label="操作" show-overflow-tooltip>
         <template scope="scope">
-          <span>{{scope.row.hitStartDate}}~</span>
-          <span>{{scope.row.hitEndDate}}</span>
+          <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,9 +64,9 @@ export default {
       totalRecords: -1,
       pageNum: 1,
       pageSize: 20,
-      type: 'HIT',
       keywords: '',
-      loadings: false
+      loadings: false,
+      type: 'OPTIMIZE'
     };
   },
   components: { pager },
@@ -119,13 +117,30 @@ export default {
         let result = data.result;
         this.gridData = result;
       }, () => {this.loadings = false;});
+    },
+    handleDelete (index, id) {
+      this.$confirm('确定删除吗？？？').then((res) => {
+        if (res === 'confirm') {
+          this.loadings = true;
+          this.$http.post('/v1/source/sourceBo/removeOptimize/'+id).then((res) => {
+            this.loadings = false;
+            let data = res.body;
+            if (data.ret!=1) {
+              return this.$alert(data.messge, '提示：', {
+                confirmButtonText: '确定'
+              });
+            }
+            this.load();
+          }, () => {this.loadings = false;});
+        }
+      }).catch((res) => {console.log(res)});;
     }
   }
 };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .resource-hit-wrapper
+  .resource-seo-wrapper
     overflow: hidden
     .resource-top-wrapper
       margin-bottom: 15px
