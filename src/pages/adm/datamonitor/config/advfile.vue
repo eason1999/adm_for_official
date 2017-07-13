@@ -4,107 +4,201 @@
       <breadcrumb :bread-detail="breadContent"></breadcrumb>
     </div>
     <div class="advfile-title-wrapper">
-      <div class="datepicker-wrapper dowm-forward">
+      <div class="dowm-forward">
         <span class="list-title">时间范围：</span>
         <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
-      <div class="create-select dowm-forward">
+      <div class="dowm-forward">
         <span class="list-title">计划名称：</span>
-        <selects></selects>
+        <el-select v-model="planId" filterable placeholder="请选择" @change="loadcreates" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+          <el-option
+            v-for="item in plans"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
-      <div class="plan-select dowm-forward">
+      <div class="dowm-forward">
         <span class="list-title">创意名称：</span>
-        <selects></selects>
+        <el-select v-model="createId" filterable placeholder="全部创意" @change="loadmedias">
+          <el-option
+            v-for="item in creates"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
-      <div class="plan-select dowm-forward">
+      <div class="dowm-forward">
         <span class="list-title">定向媒体：</span>
-        <selects></selects>
+        <el-select v-model="mediaId" filterable placeholder="全部媒体">
+          <el-option
+            v-for="item in medias"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
-      <el-button type="primary">查询</el-button>
+      <el-button type="primary" @click="load()">查询</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" label="日期"  width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+        <el-table-column prop="date" label="日期" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column prop="campaignNameId" label="计划名称&ID" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="creativeNameId" label="创意名称&ID" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="mediaNameId" label="定向媒体&ID" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="impressionsB4Filter" label="过滤前展现数" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column prop="impressions" label="过滤后展现数" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column prop="clicksB4Filter" label="过滤前点击数" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column prop="clicks" label="过滤后点击数" sortable show-overflow-tooltip></el-table-column>
       </el-table>
     </div>
-    <div class="data-footer-wrapper clearfix">
+    <div class="data-footer-wrapper clearfix" v-if="tableData.length">
       <el-button type="primary" class="pull-left">导出EXCEL</el-button>
       <div class="page-wrapper pull-right">
-        <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+        <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
     </div>
   </div>
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../../components/selects/select.vue';
 import datepicker from '../../../../components/datepicker/datepicker.vue';
 import pager from '../../../../components/pager/pager.vue';
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
   data () {
     return {
-      items: [
-        {icon: 'el-icon-star-on',num: 0,text: '展现数'},
-        {icon: 'el-icon-message',num: 0,text: '点击数'},
-        {icon: 'el-icon-share',num: 0,text: '点击率'},
-        {icon: 'el-icon-menu',num: 0,text: '消费'}
-      ],
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎1',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
-      totalRecords: 100,
+      plans: [],
+      creates: [],
+      medias: [],
+      planId: '',
+      createId: '',
+      mediaId: '',
+      tableData: [],
+      totalRecords: -1,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       breadContent: [{ text: 'ADV实时数据', path: '/adm/datamonitor/advdata'}, { text: '过滤查询'}],
-      datepickers: {value:'', align: 'left', type: 'daterange'},
-      pickerOptions: {}
+      datepickers: {value: [new Date(), new Date()], align: 'left', type: 'daterange'},
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() > new Date().getTime();
+        },
+        onPick (data) {
+        }
+      },
+      loadings: false
     };
   },
   mounted () {
-    
+    this.$nextTick(() => {
+      this.loadplans();
+    });
   },
-  components: { selects, datepicker, pager, breadcrumb }
+  components: { datepicker, pager, breadcrumb },
+  methods: {
+    loadplans () {
+      this.loadings = true;
+      this.$http.get('/v1/adm/names/allCampaigns').then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        for(let i = 0, a = result.length; i < a; i++){
+          result[i].text = result[i].text+'('+result[i].id+')';
+        }
+        this.plans = result;
+      }, () => {this.loadings = false;});
+    },
+    loadcreates () {
+      let params = {};
+      params.campaignId = this.planId;
+      this.loadings = true;
+      this.$http.get('/v1/adm/names/campaigns/{campaignId}/creatives', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        for(let i = 0, a = result.length; i < a; i++){
+          result[i].text = result[i].text+'('+result[i].id+')';
+        }
+        this.creates = result;
+        this.createId = '';
+        this.medias = [];
+        this.mediaId = '';
+      }, () => {this.loadings = false;});
+    },
+    loadmedias () {
+      let params = {};
+      if (this.createId === '') {
+        params.creativeId = -1;
+      } else {
+        params.creativeId = this.createId;
+      }
+      params.campaignId = this.planId;
+      params.startDate = this.datepickers.value[0].getTime();
+      params.endDate = this.datepickers.value[1].getTime();
+      this.loadings = true;
+      this.$http.get('/v1/adm/monitor/advs/hourData/getMedia', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        for(let i = 0, a = result.length; i < a; i++){
+          result[i].text = result[i].text+'('+result[i].id+')';
+        }
+        this.medias = result;
+        this.mediaId = '';
+      }, () => {this.loadings = false;});
+    },
+    load (pageNum, pageSize) {
+      let params = {};
+      params.campaignId = this.planId;
+      if (this.createId === '') {
+        params.creativeId = -1;
+      } else {
+        params.creativeId = this.createId;
+      }
+      if (this.mediaId === '') {
+        params.mediaId = -1;
+      } else {
+        params.mediaId = this.mediaId;
+      }
+      params.pageNum = pageNum || this.pageNum;
+      params.pageSize = pageSize || this.pageSize;
+      params.startDate = this.datepickers.value[0].getTime();
+      params.endDate = this.datepickers.value[1].getTime();
+      this.loadings = true;
+      this.$http.get('/v1/adm/monitor/advs/filterData/{pageNum}/{pageSize}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        this.tableData = result.list;
+        this.pageSize = result.pageSize;
+        this.totalRecords = result.totalRecords;
+      }, () => {this.loadings = false;});
+    }
+  }
 };
 </script>
 
@@ -122,6 +216,9 @@ export default {
         width: 300px  
         .el-select
           display: block
+        .el-input
+          display: block 
+          width: 100%  
     .data-table-wrapper
       margin-bottom: 20px     
 </style>

@@ -5,14 +5,14 @@
       <el-button type="primary" class="pull-left"><router-link class="search" to="whitelist/addwhite">新增</router-link></el-button>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="appName" label="应用名称"></el-table-column>
-      <el-table-column prop="packageName" label="应用包名"></el-table-column>
+      <el-table-column prop="appName" label="应用名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="packageName" label="应用包名" show-overflow-tooltip></el-table-column>
       <el-table-column label="预览">
         <template scope="scope">
           <el-button type="info" size="small" @click="previewImg(scope.row.fileUrl)">预览</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="modifiedAt" label="修改时间"></el-table-column>
+      <el-table-column prop="modifiedAt" label="修改时间" sortable show-overflow-tooltip></el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button type="info" size="small" @click="handleEdit(scope.row.id)">修改</el-button>
@@ -23,7 +23,7 @@
     <el-dialog v-model="dialogVisible" size="tiny">
       <img width="100%" :src="dialogImageUrl">
     </el-dialog>
-    <div class="pager-wrapper clearfix">
+    <div class="pager-wrapper clearfix" v-if="tableData.length">
       <div class="pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
@@ -66,6 +66,7 @@ export default {
   methods: {
     previewImg (url) {
       this.$nextTick(() => {
+        this.dialogImageUrl = '';
         this.dialogImageUrl = url;
         this.dialogVisible = true;
       });

@@ -2,6 +2,7 @@
   <el-upload
     class="upload-wrapper"
     drag
+    :data="otherdata"
     accept=".xls,.xlsx"
     :disabled="this.item!=''||this.fileList.length===1"
     :action="uploadurl"
@@ -39,6 +40,9 @@ export default {
     },
     modeldatas: {
       type: String
+    },
+    otherdatas: {
+      type: Object
     }
   },
   data () {
@@ -48,7 +52,8 @@ export default {
       item: '',
       goPath: this.goPaths,
       path: this.paths,
-      modeldata: this.modeldatas
+      modeldata: this.modeldatas,
+      otherdata: this.otherdatas
     };
   },
   methods: {
@@ -89,6 +94,7 @@ export default {
 
 <style lang="stylus" rel="stylesheet/stylus">
   .upload-wrapper
+    width: 305px
     .el-upload-dragger
       width: 300px
       height: 160px

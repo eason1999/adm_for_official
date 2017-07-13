@@ -70,6 +70,8 @@ import devfinance from '../pages/adm/finance/devfinance.vue';
 
 import slotefinance from '../pages/adm/finance/slotefinance.vue';
 
+import slothit from '../pages/adm/finance/config/slothit.vue';
+
 import drawvouchor from '../pages/adm/finance/drawvouchor.vue';
 
 import addvouchor from '../pages/adm/finance/config/addvouch.vue';
@@ -213,6 +215,9 @@ const routes = [{
   }, {
     path: 'finance/slote',
     component: slotefinance
+  }, {
+    path: 'finance/slote/hit',
+    component: slothit
   }, {
     path: 'finance/vouchor',
     component: drawvouchor

@@ -1,21 +1,21 @@
 <template>
-  <div class="finance-dev-wrapper">
-    <h2>DEV财务信息</h2>
-    <div class="dev-top-wrapper clearfix">
-      <div class="dev-search pull-right">
+  <div class="finance-drawcash-wrapper">
+    <div class="resource-top-wrapper clearfix">
+      <el-button type="primary" class="pull-left"><router-link class="search" to="vouchor/addvouch">新增</router-link></el-button>
+      <div class="resource-search pull-right">
         <el-input placeholder="请输入内容" v-model="keyword"></el-input>
         <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="submitTime" label="日期" sortable show-overflow-tooltip></el-table-column>
-      <el-table-column prop="devName" label="公司名称" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="accountType" label="账户类型" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="bankName" label="开户行名称" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="accountNo" label="银行账号" show-overflow-tooltip></el-table-column>
-      <el-table-column label="证件预览">
+      <el-table-column prop="operationTime" label="日期"></el-table-column>
+      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="devName" label="公司名称"></el-table-column>
+      <el-table-column prop="transType" label="操作类型"></el-table-column>
+      <el-table-column prop="amount" label="金额（￥）"></el-table-column>
+      <el-table-column label="提现凭证">
         <template scope="scope">
-          <el-button type="info" size="small" @click="previewImg(scope.row.fileUrl)">预览</el-button>
+          <el-button type="primary" size="small" @click="showDialog(scope.row.fileUrl)">预览</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -29,7 +29,7 @@
 </template>
 
 <script type="ecmascript-6">
-import pager from '../../../components/pager/pager.vue';
+import pager from '../../../../components/pager/pager.vue';
 export default {
   data () {
     return {
@@ -50,7 +50,7 @@ export default {
   },
   components: { pager },
   methods: {
-    previewImg (fileUrl) {
+    showDialog (fileUrl) {
       this.$nextTick(() => {
         this.dialogImageUrl = '';
         this.dialogImageUrl = fileUrl;
@@ -59,11 +59,12 @@ export default {
     },
     load (pageNum, pageSize) {
       let params = {};
+      params.type = 1;
       params.keyword = this.keyword;
       params.pageNum = pageNum || this.pageNum;
       params.pageSize = pageSize || this.pageSize;
       this.loadings = true;
-      this.$http.get('/v1/adm/dev/finance/{pageNum}/{pageSize}', {params: params}).then((res) => {
+      this.$http.get('/v1/adm/dev/withdraws/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
@@ -82,19 +83,8 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .finance-dev-wrapper
+  .finance-drawcash-wrapper
     overflow: hidden
-    .dev-top-wrapper
-      margin-bottom: 15px
-      .dev-search
-        max-width: 300px
-        font-size: 0
-        .el-input
-          width: 230px
-          input
-            border-radius: 4px 0 0 4px
-        button 
-          border-radius: 0 4px 4px 0
     .pager-wrapper
       margin-top: 15px      
 </style>

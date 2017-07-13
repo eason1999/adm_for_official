@@ -7,15 +7,15 @@
         <el-button type="primary"><router-link to="devdata/devfile" class="search">过滤查询</router-link></el-button>
       </div>
       <div class="pull-right">
-        <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
+        <datepicker :datepickers="datepickers" @datechange="load" :picker-options="pickerOptions"></datepicker>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="address" label="公司名称"></el-table-column>
-      <el-table-column prop="name" label="展现数"></el-table-column>
-      <el-table-column prop="date" label="点击数"></el-table-column>
+      <el-table-column prop="company" label="公司名称"></el-table-column>
+      <el-table-column prop="impressions" label="展现数" sortable></el-table-column>
+      <el-table-column prop="clicks" label="点击数" sortable></el-table-column>
     </el-table>
-    <div class="pager-wrapper clearfix">
+    <div class="pager-wrapper clearfix" v-if="tableData.length">
       <pager class="pull-right" :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
   </div>
@@ -27,26 +27,10 @@ import datepicker from '../../../components/datepicker/datepicker.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '1518'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '1517'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '1519'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '1516'
-        }],
-        totalRecords: 100,
+      tableData: [],
+        totalRecords: -1,
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         datepickers: {value: new Date(), align: 'right', type: 'date'},
         pickerOptions: {
           disabledDate (time) {
@@ -70,7 +54,7 @@ export default {
       let params = {};
       params.pageNum = pageNum || this.pageNum;
       params.pageSize = pageSize || this.pageSize;
-      // params.date = this.datepickers.value[0].getTime();
+      params.date = this.datepickers.value.getTime();
       this.loadings = true;
       this.$http.get('/v1/adm/monitor/devs/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;

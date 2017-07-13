@@ -3,18 +3,18 @@
     <h2>外发监测</h2>
     <div class="outmonitor-top-wrapper clearfix">
       <div class="pull-right">
-        <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
+        <datepicker :datepickers="datepickers" @datechange="load" :picker-options="pickerOptions"></datepicker>
       </div>
     </div>
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="address" label="日期"></el-table-column>
-      <el-table-column prop="date" label="广告主"></el-table-column>
-      <el-table-column prop="date1" label="广告位"></el-table-column>
-      <el-table-column prop="date2" label="展现数"></el-table-column>
-      <el-table-column prop="name" label="点击数"></el-table-column>
+    <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+      <el-table-column prop="date" label="日期" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column prop="mediaName" label="广告主名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="slotName" label="广告位名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="impressions" label="展现数" sortable></el-table-column>
+      <el-table-column prop="clicks" label="点击数" sortable></el-table-column>
     </el-table>
-    <div class="pager-wrapper clearfix">
-      <pager class="pull-right" :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+    <div class="pager-wrapper clearfix" v-if="tableData.length">
+      <pager class="pull-right" :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
   </div>
 </template>
@@ -25,39 +25,50 @@ import datepicker from '../../../components/datepicker/datepicker.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '王小虎',
-          name: '1',
-          address: '1518',
-          date1: 12,
-          date2: 121
-        }, {
-          date: '王小虎',
-          name: '1',
-          address: '1517',
-          date1: 12,
-          date2: 121
-        }, {
-          date: '王小虎',
-          name: '1',
-          address: '1519',
-          date1: 12,
-          date2: 121
-        }, {
-          date: '王小虎',
-          name: '1518',
-          address: '1516',
-          date1: 12,
-          date2: 121
-        }],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10,
-        datepickers: {value:'', align: 'right', type: 'date'},
-        pickerOptions: {}
+      tableData: [],
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      datepickers: {value: [new Date(), new Date()], align: 'left', type: 'daterange'},
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() > new Date().getTime();
+        },
+        onPick (data) {
+        }
+      },
+      loadings: false
     };
   },
-  components: { pager, datepicker }
+  mounted () {
+    this.$nextTick(() => {
+      this.load();
+    });
+  },
+  components: { pager, datepicker },
+  methods: {
+    load (pageNum, pageSize) {
+      let params = {};
+      params.pageNum = pageNum || this.pageNum;
+      params.pageSize = pageSize || this.pageSize;
+      params.startDate = this.datepickers.value[0].getTime();
+      params.endDate = this.datepickers.value[1].getTime();
+      this.loadings = true;
+      this.$http.get('/v1/adm/monitor/extra/{pageNum}/{pageSize}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        this.tableData = result.list;
+        this.pageSize = result.pageSize;
+        this.totalRecords = result.totalRecords;
+      }, () => {this.loadings = false;});
+    }
+  }
 };
 </script>
 

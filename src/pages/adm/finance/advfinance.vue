@@ -3,22 +3,23 @@
     <h2>ADV财务信息</h2>
     <div class="adv-top-wrapper clearfix">
       <div class="adv-search pull-right">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">搜索</el-button>
+        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
+        <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="date" label="日期"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column prop="address" label="证件">
+      <el-table-column prop="submitTime" label="日期" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column prop="id" label="ID"></el-table-column>
+      <el-table-column prop="advName" label="广告主名称" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="accountType" label="账户类型" show-overflow-tooltip></el-table-column>
+      <el-table-column label="证件预览">
         <template scope="scope">
-          <el-button type="info" size="small" @click="previewImg(scope.$index, scope.row)">预览</el-button>
+          <el-button type="info" size="small" @click="previewImg(scope.row.fileUrl)">预览</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="pager-wrapper clearfix">
-      <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+    <div class="pager-wrapper clearfix" v-if="tableData.length">
+      <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
     <el-dialog v-model="dialogVisible" size="tiny">
       <img width="100%" :src="dialogImageUrl" alt="">
@@ -31,35 +32,49 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10,
-        dialogVisible: false,
-        dialogImageUrl: ''
+      tableData: [],
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      keyword: '',
+      dialogVisible: false,
+      dialogImageUrl: 'about:blank;',
+      loadings: false
     };
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.load();
+    });
   },
   components: { pager },
   methods: {
-    previewImg () {
-      this.dialogVisible = true;
-      this.dialogImageUrl = '';
+    previewImg (fileUrl) {
+      this.$nextTick(() => {
+        this.dialogImageUrl = '';
+        this.dialogImageUrl = fileUrl;
+        this.dialogVisible = true;
+      });
+    },
+    load (pageNum, pageSize) {
+      let params = {};
+      params.keyword = this.keyword;
+      params.pageNum = pageNum || this.pageNum;
+      params.pageSize = pageSize || this.pageSize;
+      this.loadings = true;
+      this.$http.get('/v1/adm/adv/finance/{pageNum}/{pageSize}', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        let result = data.result;
+        this.tableData = result.results;
+        this.pageSize = result.pageSize;
+        this.totalRecords = result.totalRecords;
+      }, () => {this.loadings = false;});
     }
   }
 };
