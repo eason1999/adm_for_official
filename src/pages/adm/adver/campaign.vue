@@ -77,7 +77,7 @@
       </el-table>
     </div>
     <div class="pager-wrapper clearfix">
-      <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+      <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
     <el-dialog v-model="dialogVisible" size="tiny">
       <img width="100%" :src="dialogImageUrl" alt="">
@@ -106,7 +106,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.load(1);
+      this.load();
     });
   },
   components: { pager },
@@ -120,10 +120,10 @@ export default {
     config () {
       this.$router.push({ path: 'data/config', query: { plan: '123' }});
     },
-    load (pageNum) {
+    load (pageNum, pageSize) {
       let params = {};
       params.keyword = this.keyword;
-      params.pageSize = this.pageSize;
+      params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.startDate = 12343354;
       params.endDate = 45345355;

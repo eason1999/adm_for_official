@@ -4,22 +4,24 @@
     <div class="clearfix button-wrapper">
       <el-button type="primary" class="pull-left"><router-link to="admaccount/addmanage" class="search">新增</router-link></el-button>
     </div>
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="type" label="公司名称"></el-table-column>
-      <el-table-column prop="os" label="账号"></el-table-column>
-      <el-table-column prop="name" label="密码"></el-table-column>
-      <el-table-column prop="address" label="角色"></el-table-column>
-      <el-table-column prop="manage" label="管理员"></el-table-column>
-      <el-table-column prop="state" label="审核状态"></el-table-column>
-      <el-table-column prop="date" label="提交日期"></el-table-column>
+    <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+      <el-table-column prop="userAccount" label="账号"></el-table-column>
+      <el-table-column prop="userName" label="名称"></el-table-column>
+      <el-table-column label="密码">
+        <template scope="scope">
+          <span>******</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="roleName" label="角色"></el-table-column>
+      <el-table-column prop="modifiedAt" label="提交日期" sortable show-overflow-tooltip></el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
-          <el-button type="primary" size="small" @click="edit(scope.$index,scope.row)">编辑</el-button>
-          <el-button type="danger" size="small">删除</el-button>
+          <el-button type="info" size="small" @click="edit(scope.row.id,scope.row.userAccount,scope.row.passWord,scope.row.roleId,scope.row.userName)">编辑</el-button>
+          <el-button type="danger" size="small" @click="deletes(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <pager :total-records="totalRecords" :page-sizes="pageSize" :page-nums="pageNum"></pager>
+    <pager v-if="tableData.length" :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
   </div>
 </template>
 
@@ -28,35 +30,17 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          type: 'ios',
-          os: 'IOS',
-          manage: 'eason',
-          state: '通过'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-          type: 'android',
-          os: 'IOS',
-          manage: 'eason',
-          state: '通过'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          type: 'api',
-          os: 'IOS',
-          manage: 'eason',
-          state: '通过'
-        }],
-        totalRecords: 100,
-        pageNum: 1,
-        pageSize: 10
+      tableData: [],
+      totalRecords: -1,
+      pageNum: 1,
+      pageSize: 20,
+      loadings: false
     };
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.load();
+    });
   },
   components: { pager },
   methods: {
@@ -65,6 +49,43 @@ export default {
       this.$router.push({
         path: 'admaccount/addmanage'
       });
+    },
+    deletes (id) {
+      let deletesfun = () => {
+        this.loadings = true;
+        this.$http.delete('/v1/adm/authority/'+id+'/useraccount').then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.load(); 
+        }, () => {this.loadings = false;});
+      }
+      return this.$confirm('确定删除么？？？').then(() => {
+        deletesfun();
+      });
+    },
+    load (pageNum, pageSize) {
+      let params = {};
+      params.pageIndex = pageNum || this.pageNum;
+      params.pageSize = pageSize || this.pageSize;
+      this.loadings = true;
+      this.$http.get('/v1/adm/user/useraccount/{pageIndex}/{pageSize}/admAcc', {params: params}).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        } 
+        let result = data.result;
+        this.tableData = result.results;
+        this.totalRecords = result.totalRecords;
+        this.pageSize = result.pageSize;
+      }, () => {this.loadings = false;});
     }
   }
 };

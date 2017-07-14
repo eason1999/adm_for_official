@@ -2,13 +2,29 @@
   <div class="selfdefined-daterecord-wrapper">
     <h2>数据录入</h2>
     <div class="data-title-wrapper">
-      <div class="create-select dowm-forward">
-        <span class="list-title">数据分类：</span>
-        <selects></selects>
+      <div class="dowm-forward">
+        <span class="list-title">数据属性：</span>
+        <div class="radio-wrapper">
+          <el-radio-group v-model="dataType" @change="loadcompanys" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+            <el-radio class="radio" label="PLATFORM">平台</el-radio>
+            <el-radio class="radio" label="EFFECT">效果</el-radio>
+          </el-radio-group>
+        </div>
       </div>
-      <div class="plan-select dowm-forward">
+      <div class="dowm-forward">
+        <span class="list-title">数据分类：</span>
+        <el-select v-model="dataId" filterable placeholder="请选择">
+          <el-option
+            v-for="item in datas"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="dowm-forward">
         <span class="list-title">文件上传：</span>
-        <dragupload></dragupload>
+        <dragupload :otherdatas="updatas" :go-paths="goPath" :paths="paths" :urls="urls" :file-lists="fileList" :modeldatas="this.dataId === '0'? modeldatas1 : modeldatas2"></dragupload>
       </div>
       <el-button type="primary">预览报告</el-button>
       <el-button type="primary">确认提交</el-button>
@@ -30,12 +46,15 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../components/selects/select.vue';
+import apiUtil from '../../../util/api.js';
 import pager from '../../../components/pager/pager.vue';
 import dragupload from '../../../components/upload/dragupload.vue';
 export default {
   data () {
     return {
+      dataType: 'PLATFORM',
+      datas: [{id: 0, text: '开发者'}, {id: 1, text: '广告主'}],
+      dataId: '',
       items: [
         {icon: 'el-icon-star-on',num: 0,text: '展现数'},
         {icon: 'el-icon-message',num: 0,text: '点击数'},
@@ -85,13 +104,24 @@ export default {
       }],
       totalRecords: 100,
       pageNum: 1,
-      pageSize: 10
+      pageSize: 20,
+      goPath: false,
+      paths: '',
+      updatas: {
+        pageNum: 1,
+        pageSize: 20
+      },
+      urls: apiUtil.url('/v1/adm/preview/advs/{pageNum}/{pageSize}'),
+      fileList: [],
+      modeldatas1: 'http://adroi.bj.bcebos.com/cdn/res/resource/temp/dev%E6%A8%A1%E6%9D%BF.zip',
+      modeldatas2: 'http://adroi.bj.bcebos.com/cdn/res/resource/temp/adv%E6%A8%A1%E6%9D%BF.zip',
+      loadings: false
     };
   },
   mounted () {
     
   },
-  components: { selects, pager, dragupload }
+  components: { pager, dragupload }
 };
 </script>
 
@@ -109,6 +139,13 @@ export default {
         width: 300px  
         .el-select
           width: 100%
+        .radio-wrapper
+          margin: 5px 0
+          .radio
+            color: #565656
+            width: 80px
+          .radio:first-child
+            margin-right: 30px    
     .data-table-wrapper
       margin-bottom: 20px     
 </style>

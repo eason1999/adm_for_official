@@ -7,7 +7,7 @@
         <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
       <el-table-column prop="submitTime" label="日期" sortable show-overflow-tooltip></el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="advName" label="广告主名称" show-overflow-tooltip></el-table-column>

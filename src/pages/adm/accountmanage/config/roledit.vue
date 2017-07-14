@@ -33,6 +33,8 @@ import tree from '../../../../components/tree/tree.vue';
 export default {
   data () {
     return {
+      id: this.$route.query.id,
+      name: this.$route.query.name,
       input: '卓悠网络',
       input2: '.......',
       breadContent: [{ text: '账户权限', path: '/adm/rolemanage'}, { text: '角色管理'}],

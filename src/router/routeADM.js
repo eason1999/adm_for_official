@@ -48,7 +48,7 @@ import usershield from '../pages/adm/shielding/usershield.vue';
 
 import addregional from '../pages/adm/shielding/config/addregional.vue';
 
-import shieldSearch from '../pages/adm/shielding/config/searchblack.vue';
+import shieldSearch from '../pages/adm/shielding/searchblack.vue';
 
 import monitorAdvdata from '../pages/adm/datamonitor/advdata.vue';
 

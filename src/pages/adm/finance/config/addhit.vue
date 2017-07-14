@@ -8,8 +8,8 @@
         <span class="list-title">操作：</span>
         <div class="radio-wrapper">
           <el-radio-group v-model="oprations" @change="loadcompanys">
-            <el-radio class="radio" v-model="oprations" label="0">命中</el-radio>
-            <el-radio class="radio" v-model="oprations" label="1">退款</el-radio>
+            <el-radio class="radio" label="0">命中</el-radio>
+            <el-radio class="radio" label="1">退款</el-radio>
           </el-radio-group>
         </div>
       </div>
