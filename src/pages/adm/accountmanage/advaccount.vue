@@ -19,7 +19,7 @@
       <el-table-column prop="modifiedAt" label="提交日期" sortable show-overflow-tooltip></el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
-          <el-button type="info" size="small" @click="audit(scope.row.id,scope.row.managerId,scope.row.roleId,scope.row.userCompany,scope.row.userName)">审核</el-button>
+          <el-button :disabled="scope.row.verificationStatus==='APPROVED'" type="info" size="small" @click="audit(scope.row.id,scope.row.managerId,scope.row.roleId,scope.row.userCompany,scope.row.userName)">审核</el-button>
           <el-button type="info" size="small" @click="config(scope.row.id,scope.row.managerId,scope.row.roleId,scope.row.userCompany,scope.row.userName)">配置</el-button>
         </template>
       </el-table-column>
@@ -58,10 +58,16 @@ export default {
   },
   components: { pager },
   methods: {
-    config (index,tableData) {
-      console.log(tableData.type);
+    config (id,managerid,roleid,usercompany,username) {
       this.$router.push({
-        path: 'advaccount/config'
+        path: 'advaccount/config',
+        query: {
+          id: id,
+          roleid: String(roleid),
+          username: username,
+          managerid: String(managerid),
+          usercompany: usercompany
+        }
       });
     },
     load (pageNum, pageSize) {

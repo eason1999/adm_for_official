@@ -2,9 +2,9 @@
   <el-tree
     :data="data2"
     show-checkbox
-    default-expand-all
     node-key="id"
     ref="tree"
+    accordion
     highlight-current
     :props="defaultProps"
     @check-change="getCheckedKeys">
@@ -23,7 +23,7 @@ export default {
       data2: this.treeData,
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'label'
       }
     };
   },

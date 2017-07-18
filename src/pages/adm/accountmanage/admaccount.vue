@@ -44,10 +44,16 @@ export default {
   },
   components: { pager },
   methods: {
-    edit (index,tableData) {
-      console.log(tableData.type);
+    edit (id,useraccount,passwords,roleid,username) {
       this.$router.push({
-        path: 'admaccount/addmanage'
+        path: 'admaccount/addmanage',
+        query: {
+          id: id,
+          roleid: String(roleid),
+          passwords: passwords,
+          username: username,
+          useraccount: useraccount
+        }
       });
     },
     deletes (id) {
@@ -66,7 +72,7 @@ export default {
       }
       return this.$confirm('确定删除么？？？').then(() => {
         deletesfun();
-      });
+      }).catch(() => {});
     },
     load (pageNum, pageSize) {
       let params = {};

@@ -4,7 +4,7 @@
       <breadcrumb :bread-detail="breadContent"></breadcrumb>
     </div>
     <div class="apps-data-table">
-      <el-table :data="tableData" @cell-click="getslots" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+      <el-table :data="tableData" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
         <el-table-column type="expand">
           <template scope="props">
             <el-form label-position="left" inline class="demo-table-expand sub-app-form">

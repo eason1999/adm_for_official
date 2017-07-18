@@ -6,6 +6,8 @@ import advCampaign from '../pages/adm/adver/campaign.vue';
 
 import advData from '../pages/adm/adver/data.vue';
 
+import advCreatelist from '../pages/adm/adver/config/createlist.vue';
+
 import advSelfind from '../pages/adm/adver/config/selfind.vue';
 
 import orientconfig from '../pages/adm/adver/config/orientconfig.vue';
@@ -116,6 +118,9 @@ const routes = [{
   children: [{
     path: 'adv/campaign',
     component: advCampaign
+  }, {
+    path: 'adv/campaign/createlist',
+    component: advCreatelist
   }, {
     path: 'adv/data',
     component: advData

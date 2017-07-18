@@ -1,6 +1,6 @@
 <template>
   <div class="adv-campaign-wrapper">
-    <h2>计划</h2>
+    <h2>广告管理</h2>
     <div class="campaign-top-wrapper clearfix">
       <div class="campaign-search pull-right">
         <el-input placeholder="请输入内容" v-model="keyword"></el-input>
@@ -8,45 +8,32 @@
       </div>
     </div>
     <div class="apps-data-table">
-      <el-table @expand="getDetail" :data="tableData" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+      <el-table :data="tableData" @cell-click="getdetail" style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
         <el-table-column type="expand">
           <template scope="scope">
-            <el-form v-for="item in scope.row.expandData" label-position="left" inline class="demo-table-expand sub-app-form">
-              <el-form-item label="提交时间:">
-                <span>{{ item.createTime }}</span>
+            <el-form label-position="left" inline class="demo-table-expand sub-app-form">
+              <el-form-item label="预算(￥)：">
+                <span>{{ scope.row.budgetAmountTotal }}</span>
               </el-form-item>
-              <el-form-item label="广告类型:">
-                <span>{{ item.adTypeOnProduct }}</span>
+              <el-form-item label="每日预算(￥)：">
+                <span>{{ scope.row.budgetAmountDaily }}</span>
               </el-form-item>
-              <el-form-item label="创意ID:">
-                <span>{{ item.id }}</span>
+              <el-form-item label="单价(￥)：">
+                <span>{{ scope.row.bidPrice }}</span>
               </el-form-item>
-              <el-form-item label="创意名称:" title="创意名称">
-                <span>{{ item.codeName }}</span>
+              <el-form-item label="投放状态：">
+                <span>{{ scope.row.availabilityStatus | avastatus }}</span>
               </el-form-item>
-              <el-form-item label="预览:">
-                <template scope="scope">
-                  <el-button type="info" size="small" @click="previewImg(scope.$index, props)">预览</el-button>
-                </template>
+              <el-form-item label="审核状态：">
+                <span>{{ scope.row.verificationStatus | verstatus }}</span>
               </el-form-item>
-              <el-form-item label="配置:">
-                <template scope="scope">
-                  <el-button type="info" size="small" @click="config(scope.$index, scope.row)">定向配置</el-button>
-                </template>
-              </el-form-item>
-              <el-form-item label="投放状态:" title="投放状态">
-                <span>{{ item.availabilityStatus }}</span>
-              </el-form-item>
-              <el-form-item label="审核状态:" title="审核状态">
-                <span>{{ item.verificationStatus }}</span>
-              </el-form-item>
-              <el-form-item label="操作:">
-                <template scope="scope">
+              <el-form-item label="投放操作：">
+                <template>
                   <el-switch v-model="value2" on-color="#13ce66" off-color="#ff4949"></el-switch>
                 </template>
               </el-form-item>
-              <el-form-item label="审核:">
-                <template scope="scope">
+              <el-form-item label="审核操作：">
+                <template>
                   <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
                   <el-button type="danger" size="small" @click="handleEdit(scope.$index, scope.row)">拒绝</el-button>
                 </template>
@@ -54,26 +41,10 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="计划投放时间" show-overflow-tooltip prop="startDate"></el-table-column>
-        <el-table-column label="公司名称" show-overflow-tooltip sortable prop="company"></el-table-column>
-        <el-table-column label="计划ID" show-overflow-tooltip prop="id"></el-table-column>
+        <el-table-column label="计划投放时间" show-overflow-tooltip prop="startDate" sortable></el-table-column>
+        <el-table-column label="公司名称" show-overflow-tooltip prop="company"></el-table-column>
         <el-table-column label="计划名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="预算(￥)" show-overflow-tooltip sortable prop="budgetAmountTotal"></el-table-column>
-        <el-table-column label="每日预算(￥)" show-overflow-tooltip sortable prop="budgetAmountDaily"></el-table-column>
-        <el-table-column label="单价(￥)" show-overflow-tooltip sortable prop="bidPrice"></el-table-column>
-        <el-table-column label="审核状态" show-overflow-tooltip prop="verificationStatus"></el-table-column>
-        <el-table-column label="投放状态" show-overflow-tooltip prop="availabilityStatus"></el-table-column>
-        <el-table-column label="审核">
-          <template scope="scope">
-            <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
-            <el-button type="danger" size="small" @click="handleEdit(scope.$index, scope.row)">拒绝</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template scope="scope">
-            <el-switch v-model="value2" on-color="#13ce66" off-color="#ff4949"></el-switch>
-          </template>
-        </el-table-column>
+        <el-table-column label="计划ID" show-overflow-tooltip prop="id"></el-table-column>
       </el-table>
     </div>
     <div class="pager-wrapper clearfix">
@@ -103,6 +74,44 @@ export default {
       dialogImageUrl: '',
       loadings: false
     };
+  },
+  filters: {
+    verstatus (value) {
+      let item;
+      switch (value) {
+        case 'CREATING':
+          item = '创建中';
+          break;
+        case 'CREATING':
+          item = '等待审核';
+          break;
+        case 'CREATING':
+          item = '审核通过';
+          break; 
+        default:
+          item = '审核拒绝';
+          break;  
+      }
+      return item;
+    },
+    avastatus (value) {
+      let item;
+      switch (value) {
+        case 'DISALLOWED':
+          item = '停止投放';
+          break;
+        case 'VM_ALLOWED':
+          item = '虚拟投放';
+          break;
+        case 'ALLOWED':
+          item = '投放中';
+          break; 
+        default:
+          item = '待投放';
+          break;  
+      }
+      return item;
+    }
   },
   mounted () {
     this.$nextTick(() => {
@@ -148,29 +157,15 @@ export default {
         this.loadings = false;
       });
     },
-    getDetail (row,expanded) {
-      console.log(row)
-      if (expanded) {
-        let params = {};
-        params.campaignId = row.id;
-        params.advId = row.advId;
-        this.loadings = true;
-        this.$http.get('/v1/adm/campaigns/{campaignId}/creatives', {params: params}).then((res) => {
-          this.loadings = false;
-          let data = res.body;
-          if (data.ret!=1) {
-            this.$alert(data.message, '提示：', {
-              confirmButtonText: '确定'
-            });
+    getdetail (row, column, cell, event) {
+      let item = cell.className.indexOf('el-table__expand-column');
+      if (item === -1) {
+        this.$router.push({
+          path: 'campaign/createlist',
+          query: {
+            campaignId: row.id,
+            advId: row.advId
           }
-          let result = data.result;
-          for (let i=0;i<this.tableData.length;i++) {
-            if (row.id === this.tableData[i].id) {
-              this.tableData[i].expandData = result;
-            }
-          }
-        }, () => {
-          this.loadings = false;
         });
       }
     }
@@ -214,5 +209,8 @@ export default {
       .sub-app-form:last-child
         border: none        
     .pager-wrapper
-      margin-top: 15px      
+      margin-top: 15px 
+    .el-tooltip
+      color: #7e8c8d   
+      cursor: pointer    
 </style>

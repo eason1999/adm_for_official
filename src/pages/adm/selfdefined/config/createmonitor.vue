@@ -6,15 +6,36 @@
     <div class="data-title-wrapper">
       <div class="datepicker-wrapper dowm-forward">
         <span class="list-title">公司名称：</span>
-        <selects></selects>
+        <el-select v-model="advId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+          <el-option
+            v-for="item in advs"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
       <div class="create-select dowm-forward">
         <span class="list-title">计划名称：</span>
-        <selects></selects>
+        <el-select v-model="planId" filterable placeholder="请选择">
+          <el-option
+            v-for="item in plans"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
       <div class="plan-select dowm-forward">
         <span class="list-title">创意名称：</span>
-        <selects></selects>
+        <el-select v-model="createId" filterable placeholder="请选择">
+          <el-option
+            v-for="item in creates"
+            :key="item.id"
+            :label="item.text"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </div>
       <el-button type="primary">生成报告</el-button>
     </div>
@@ -22,18 +43,23 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../../components/selects/select.vue';
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
   data () {
     return {
+      creates: [],
+      plans: [],
+      advs: [],
+      advId: '',
+      planId: '',
+      createId: '',
       breadContent: [{ text: '监测代码', path: '/adm/selfdefined/monitor'}, { text: '新建监测'}]
     };
   },
   mounted () {
     
   },
-  components: { selects, breadcrumb }
+  components: { breadcrumb }
 };
 </script>
 

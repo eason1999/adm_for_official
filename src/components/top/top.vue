@@ -7,7 +7,7 @@
 	  </el-col>
     <el-col :span="12">
       <div class="grid-content bg-purple-dark">
-        <ul class="menu-wrapper clearfix" v-if="userName!=''">
+        <ul class="menu-wrapper clearfix" v-if="paths!='/adm/login'">
           <li class="sub-menu pull-left">
             <el-dropdown>
               <span class="el-dropdown-link">
@@ -52,13 +52,15 @@ export default {
   data () {
     return {
       userName: '',
-      loadings: false
+      loadings: false,
+      paths: ''
     };
   },
   mounted () {
     this.$nextTick(() => {
       let user = sessionUtil.getUser();
       user ? this.userName = user.name : false;
+      this.paths = this.$route.path;
     });
   },
   methods: {
