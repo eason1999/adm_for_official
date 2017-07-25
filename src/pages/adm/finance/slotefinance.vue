@@ -64,7 +64,7 @@
     <div class="pager-wrapper clearfix" v-if="tableData.length">
       <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" size="tiny">
       <div class="inner-contain">
         <div class="dowm-forward">
           <span class="list-title">收入金额：</span>
@@ -80,7 +80,6 @@
 <script type="ecmascript-6">
 import pager from '../../../components/pager/pager.vue';
 import datepicker from '../../../components/datepicker/datepicker.vue';
-import selects from '../../../components/selects/select.vue';
 import totaldata from '../../../components/totaldata/totaldata.vue';
 export default {
   data () {
@@ -122,7 +121,7 @@ export default {
       this.load();
     });
   },
-  components: { totaldata, pager, datepicker, selects },
+  components: { totaldata, pager, datepicker },
   methods: {
     allsources () {
       this.loadings = true;

@@ -1,8 +1,5 @@
 <template>
-  <div class="dev-configur-wrapper">
-    <div class="bread-title-wrapper">
-      <breadcrumb :bread-detail="breadContent"></breadcrumb>
-    </div>
+  <div class="dev-divides-wrapper">
     <div class="data-title-wrapper">
       <div class="dowm-forward">
         <span class="list-title">开发者名称：</span>
@@ -12,21 +9,12 @@
         <span class="list-title">应用名称：</span>
         <el-input disabled v-model="appName" placeholder="请输入内容"></el-input>
       </div>
-      <div class="shield-regional dowm-forward">
-        <span class="list-title">分成类型：</span>
-        <el-radio-group v-model="shareType" class="radio-wrapper">
-          <el-radio class="radio" label="ECPM">固定单价（eCPM）</el-radio>
-          <el-radio class="radio" label="CPC">固定单价（CPC）</el-radio>
-          <el-radio class="radio" label="PERCENT">百分比</el-radio>
-        </el-radio-group>
+      <div class="dowm-forward">
+        <span class="list-title">广告位名称：</span>
+        <el-input disabled v-model="slotName" placeholder="请输入内容"></el-input>
       </div>
-      <div class="dowm-forward" v-if="shareType==='PERCENT'">
-        <span class="list-title">分成比例：</span>
-        <el-input v-model="divide" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward" v-else>
-        <span class="list-title">单价：</span>
-        <el-input v-model="divide" placeholder="请输入内容"></el-input>
+      <div class="resource-content">
+        
       </div>
       <el-button type="primary" @click="creates">新建</el-button>
       <el-button type="default" @click="back">取消</el-button>
@@ -35,7 +23,6 @@
 </template>
 
 <script type="ecmascript-6">
-import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
   data () {
     return {
@@ -43,16 +30,16 @@ export default {
       devName: this.$route.query.devName,
       id: this.$route.query.id,
       appName: this.$route.query.appName,
-      divide: this.$route.query.divide,
-      shareType: this.$route.query.shareType,
-      breadContent: [{ text: '应用管理', path: '/adm/dev/app'}, { text: '分成配置'}],
+      slotName: '',
       loadings: false
     };
   },
   mounted () {
     
   },
-  components: { breadcrumb },
+  components: {
+
+  },
   methods: {
     creates () {
       let params = {};
@@ -71,23 +58,25 @@ export default {
       }, () => {this.loadings = false;});
     },
     back () {
-      this.$router.push({
-        path: '/adm/dev/app'
-      });
+      this.$emit('update:show', false);
     }
   }
 };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .dev-configur-wrapper
-    .bread-title-wrapper
-      margin-bottom: 15px
+  .dev-divides-wrapper
+    background: #fff
+    position: fixed
+    top: 0
+    left: 20%
+    width: 100%
+    height: 100%
+    overflow: auto
+    z-index: 100
     .data-title-wrapper
       margin-bottom: 15px
       padding: 20px
-      background: #fff
-      border: 1px solid #eee
       .dowm-forward
         margin-bottom: 10px
         width: 300px 
@@ -104,6 +93,7 @@ export default {
             white-space: nowrap
           .radio:last-child
             margin-right: 0 
-      .shield-regional
-        width: 500px       
+      .resource-content
+        border-top: 1px dashed #ccc  
+        margin-bottom: 15px     
 </style>

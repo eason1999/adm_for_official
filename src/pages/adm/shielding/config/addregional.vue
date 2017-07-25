@@ -47,7 +47,6 @@
 
 <script type="ecmascript-6">
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
-import transfer from '../../../../components/transfer/transfer.vue';
 export default {
   data () {
     return {
@@ -73,7 +72,7 @@ export default {
       }
     });
   },
-  components: { breadcrumb, transfer },
+  components: { breadcrumb },
   methods: {
     getdata () {
       let params = {};

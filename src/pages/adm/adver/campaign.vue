@@ -50,9 +50,6 @@
     <div class="pager-wrapper clearfix">
       <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
-    <el-dialog v-model="dialogVisible" size="tiny">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
   </div>
 </template>
 
@@ -63,15 +60,10 @@ export default {
     return {
       tableData: [],
       keyword: '',
-      totalRecords: 100,
+      totalRecords: -1,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       value2: true,
-      totalRecords: 100,
-      pageNum: 1,
-      pageSize: 10,
-      dialogVisible: false,
-      dialogImageUrl: '',
       loadings: false
     };
   },
@@ -120,15 +112,6 @@ export default {
   },
   components: { pager },
   methods: {
-    previewImg (index, data) {
-      console.log(index)
-      console.log(data)
-      this.dialogVisible = true;
-      this.dialogImageUrl = '';
-    },
-    config () {
-      this.$router.push({ path: 'data/config', query: { plan: '123' }});
-    },
     load (pageNum, pageSize) {
       let params = {};
       params.keyword = this.keyword;
@@ -164,7 +147,9 @@ export default {
           path: 'campaign/createlist',
           query: {
             campaignId: row.id,
-            advId: row.advId
+            advId: row.advId,
+            advName: row.advName,
+            name: row.name
           }
         });
       }

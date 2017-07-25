@@ -71,13 +71,6 @@ router.afterEach((to, from) => {
   sessionUtil.setLastPath(toPath);
 });
 
-// let islogin = sessionUtil.isLogin();
-// islogin ? sessionUtil.resetTimestamp() : sessionUtil.clear();
-// 获取最后一次访问地址，登录后做跳转
-// let lastpath = sessionUtil.getLastPath() || config.index;
-// let paths = islogin ? lastpath : config.login;
-// router.redirect({'/': paths});
-
 /* eslint-disable no-unused-vars */
 const app = new Vue({
   router,

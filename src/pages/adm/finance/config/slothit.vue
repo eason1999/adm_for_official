@@ -6,17 +6,17 @@
     <div class="data-title-wrapper">
       <div class="dowm-forward">
         <span class="list-title">操作：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="oprations" label="SUB">命中</el-radio>
-          <el-radio class="radio" v-model="oprations" label="ADD">激励</el-radio>
-        </div>
+        <el-radio-group v-model="oprations" class="radio-wrapper">
+          <el-radio class="radio" label="SUB">命中</el-radio>
+          <el-radio class="radio" label="ADD">激励</el-radio>
+        </el-radio-group>
       </div>
       <div class="dowm-forward">
         <span class="list-title">数据数量：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="datatype" label="0">单条数据</el-radio>
-          <el-radio class="radio" v-model="datatype" label="1">批量数据</el-radio>
-        </div>
+        <el-radio-group v-model="datatype" class="radio-wrapper">
+          <el-radio class="radio" label="0">单条数据</el-radio>
+          <el-radio class="radio" label="1">批量数据</el-radio>
+        </el-radio-group>
       </div>
       <div v-if="datatype === '0'">
         <div class="dowm-forward">
@@ -154,6 +154,7 @@ export default {
           width: 100% 
         .radio-wrapper
           margin: 5px 0
+          display: block
           .radio
             color: #565656
             width: 80px

@@ -6,10 +6,10 @@
     <div class="data-title-wrapper">
       <div class="dowm-forward">
         <span class="list-title">数据属性：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="dataType" label="PLATFORM">平台</el-radio>
-          <el-radio class="radio" v-model="dataType" label="EFFECT">效果</el-radio>
-        </div>
+        <el-radio-group v-model="dataType" class="radio-wrapper">
+          <el-radio class="radio" label="PLATFORM">平台</el-radio>
+          <el-radio class="radio" label="EFFECT">效果</el-radio>
+        </el-radio-group>
       </div>
       <div class="dowm-forward">
         <span class="list-title">时间范围：</span>
@@ -337,6 +337,7 @@ export default {
           width: 100%
         .radio-wrapper
           margin: 5px 0
+          display: block
           .radio
             color: #565656
             width: 80px

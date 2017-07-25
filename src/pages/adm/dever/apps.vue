@@ -56,15 +56,15 @@
     <div class="pager-wrapper clearfix">
       <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
     </div>
-    <el-dialog title="ADroi映射" :visible.sync="dialogVisible">
+    <el-dialog title="ADroi映射" :visible.sync="dialogVisible" size="tiny">
       <div class="inner-contain">
         <div class="shield-regional dowm-forward">
           <span class="list-title">分成类型：</span>
-          <div class="radio-wrapper">
-            <el-radio class="radio" v-model="shareType" label="ECPM">固定单价（eCPM）</el-radio>
-            <el-radio class="radio" v-model="shareType" label="CPC">固定单价（CPC）</el-radio>
-            <el-radio class="radio" v-model="shareType" label="PERCENT">百分比</el-radio>
-          </div>
+          <el-radio-group v-model="shareType" class="radio-wrapper">
+            <el-radio class="radio" label="ECPM">固定单价（eCPM）</el-radio>
+            <el-radio class="radio" label="CPC">固定单价（CPC）</el-radio>
+            <el-radio class="radio" label="PERCENT">百分比</el-radio>
+          </el-radio-group>
         </div>
         <div class="dowm-forward" v-if="shareType==='PERCENT'">
           <span class="list-title">分成比例：</span>
@@ -81,7 +81,7 @@
   </div>
 </template>
 
-<script type="ecmascript-6">
+<script type="ecmascript-6"> 
 import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
@@ -254,6 +254,12 @@ export default {
           query: {
             appId: row.id,
             devId: row.devId,
+            idBlongTo: row.idBlongTo,
+            devName: row.devName,
+            busId: row.busId,
+            appName: row.appName,
+            platForm: row.platForm,
+            accessFormat: row.accessFormat,
             verificationStatus: row.verificationStatus
           }
         });
@@ -310,5 +316,8 @@ export default {
   .el-dialog  
     .inner-contain
       .dowm-forward
-        margin-bottom: 10px       
+        margin-bottom: 10px  
+        .radio-wrapper
+          display: block
+          margin: 5px 0     
 </style>

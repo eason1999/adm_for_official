@@ -10,8 +10,6 @@ import advCreatelist from '../pages/adm/adver/config/createlist.vue';
 
 import advSelfind from '../pages/adm/adver/config/selfind.vue';
 
-import orientconfig from '../pages/adm/adver/config/orientconfig.vue';
-
 import advResource from '../pages/adm/adresource/adresource.vue';
 
 import addSloteid from '../pages/adm/adresource/config/addsloteid.vue';
@@ -127,9 +125,6 @@ const routes = [{
   }, {
       path: 'adv/data/selfind',
       component: advSelfind
-  }, {
-      path: 'adv/data/config',
-      component: orientconfig
   }, {
     path: 'dev/app',
     component: devApps

@@ -70,7 +70,6 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../components/selects/select.vue';
 import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
@@ -96,7 +95,7 @@ export default {
       this.loadcompanys();
     });
   },
-  components: { selects, pager },
+  components: { pager },
   methods: {
     loadcompanys () {
       this.loadings = true;

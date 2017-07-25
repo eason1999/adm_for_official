@@ -74,7 +74,9 @@ export default {
             path = path || index;
         if (path === config.login) {
           this.$router.replace({path: '/adm/adv/campaign'});
-        }    
+        } else {
+          this.$router.replace({path: path});
+        }
       },() => {
         this.loadings = false;
       });

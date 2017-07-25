@@ -35,7 +35,6 @@
 
 <script type="ecmascript-6">
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
-import selects from '../../../../components/selects/select.vue';
 export default {
   data () {
     return {
@@ -54,7 +53,7 @@ export default {
       this.getroles();
     });
   },
-  components: { breadcrumb, selects },
+  components: { breadcrumb },
   methods: {
     creates () {
       this.loadings = true;

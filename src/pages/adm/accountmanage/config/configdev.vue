@@ -46,7 +46,6 @@
 
 <script type="ecmascript-6">
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
-import selects from '../../../../components/selects/select.vue';
 export default {
   data () {
     return {
@@ -68,7 +67,7 @@ export default {
       this.getoptions();
     });
   },
-  components: { breadcrumb, selects },
+  components: { breadcrumb },
   methods: {
     creates () {
       let params = {};

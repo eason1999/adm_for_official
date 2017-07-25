@@ -80,7 +80,6 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../components/selects/select.vue';
 import datepicker from '../../../components/datepicker/datepicker.vue';
 import totaldata from '../../../components/totaldata/totaldata.vue';
 import pager from '../../../components/pager/pager.vue';
@@ -151,7 +150,7 @@ export default {
       this.loadDevs();
     });
   },
-  components: { selects, datepicker, totaldata, pager },
+  components: { datepicker, totaldata, pager },
   methods: {
     exportUrl () {
       window.location.href = this.exportURL;

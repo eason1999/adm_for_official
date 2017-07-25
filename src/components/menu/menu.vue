@@ -1,10 +1,10 @@
 <template>
-  <el-menu :unique-opened="true" @select="handleSelect" router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+  <el-menu :unique-opened="true" @select="handleSelect" router :default-active="$route.path.indexOf(indexpath) ? indexpath : ''" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
 	<el-submenu index="1">
 	  <template slot="title"><i class="el-icon-message"></i>广告主管理</template>
 	  <el-menu-item-group>
-	    <el-menu-item index="/adm/adv/data">数据管理</el-menu-item>
 	    <el-menu-item index="/adm/adv/campaign">广告管理</el-menu-item>
+	    <el-menu-item index="/adm/adv/data">数据管理</el-menu-item>
 	  </el-menu-item-group>
 	</el-submenu>
 	<el-menu-item index="/adm/resource"><i class="el-icon-menu"></i>广告源配置</el-menu-item>
@@ -73,12 +73,12 @@
 export default {
   data () {
     return {
-    	
+      indexpath: '/adm/adv/campaign'	
     };
   },
   methods: {
   	handleSelect (index, indexPath) {
-  		
+      this.indexpath = index;		
   	},
 	handleOpen (key, keyPath) {
 	  console.log(key, keyPath);

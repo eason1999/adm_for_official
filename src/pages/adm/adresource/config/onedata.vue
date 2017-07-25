@@ -14,24 +14,24 @@
       </div>
       <div class="dowm-forward">
         <span class="list-title">接入形式：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="accessFormat" label="API">API</el-radio>
-          <el-radio class="radio" v-model="accessFormat" label="SDK">SDK</el-radio>
-        </div>
+        <el-radio-group v-model="accessFormat" class="radio-wrapper">
+          <el-radio class="radio" label="API">API</el-radio>
+          <el-radio class="radio" label="SDK">SDK</el-radio>
+        </el-radio-group>
       </div>
       <div class="dowm-forward">
         <span class="list-title">流量类型：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="deviceType" label="Android">Android</el-radio>
-          <el-radio class="radio" v-model="deviceType" label="IOS">IOS</el-radio>
-        </div>
+        <el-radio-group v-model="deviceType" class="radio-wrapper">
+          <el-radio class="radio" label="Android">Android</el-radio>
+          <el-radio class="radio" label="IOS">IOS</el-radio>
+        </el-radio-group>
       </div>
       <div class="dowm-forward">
         <span class="list-title">ID归属：</span>
-        <div class="radio-wrapper">
-          <el-radio class="radio" v-model="idAttr" label="selfuse">平台</el-radio>
-          <el-radio class="radio" v-model="idAttr" label="otheruse">外放</el-radio>
-        </div>
+        <el-radio-group v-model="idAttr" class="radio-wrapper">
+          <el-radio class="radio" label="selfuse">平台</el-radio>
+          <el-radio class="radio" label="otheruse">外放</el-radio>
+        </el-radio-group>
       </div>
       <div class="dowm-forward">
         <span class="list-title">广告位类型：</span>
@@ -83,7 +83,6 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../../components/selects/select.vue';
 export default {
   data () {
     return {
@@ -114,7 +113,9 @@ export default {
       }
     });
   },
-  components: { selects },
+  components: {
+    
+  },
   methods: {
     getslots () {
       this.loadings = true;
@@ -231,6 +232,7 @@ export default {
           display: block 
       .radio-wrapper
         margin: 5px 0
+        display: block 
         .radio
           color: #565656
           width: 80px

@@ -316,6 +316,7 @@ export default {
             type:'line',
             yAxisIndex: 0,
             smooth: true,
+            smoothMonotone: 'x',
             lineStyle:{
               normal:{
                 width:2,
@@ -339,6 +340,7 @@ export default {
               type:'line',
               yAxisIndex: 0,
               smooth: true,
+              smoothMonotone: 'x',
               lineStyle:{
                 normal:{
                   width:2,
@@ -362,6 +364,7 @@ export default {
           type:'line',
           yAxisIndex: 0,
           smooth: true,
+          smoothMonotone: 'x',
           lineStyle:{
             normal:{
               width:2,
@@ -384,6 +387,7 @@ export default {
           name:'点击率',
           type:'line',
           smooth: true,
+          smoothMonotone: 'x',
           yAxisIndex: 1,
           lineStyle:{
             normal:{
@@ -408,6 +412,7 @@ export default {
           name:'CPC',
           type:'line',
           smooth: true,
+          smoothMonotone: 'x',
           yAxisIndex: 1,
           label: {
               normal: {
@@ -437,6 +442,7 @@ export default {
           name:'eCPM',
           type:'line',
           smooth: true,
+          smoothMonotone: 'x',
           yAxisIndex: 1,
           label: {
               normal: {
@@ -467,6 +473,7 @@ export default {
           type:'line',
           yAxisIndex: 0,
           smooth: true,
+          smoothMonotone: 'x',
           label: {
               normal: {
                   show: true,

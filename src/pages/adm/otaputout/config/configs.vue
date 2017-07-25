@@ -14,10 +14,10 @@
       </div>
       <div class="dowm-forward">
         <span class="list-title">白名单应用：</span>
-        <div class="radio-wrapper">
+        <el-radio-group v-model="oprations" class="radio-wrapper">
           <el-radio class="radio" v-model="radio" label="1">无应用</el-radio>
           <el-radio class="radio" v-model="radio" label="2">指定应用</el-radio>
-        </div>
+        </el-radio-group>
       </div>
       <div class="tranfer-wrapper" v-if="radio==='2'">
         <el-transfer
@@ -143,6 +143,7 @@ export default {
         width: 300px   
         .radio-wrapper
           margin: 5px 0
+          display: block
           .radio
             color: #565656
             width: 80px

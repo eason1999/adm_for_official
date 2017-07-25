@@ -88,7 +88,6 @@
 </template>
 
 <script type="ecmascript-6">
-import selects from '../../../../components/selects/select.vue';
 import datepicker from '../../../../components/datepicker/datepicker.vue';
 import pager from '../../../../components/pager/pager.vue';
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
@@ -126,7 +125,7 @@ export default {
       this.loaddevs();
     });
   },
-  components: { selects, datepicker, pager, breadcrumb },
+  components: { datepicker, pager, breadcrumb },
   methods: {
     loaddevs () {
       this.loadings = true;
