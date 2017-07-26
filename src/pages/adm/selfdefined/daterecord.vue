@@ -24,10 +24,31 @@
       </div>
       <div class="dowm-forward">
         <span class="list-title">文件上传：</span>
-        <dragupload :otherdatas="updatas" :go-paths="goPath" :paths="paths" :urls="urls" :file-lists="fileList" :modeldatas="this.dataId === '0'? modeldatas1 : modeldatas2"></dragupload>
+        <el-upload
+          class="upload-wrapper"
+          drag
+          ref="upload"
+          :data="updatas"
+          accept=".xls,.xlsx"
+          :disabled="this.item!=''||this.fileList.length===1"
+          :action="urls1"
+          :multiple="false"
+          :file-list="fileList"
+          :on-remove="remove"
+          :on-success="success"
+          :on-error="error"
+          :on-progress="progress"
+          :auto-upload="false">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">
+            只能上传*.xls/*.xlsx文件  
+            <a :href="dataId === 0 ? modeldatas1 : modeldatas2" class="upload-model">*模板文件</a>
+          </div>
+        </el-upload>
       </div>
-      <el-button type="primary">预览报告</el-button>
-      <el-button type="primary">确认提交</el-button>
+      <el-button type="primary" @click="previews">预览报告</el-button>
+      <el-button type="primary" @click="submits">确认提交</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -48,7 +69,6 @@
 <script type="ecmascript-6">
 import apiUtil from '../../../util/api.js';
 import pager from '../../../components/pager/pager.vue';
-import dragupload from '../../../components/upload/dragupload.vue';
 export default {
   data () {
     return {
@@ -105,14 +125,13 @@ export default {
       totalRecords: 100,
       pageNum: 1,
       pageSize: 20,
-      goPath: false,
-      paths: '',
       updatas: {
-        pageNum: 1,
-        pageSize: 20
+        dataType : this.dataType
       },
-      urls: apiUtil.url('/v1/adm/preview/advs/{pageNum}/{pageSize}'),
+      urls1: apiUtil.url('/v1/adm/data/devMaterials'),
+      urls2: apiUtil.url('/v1/adm/preview/advs/{pageNum}/{pageSize}'),
       fileList: [],
+      item: '',
       modeldatas1: 'http://adroi.bj.bcebos.com/cdn/res/resource/temp/dev%E6%A8%A1%E6%9D%BF.zip',
       modeldatas2: 'http://adroi.bj.bcebos.com/cdn/res/resource/temp/adv%E6%A8%A1%E6%9D%BF.zip',
       loadings: false
@@ -121,7 +140,38 @@ export default {
   mounted () {
     
   },
-  components: { pager, dragupload }
+  components: { pager },
+  methods: {
+    submits () {
+      this.$refs.upload.submit();
+    },
+    previews () {
+
+    },
+    remove (file, fileList) {
+      this.item='';
+      this.fileList = fileList;
+    },
+    success (data) {
+      this.loadings = false;
+      this.item = data.result;
+      if (data.ret!=1) {
+        return this.$alert(data.message, '提示：', {
+          confirmButtonText: '确定'
+        });
+      }
+      this.dataId = '';
+      this.fileList = [];
+    },
+    error (data) {
+      return this.$alert(data.message, '提示：', {
+        confirmButtonText: '确定'
+      });
+    },
+    progress () {
+      this.loadings = true;
+    }
+  }
 };
 </script>
 

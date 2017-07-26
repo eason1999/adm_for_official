@@ -260,6 +260,8 @@ export default {
             appName: row.appName,
             platForm: row.platForm,
             accessFormat: row.accessFormat,
+            appShareType: row.appShareType,
+            appShareNum: row.appShareNum,
             verificationStatus: row.verificationStatus
           }
         });

@@ -1,5 +1,5 @@
 <template>
-  <el-menu :unique-opened="true" @select="handleSelect" router :default-active="$route.path.indexOf(indexpath) ? indexpath : ''" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+  <el-menu :unique-opened="true" @select="handleSelect" router :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
 	<el-submenu index="1">
 	  <template slot="title"><i class="el-icon-message"></i>广告主管理</template>
 	  <el-menu-item-group>

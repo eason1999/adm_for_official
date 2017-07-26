@@ -50,7 +50,7 @@
                  :disabled="disabledstatus" 
                  type="info" 
                  size="small" 
-                 @click="divideConfigs()">分成配置</el-button>
+                 @click="divideConfigs(props.row.id, props.row.name, props.row.slotShareType, props.row.slotShareNum)">分成配置</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -87,14 +87,24 @@
         v-if="resourceshow&&tags === 1" 
         @update:show="val => resourceshow = val" 
         :app-id="appId"
-        :dev-id="devId"
-        :bus-id="busId"
         :dev-name="devName"
         :app-name="appName"
         :adslot-id="adslotId"
-        :adslot-bus-id="adslotBusId"
+        :adslot-name="adslotName"></frequency>
+      <divides 
+        v-if="resourceshow&&tags === 2" 
+        @update:show="val => resourceshow = val" 
+        @update:slot="refreshslot"
+        :app-id="appId"
+        :dev-id="devId"
+        :dev-name="devName"
+        :app-name="appName"
+        :adslot-id="adslotId"
         :adslot-name="adslotName"
-        :index="$index"></frequency>
+        :slot-share-type.sync="slotShareType" 
+        :slot-share-num.sync="slotShareNum" 
+        :app-share-type.sync="appShareType" 
+        :app-share-num.sync="appShareNum"></divides>
     </transition>
   </div>
 </template>
@@ -102,6 +112,7 @@
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 import adsource from './slotconfig/adsource.vue';
 import frequency from './slotconfig/frequency.vue';
+import divides from './slotconfig/divides.vue';
 export default {
   data () {
     return {
@@ -116,12 +127,16 @@ export default {
       platForm: this.$route.query.platForm,
       verificationStatus: this.$route.query.verificationStatus,
       adType: this.$route.query.accessFormat,
+      appShareType: this.$route.query.appShareType,
+      appShareNum: this.$route.query.appShareNum,
       adslotId: '', 
       adslotBusId: '', 
       adslotName: '', 
       accessFormat: '', 
       type: '', 
       $index: -1,
+      slotShareType: '',
+      slotShareNum: 0,
       loadings: false,
       resourceshow: false,
       tags: -1
@@ -162,8 +177,11 @@ export default {
       this.load();
     });
   },
-  components: { breadcrumb, adsource, frequency },
+  components: { breadcrumb, adsource, frequency, divides },
   methods: {
+    refreshslot () {
+      this.load();
+    },
     load () {
       this.loadings = true;
       let params = {};
@@ -199,8 +217,13 @@ export default {
       this.adslotName = adslotName; 
       this.$index = index;
     },
-    divideConfigs () {
+    divideConfigs (adslotId, adslotName, shareType, shareNum) {
       this.shows();
+      this.tags = 2;
+      this.adslotId = adslotId;
+      this.adslotName = adslotName; 
+      this.slotShareType = shareType;
+      this.slotShareNum = shareNum;
     },
     shows () {
       this.resourceshow = true;
