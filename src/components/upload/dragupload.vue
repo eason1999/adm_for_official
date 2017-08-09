@@ -69,7 +69,7 @@ export default {
         });
       } 
       if (this.goPath) {
-        return this.$alert(data.result, '提示：', {
+        return this.$alert(data.message, '提示：', {
           confirmButtonText: '确定',
           callback: () => {
             this.$router.push({

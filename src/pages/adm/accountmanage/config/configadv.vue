@@ -136,8 +136,8 @@ export default {
       background: #fff
       border: 1px solid #eee
       .dowm-forward
-        margin-bottom: 10px
-        width: 300px 
+        margin-bottom: 20px
+        width: 280px 
         .el-select
           display: block   
 </style>

@@ -13,27 +13,29 @@
           </el-radio-group>
         </div>
       </div>
-      <div class="dowm-forward">
-        <span class="list-title">公司名称：</span>
-        <el-select v-model="devId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-          <el-option
-            v-for="item in devs"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">金额：</span>
-        <el-input v-model="prices" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">上传凭证：</span>
-        <upload :urls="urls" @get-file="getFile" :fileLists="fileList"></upload>
-      </div>
-      <el-button type="primary" @click="creates">新建</el-button>
-      <el-button type="default" @click="back">取消</el-button>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="公司名称：" prop="devId">
+          <el-select v-model="ruleForm.devId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+            <el-option
+              v-for="item in devs"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="金额：" prop="prices">
+          <el-input v-model="ruleForm.prices" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <div class="dowm-forward">
+          <span class="list-title">上传凭证：</span>
+          <upload :urls="urls" @get-file="getFile" :fileLists="fileList"></upload>
+        </div>
+        <el-form-item>
+          <el-button type="primary" @click="creates('ruleForm')">新建</el-button>
+          <el-button type="default" @click="back">取消</el-button>
+        </el-form-item>
+      </el-form>      
     </div>
   </div>
 </template>
@@ -44,11 +46,35 @@ import upload from '../../../../components/upload/imgupload.vue';
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
   data () {
+    var checks = (rule, value, callback) => {
+      let req = /^(\d*\.)?\d+$/;
+      if (!value) {
+        return callback(new Error('金额不能为空'));
+      }
+      setTimeout(() => {
+        if (!req.test(value)) {
+          callback(new Error('请输入非负数'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
     return {
-      prices: '',
+      ruleForm: {
+        prices: '',
+        devId: ''
+      },
+      rules: {
+        prices: [
+          { required: true, validator: checks, trigger: 'blur' }
+        ],
+        devId: [
+          { required: true, message: '请选择公司', trigger: 'change' }
+        ]
+      },
+      labelPosition: 'top',
       oprations: '0',
       devs: [],
-      devId: '',
       breadContent: [{ text: '提现/充值', path: '/adm/finance/vouchor'}, { text: '新增数据'}],
       urls: apiUtil.url('/v1/adm/dev/withdraws/materials'),
       fileName: '',
@@ -88,18 +114,29 @@ export default {
       this.fileName = filename;
       this.fileUrl = fileurl;
     },
-    creates () {
+    creates (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submitcreate();
+        } else {
+          return this.$alert('请正确输入或选择相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
+    },
+    submitcreate () {
       if (this.fileName === '' || this.fileUrl === '') {
         return this.$alert('请先上传背景图文件！', '提示：', {
           confirmButtonText: '确定'
         });
       }
       let params = {};
-      params.amount = this.prices;
+      params.amount = this.ruleForm.prices;
       params.fileUrl  = this.fileUrl;
       this.loadings = true;
       if (this.oprations === '0') {
-        params.devid = this.devId;
+        params.devid = this.ruleForm.devId;
         params.optionType = 1;
         this.$http.post('/v1/adm/dev/financeOptions', params).then((res) => {
           this.loadings = false;
@@ -116,7 +153,7 @@ export default {
           });
         }, () => {this.loadings = false;});
       } else {
-        params.advId = this.devId;
+        params.advId = this.ruleForm.devId;
         params.optiontype = 1;
         this.$http.post('/v1/adm/adv/financeOptions', params).then((res) => {
           this.loadings = false;
@@ -151,11 +188,17 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
-      .dowm-forward
-        margin-bottom: 10px
-        width: 260px 
+      .el-form-item
+        width: 280px
         .el-select
-            display: block 
+          display: block
+        .el-input
+          display: block
+        &:last-child
+          margin-bottom: 0    
+      .dowm-forward
+        margin-bottom: 20px
+        width: 280px  
         .radio-wrapper
           margin: 5px 0
           .radio

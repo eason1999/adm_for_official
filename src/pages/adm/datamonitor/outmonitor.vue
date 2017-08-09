@@ -7,7 +7,11 @@
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="date" label="日期" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column label="日期" sortable show-overflow-tooltip>
+        <template scope="props">
+          <span>{{props.row.date | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column prop="mediaName" label="广告主名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="slotName" label="广告位名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="impressions" label="展现数" sortable></el-table-column>

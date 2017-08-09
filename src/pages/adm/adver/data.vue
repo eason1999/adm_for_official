@@ -47,7 +47,11 @@
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" v-if="auths.date" sortable label="日期" show-overflow-tooltip></el-table-column>
+        <el-table-column v-if="auths.date" sortable label="日期" show-overflow-tooltip>
+          <template scope="props">
+            <span>{{props.row.date | date }}</span> 
+          </template>
+        </el-table-column>
         <el-table-column prop="numOfAdImpressions" v-if="auths.numOfAdImpressions" sortable label="展现数" show-overflow-tooltip></el-table-column>
         <el-table-column prop="numOfAdClicks" v-if="auths.numOfAdClicks" sortable label="点击数" show-overflow-tooltip></el-table-column>
         <el-table-column prop="numOfAdDownloads" v-if="auths.numOfAdDownloads" sortable label="下载数" show-overflow-tooltip></el-table-column>

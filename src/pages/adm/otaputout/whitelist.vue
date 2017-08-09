@@ -12,7 +12,11 @@
           <el-button type="info" size="small" @click="previewImg(scope.row.fileUrl)">预览</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="modifiedAt" label="修改时间" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column label="修改时间" sortable show-overflow-tooltip>
+        <template scope="props">
+          <span>{{props.row.modifiedAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button type="info" size="small" @click="handleEdit(scope.row.id)">修改</el-button>
@@ -36,19 +40,7 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      tableData: [{
-          date: '2016-05-02',
-          name: '王小虎'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎'
-        }],
+      tableData: [],
         dialogVisible: false,
         dialogImageUrl: 'about:blank',
         totalRecords: 100,
@@ -101,7 +93,7 @@ export default {
       });
     },
     handleDelete (index, id) {
-      this.$alert('确定删除吗？').then(() => {
+      this.$confirm('确定删除吗？').then(() => {
         this.loadings = true;
         let params = {};
         params.id = id;
@@ -115,7 +107,7 @@ export default {
           }
           this.load(this.pageNum, this.pageSize);
         });
-      }, () => {this.loadings = false;});
+      }, () => {this.loadings = false;}).catch(() => {});
     }
   }
 };

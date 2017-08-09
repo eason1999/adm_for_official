@@ -22,19 +22,23 @@
               </el-form-item>
               <el-form-item label="审核操作:">
                 <template>
-                  <el-button type="success" size="small" @click="handleEdit(props.$index, props.row)">通过</el-button>
-                  <el-button type="danger" size="small" @click="handleEdit(props.$index, props.row)">拒绝</el-button>
+                  <el-button :disabled="props.row.verificationStatus === 'PENGDING'||props.row.verificationStatus === 'APPROVED'" type="success" size="small" @click="audits(props.$index, props.row.id, 'APPROVED')">通过</el-button>
+                  <el-button :disabled="props.row.verificationStatus === 'PENGDING'||props.row.verificationStatus === 'DENIED'" type="danger" size="small" @click="audits(props.$index, props.row.id, 'DENIED')">拒绝</el-button>
                 </template>
               </el-form-item>
               <el-form-item label="投放操作:">
                 <template>
-                  <el-switch v-model="value2" on-color="#13ce66" off-color="#ff4949"></el-switch>
+                  <el-switch v-model="props.row.availabilityStatus" on-color="#13ce66" off-color="#ff4949" on-value="ALLOWED" off-value="DISALLOWED" @change="sendAvail(props.row.id, props.row.availabilityStatus)"></el-switch>
                 </template>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="提交时间" show-overflow-tooltip prop="createTime"></el-table-column>
+        <el-table-column label="提交时间" show-overflow-tooltip>
+          <template scope="props">
+            <span>{{props.row.createTime | date }}</span> 
+          </template>
+        </el-table-column>
         <el-table-column label="广告类型" show-overflow-tooltip>
           <template scope="props">
             <span>{{ props.row.adTypeOnProduct | filetypes }}</span>
@@ -428,6 +432,53 @@ export default {
           });
         }
         this.closedialog();    
+      }, () => {this.loadings = false;});
+    },
+    audits (index, creativeId, verificationStatus) {
+      if (verificationStatus === 'APPROVED') {
+        return this.$confirm('确定审核通过吗？？？').then(() => {
+          this.handleEdit(index, creativeId, verificationStatus);
+        }).catch(() => {});
+      } else {
+        return this.$confirm('确定审核拒绝吗？？？').then(() => {
+          this.handleEdit(index, creativeId, verificationStatus);
+        }).catch(() => {});
+      }
+    },
+    handleEdit (index, creativeId, verificationStatus) {
+      let params = {};
+      params.verificationStatus = verificationStatus;
+      params.advId = this.advId;
+      this.loadings = true;
+      this.$http.put("/v1/adm/campaigns/"+this.campaignId+"/creatives/"+creativeId+"/verifications", params).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret != 1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.tableData[index].verificationStatus = verificationStatus;
+
+      }, () => {this.loadings = false;});
+    },
+    sendAvail (id, availabilityStatus) {
+      let params = {};
+      params.advId = this.advId;
+      if (availabilityStatus === 'ALLOWED') {
+        params.availabilityStatus = 'DISALLOWED';
+      } else {
+        params.availabilityStatus = 'ALLOWED';
+      }
+      this.loadings = true;
+      this.$http.put('/v1/adm/campaigns/'+this.campaignId+'/creatives/'+id+'/availabilities', params).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
       }, () => {this.loadings = false;});
     }
   }

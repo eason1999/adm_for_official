@@ -35,7 +35,7 @@
           </div>
         </div>
       </div>
-      <el-button type="primary" @click="load">生成报告</el-button>
+      <el-button type="primary" @click="load()" :disabled="dimsChoice.length === 1">生成报告</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">

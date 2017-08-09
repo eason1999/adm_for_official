@@ -1,59 +1,61 @@
 <template>
-  <div class="ota-configuration-wrapper">
+  <div class="ota-configuration-wrapper"> 
     <div class="bread-title-wrapper">
       <breadcrumb :bread-detail="breadContent"></breadcrumb>
     </div>
     <div class="data-title-wrapper">
-      <div class="datepicker-wrapper dowm-forward">
+      <div class="dowm-forward" v-if="id !== undefined">
         <span class="list-title">公司名称：</span>
-        <el-input v-if="this.id" :disabled="true" v-model="companyName" placeholder="请输入内容"></el-input>
-        <el-select v-else v-model="companyId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中" @change="loadApp(companyId)">
-          <el-option
-            v-for="item in companys"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
+        <el-input :disabled="true" v-model="companyName" placeholder="请输入内容"></el-input>
       </div>
-      <div class="create-select dowm-forward">
+      <div class="dowm-forward" v-if="id !== undefined">
         <span class="list-title">计划名称：</span>
-        <el-input v-if="this.id" :disabled="true" v-model="planName" placeholder="请输入内容"></el-input>
-        <el-select v-else v-model="planId" filterable placeholder="请选择">
-          <el-option
-            v-for="item in plans"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
+        <el-input :disabled="true" v-model="planName" placeholder="请输入内容"></el-input>
       </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">保护周期：</span>
-        <el-input v-model="protectSys" placeholder="请输入内容" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中"></el-input> <span class="unit">天</span>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">开屏间隔：</span>
-        <el-input v-model="interval" placeholder="请输入内容"></el-input> <span class="unit">分钟</span>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">信息流间隔：</span>
-        <el-input v-model="flowInterval" placeholder="请输入内容"></el-input> <span class="unit">分钟</span>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">解锁次数：</span>
-        <el-input v-model="unlockNum" placeholder="请输入内容"></el-input> <span class="unit">次</span>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">广告曝光次数：</span>
-        <el-input v-model="adExposure" placeholder="请输入内容"></el-input> <span class="unit">次</span>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">说明：</span>
-        <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="instructions"></el-input>
-      </div>
-      <el-button type="primary" @click="config">新建</el-button>
-      <el-button type="default" @click="back">取消</el-button>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="公司名称：" prop="companyId" v-if="id === undefined">
+          <el-select v-model="ruleForm.companyId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中" @change="loadApp(ruleForm.companyId)">
+            <el-option
+              v-for="item in companys"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="计划名称：" prop="planId" v-if="id === undefined">
+          <el-select v-model="ruleForm.planId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in plans"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="保护周期：" prop="protectSys">
+          <el-input v-model="ruleForm.protectSys" placeholder="请输入内容" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中"></el-input> <span class="unit">天</span>
+        </el-form-item>
+        <el-form-item label="开屏间隔：" prop="interval">
+          <el-input v-model="ruleForm.interval" placeholder="请输入内容"></el-input> <span class="unit">分钟</span>
+        </el-form-item>
+        <el-form-item label="信息流间隔：" prop="flowInterval">
+          <el-input v-model="ruleForm.flowInterval" placeholder="请输入内容"></el-input> <span class="unit">分钟</span>
+        </el-form-item>
+        <el-form-item label="解锁次数：" prop="unlockNum">
+          <el-input v-model="ruleForm.unlockNum" placeholder="请输入内容"></el-input> <span class="unit">次</span>
+        </el-form-item>
+        <el-form-item label="广告曝光次数：" prop="adExposure">
+          <el-input v-model="ruleForm.adExposure" placeholder="请输入内容"></el-input> <span class="unit">次</span>
+        </el-form-item>
+        <el-form-item label="说明：" prop="instructions">
+          <el-input type="textarea" :rows="4" resize="none" placeholder="请输入内容" v-model="ruleForm.instructions"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="config('ruleForm')">新建</el-button>
+          <el-button type="default" @click="back">取消</el-button>
+        </el-form-item>  
+      </el-form>
     </div>
   </div>
 </template>
@@ -62,22 +64,69 @@
 import breadcrumb from '../../../../components/breadcrumb/breadcrumb.vue';
 export default {
   data () {
+    var checks = (rule, value, callback) => {
+      let req = /^[0-9]*$/;
+      if (!value) {
+        return callback(new Error('输入不能为空'));
+      }
+      setTimeout(() => {
+        if (!req.test(value)) {
+          callback(new Error('请输入非负整数'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
     return {
       id: this.$route.query.resultId,
       breadContent: [{ text: 'OTA客户配置', path: '/adm/otaoutput/otaclient'}, { text: 'OTA配置'}],
       companys: [],
       plans: [],
-      unlockNum: '',
-      adExposure: '',
-      instructions: '',
-      protectSys: '',
-      interval: '',
-      flowInterval: '',
+      ruleForm: {
+        unlockNum: '',
+        adExposure: '',
+        instructions: '',
+        protectSys: '',
+        interval: '',
+        flowInterval: '',
+        companyId: '',
+        planId: ''
+      },
+      rules: {
+        protectSys: [
+          { required: true, message: '请输入保护周期', trigger: 'blur' },
+          { validator: checks, trigger: 'blur' }
+        ],
+        companyId: [
+          { required: true, message: '请选择公司', trigger: 'change' }
+        ],
+        planId: [
+          { required: true, message: '请选择计划', trigger: 'change' }
+        ],
+        interval: [
+          { required: true, message: '请输入开屏间隔', trigger: 'blur' },
+          { validator: checks, trigger: 'blur' }
+        ],
+        flowInterval: [
+          { required: true, message: '请输入信息流间隔', trigger: 'blur' },
+          { validator: checks, trigger: 'blur' }
+        ],
+        unlockNum: [
+          { required: true, message: '请输入解锁次数', trigger: 'blur' },
+          { validator: checks, trigger: 'blur' }
+        ],
+        adExposure: [
+          { required: true, message: '请输入曝光次数', trigger: 'blur' },
+          { validator: checks, trigger: 'blur' }
+        ],
+        instructions: [
+          { required: true, message: '请填写相关说明', trigger: 'blur' }
+        ]
+      },
       loadings: false,
-      companyId: '',
-      planId: '',
       companyName: '',
-      planName: ''
+      planName: '',
+      labelPosition: 'top'
     };
   },
   mounted () {
@@ -104,14 +153,14 @@ export default {
           });
         }
         let result = data.result;
-        this.unlockNum = result.deblock;
-        this.adExposure = result.adImpl;
-        this.protectSys = result.protectCycle;
-        this.flowInterval = result.nativeInterval;
-        this.interval = result.splashInterval;
-        this.instructions = result.desciption;
-        this.companyId = result.accountId;
-        this.planId = result.appId;
+        this.ruleForm.unlockNum = result.deblock;
+        this.ruleForm.adExposure = result.adImpl;
+        this.ruleForm.protectSys = result.protectCycle;
+        this.ruleForm.flowInterval = result.nativeInterval;
+        this.ruleForm.interval = result.splashInterval;
+        this.ruleForm.instructions = result.desciption;
+        this.ruleForm.companyId = result.accountId;
+        this.ruleForm.planId = result.appId;
         this.companyName = result.companyName;
         this.planName = result.appName;
       }, () => {this.loadings = false;});
@@ -148,7 +197,18 @@ export default {
         this.loadings = false;
       });
     },
-    config () {
+    config (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.creates();
+        } else {
+          return this.$alert('请正确选择或输入相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
+    },
+    creates () {
       this.loadings = true;
       let params = {};
       if (this.id) {
@@ -156,14 +216,14 @@ export default {
       }else{
         params.id = -1;
       }
-      params.deblock = this.unlockNum;
-      params.impl = this.adExposure;
-      params.protectCycle = this.protectSys;
-      params.nativeInterval = this.flowInterval;
-      params.splashInterval = this.interval;
-      params.description = this.instructions;
-      params.accountId = this.companyId;
-      params.appId = this.planId;
+      params.deblock = this.ruleForm.unlockNum;
+      params.impl = this.ruleForm.adExposure;
+      params.protectCycle = this.ruleForm.protectSys;
+      params.nativeInterval = this.ruleForm.flowInterval;
+      params.splashInterval = this.ruleForm.interval;
+      params.description = this.ruleForm.instructions;
+      params.accountId = this.ruleForm.companyId;
+      params.appId = this.ruleForm.planId;
       this.$http.post('/v1/ota/otaconfig', params).then((res) => {
         this.loadings = false;
         let data = res.body;
@@ -197,17 +257,21 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
-      .dowm-forward
-        margin-bottom: 10px
-        width: 300px 
+      .el-form-item
+        width: 280px 
         position: relative 
         .el-select
           display: block
         .unit
           position: absolute
           width: 28px
-          top: 30px
+          top: 0
           right: -35px
           color: #475669
-          font-size: 14px      
+          font-size: 14px   
+        &:last-child
+          margin-bottom: 0     
+      .dowm-forward
+         width: 280px
+         margin-bottom: 20px    
 </style>

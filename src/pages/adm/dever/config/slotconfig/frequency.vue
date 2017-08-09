@@ -153,26 +153,26 @@
       <div class="dowm-forward differ-block">
         <span class="list-title">按小时：</span>
         <div v-if="attrId==='uid'" class="uid-wrapper">
-          <el-input v-model="byHour" placeholder="请输入内容"></el-input><span>次</span>
+          <el-input v-model="byHour" placeholder="请输入非负整数"></el-input><span>次</span>
         </div>
         <div v-else class="ip-wrapper">
-          <el-input v-model="reqHourThr" placeholder="请输入内容"></el-input><span>次/三段</span>
-          <el-input v-model="reqHourThu" placeholder="请输入内容"></el-input><span>次/四段</span>
+          <el-input v-model="reqHourThr" placeholder="请输入非负整数"></el-input><span>次/三段</span>
+          <el-input v-model="reqHourThu" placeholder="请输入非负整数"></el-input><span>次/四段</span>
         </div>
       </div>
       <div class="dowm-forward differ-block">
         <span class="list-title">按天：</span>
         <div v-if="attrId==='uid'" class="uid-wrapper">
-          <el-input v-model="byDay" placeholder="请输入内容"></el-input><span>次</span>
+          <el-input v-model="byDay" placeholder="请输入非负整数"></el-input><span>次</span>
         </div>
         <div v-else class="ip-wrapper">
-          <el-input v-model="reqDayThr" placeholder="请输入内容"></el-input><span>次/三段</span>
-          <el-input v-model="reqDayThu" placeholder="请输入内容"></el-input><span>次/四段</span>
+          <el-input v-model="reqDayThr" placeholder="请输入非负整数"></el-input><span>次/三段</span>
+          <el-input v-model="reqDayThu" placeholder="请输入非负整数"></el-input><span>次/四段</span>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submits" :disabled="!validators">确 定</el-button>
         <el-button @click="closedialog">取 消</el-button>
-        <el-button type="primary" @click="submits">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -254,6 +254,26 @@ export default {
         item = '--';
       } else {
         item = val;
+      }
+      return item;
+    }
+  },
+  computed: {
+    validators () {
+      let req = /^\+?[1-9]\d*$/, item;
+      switch (this.attrId) {
+        case 'uid':
+          item = (this.sourceId !== '' && 
+                  req.test(this.byHour) && 
+                  req.test(this.byDay));
+          break;
+        case 'ip':
+          item = (this.sourceId !== '' && 
+                  req.test(this.reqHourThr) && 
+                  req.test(this.reqHourThu) && 
+                  req.test(this.reqDayThr) && 
+                  req.test(this.reqDayThu));
+          break;  
       }
       return item;
     }

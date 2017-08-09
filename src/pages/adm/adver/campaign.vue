@@ -29,19 +29,23 @@
               </el-form-item>
               <el-form-item label="投放操作：">
                 <template>
-                  <el-switch v-model="value2" on-color="#13ce66" off-color="#ff4949"></el-switch>
+                  <el-switch v-model="scope.row.availabilityStatus" on-color="#13ce66" off-color="#ff4949" on-value="ALLOWED" off-value="DISALLOWED" @change="sendAvail(scope.row.advId, scope.row.id, scope.row.availabilityStatus)"></el-switch>
                 </template>
               </el-form-item>
               <el-form-item label="审核操作：">
                 <template>
-                  <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
-                  <el-button type="danger" size="small" @click="handleEdit(scope.$index, scope.row)">拒绝</el-button>
+                  <el-button :disabled="scope.row.verificationStatus === 'CREATING'||scope.row.verificationStatus === 'APPROVED'" type="success" size="small" @click="audits(scope.$index, scope.row.id, 'APPROVED', scope.row.advId)">通过</el-button>
+                  <el-button :disabled="scope.row.verificationStatus === 'CREATING'||scope.row.verificationStatus === 'DENIED'" type="danger" size="small" @click="audits(scope.$index, scope.row.id, 'DENIED', scope.row.advId)">拒绝</el-button>
                 </template>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="计划投放时间" show-overflow-tooltip prop="startDate" sortable></el-table-column>
+        <el-table-column label="计划投放时间" show-overflow-tooltip sortable>
+          <template scope="scope">
+            <span>{{scope.row.startDate | date }}</span> 
+          </template>
+        </el-table-column>
         <el-table-column label="公司名称" show-overflow-tooltip prop="company"></el-table-column>
         <el-table-column label="计划名称" show-overflow-tooltip prop="name"></el-table-column>
         <el-table-column label="计划ID" show-overflow-tooltip prop="id"></el-table-column>
@@ -74,10 +78,10 @@ export default {
         case 'CREATING':
           item = '创建中';
           break;
-        case 'CREATING':
+        case 'PENGDING':
           item = '等待审核';
           break;
-        case 'CREATING':
+        case 'APPROVED':
           item = '审核通过';
           break; 
         default:
@@ -153,6 +157,53 @@ export default {
           }
         });
       }
+    },
+    sendAvail (advId, id, availabilityStatus) {
+      let params = {};
+      params.advId = advId;
+      if (availabilityStatus === 'ALLOWED') {
+        params.availabilityStatus = 'DISALLOWED';
+      } else {
+        params.availabilityStatus = 'ALLOWED';
+      }
+      this.loadings = true;
+      this.$http.put('/v1/adm/campaigns/'+id+'/availabilities', params).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret!=1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      }, () => {this.loadings = false;});
+    },
+    audits (index, campaignId, verificationStatus, advId) {
+      if (verificationStatus === 'APPROVED') {
+        return this.$confirm('确定审核通过吗？？？').then(() => {
+          this.handleEdit(index, campaignId, verificationStatus, advId);
+        }).catch(() => {});
+      } else {
+        return this.$confirm('确定审核拒绝吗？？？').then(() => {
+          this.handleEdit(index, campaignId, verificationStatus, advId);
+        }).catch(() => {});
+      }
+    },
+    handleEdit (index, campaignId, verificationStatus, advId) {
+      let params = {};
+      params.verificationStatus = verificationStatus;
+      params.advId = advId;
+      this.loadings = true;
+      this.$http.put("/v1/adm/campaigns/"+campaignId+"/verifications", params).then((res) => {
+        this.loadings = false;
+        let data = res.body;
+        if (data.ret != 1) {
+          return this.$alert(data.message, '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+        this.tableData[index].verificationStatus = verificationStatus;
+
+      }, () => {this.loadings = false;});
     }
   }
 };

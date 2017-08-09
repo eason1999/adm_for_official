@@ -34,7 +34,11 @@
       <totaldata :items="totalData"></totaldata>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="settleDate" label="日期"></el-table-column>
+      <el-table-column label="日期">
+        <template scope="props">
+          <span>{{props.row.settleDate | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column prop="channelName" label="广告源名称"></el-table-column>
       <el-table-column label="收入金额（￥）">
         <template scope="props" v-if="props.row.income">
@@ -250,11 +254,14 @@ export default {
           margin-right: 10px  
           .el-input__inner
             border-radius: 4px 
-        .date-wrapper   
+        .date-wrapper
+          .el-date-editor
+            vertical-align: top  
           .el-input
             width: 130px
             .el-input__inner
               border-radius: 4px 0 0 4px  
+              height: 35px
             .el-input__inner:last-child
               border-radius: 0
           .el-button 

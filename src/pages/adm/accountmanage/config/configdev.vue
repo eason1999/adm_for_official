@@ -29,7 +29,7 @@
       </div>
       <div class="dowm-forward">
         <span class="list-title">管理员：</span>
-        <el-select v-model="manageId" filterable placeholder="请选择">
+        <el-select v-model="managerId" filterable placeholder="请选择">
           <el-option
             v-for="item in manages"
             :key="item.id"
@@ -51,14 +51,13 @@ export default {
     return {
       usercompany: this.$route.query.usercompany,
       username: this.$route.query.username,
-      managerid: this.$route.query.managerid,
+      managerId: String(this.$route.query.managerid),
+      roleId: String(this.$route.query.roleid),
       id: this.$route.query.id,
       passwords: '.......',
       loadings: false,
       manages: [],
-      manageId: '',
       roles: [],
-      roleId: [],
       breadContent: [{ text: '开发者账户', path: '/adm/devaccount'}, { text: '账户配置'}],
     };
   },
@@ -72,8 +71,8 @@ export default {
     creates () {
       let params = {};
       params.userId = this.id;
-      params.roleId = this.dRoleId;
-      params.manangerId = this.dMsgId;
+      params.roleId = this.roleId;
+      params.manangerId = this.managerId;
       params.optionType = 1;
       this.laodings = true;
       this.$http.post('/v1/adm/auth/devmanager',params).then((res) => {
@@ -134,8 +133,8 @@ export default {
       background: #fff
       border: 1px solid #eee
       .dowm-forward
-        margin-bottom: 10px
-        width: 300px 
+        margin-bottom: 20px
+        width: 280px 
         .el-select
           display: block    
 </style>

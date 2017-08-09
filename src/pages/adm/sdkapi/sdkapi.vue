@@ -10,11 +10,15 @@
       <el-table-column prop="os" label="操作系统"></el-table-column>
       <el-table-column prop="version" label="软件版本"></el-table-column>
       <el-table-column prop="changeLog" label="更新日志" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="traceBlock.modifiedAt" label="提交日期" show-overflow-tooltip></el-table-column>
+      <el-table-column label="提交日期" show-overflow-tooltip>
+        <template scope="props">
+          <span>{{props.row.traceBlock.modifiedAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
-          <el-button type="primary" size="small" @click="update(scope.row.type, scope.row.os, scope.row.version, scope.row.changeLog)">更新</el-button>
-          <el-button type="primary" size="small" @click="download(scope.row.address)">下载</el-button>
+          <el-button type="primary" size="small" @click="update(scope.row.type, scope.row.os, scope.row.version, scope.row.changeLog, scope.row.address)">更新</el-button>
+          <el-button type="info" size="small"><a :href="scope.row.address" download="123">下载</a></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,14 +41,15 @@ export default {
   },
   components: { upload },
   methods: {
-    update (type,os,version,changeLog) {
+    update (type, os, version, changeLog, address) {
       this.$router.push({
         path: 'sdkapi/update',
         query: {
           type: type,
           os: os,
           version: version,
-          changeLog: changeLog
+          changeLog: changeLog,
+          address: address
         }
       });
     },
@@ -60,9 +65,6 @@ export default {
         }
         this.tableData = data.result;
       }, () => {this.loadings = false;});
-    },
-    download (address) {
-      window.location.href = address;
     }
   }
 };
@@ -83,5 +85,7 @@ export default {
       margin: 5px 0
       background-size: 90px 120px
       border-radius: 4px
-      border: 1px dotted #E2E4E8   
+      border: 1px dotted #E2E4E8  
+    a 
+      color: #fff   
 </style>

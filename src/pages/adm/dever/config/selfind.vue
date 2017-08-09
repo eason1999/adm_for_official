@@ -36,14 +36,14 @@
                 :key="item.id"
                 :label="item.text"
                 :value="item.id"
-                :disabled="(this.devId!=''&&item.id=='8')||(!this.idArr&&item.id=='10')">
+                :disabled="(devId!=''&&item.id==='8')||(!idArr&&item.id==='10')">
               </el-option>
             </el-select>
-            <span v-if="index != (dimsChoice.length-1)" class="el-icon-circle-close" @click="removeSelect(index,$event)"></span>
+            <span v-if="index != (dimsChoice.length-1)" class="el-icon-circle-close" @click="removeSelect(index, $event, resources.choiceId)"></span>
           </div>
         </div>
       </div>
-      <el-button type="primary" @click="load()">生成报告</el-button>
+      <el-button type="primary" @click="load()" :disabled="dimsChoice.length === 1">生成报告</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -232,7 +232,13 @@ export default {
       this.dealStatus(sIndex);
     },
     //移除筛选维度
-    removeSelect (index,$event) {
+    removeSelect (index, $event, id) {
+      let newArray = this.getChoiceArr();
+      if (id==='7' && newArray.indexOf('10')>-1) {
+        return this.$alert('广告位（源）已存在，不可删除广告源选项！', '提示：', {
+          confirmButtonText: '确定'
+        });
+      }
       this.dimsChoice.splice(index,1);
       this.dealStatus(index);
     },

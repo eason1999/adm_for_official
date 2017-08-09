@@ -231,6 +231,11 @@ export default {
               type: 'category',
               trigger: 'axis',
               data: result.name,
+              axisLine: {
+                lineStyle: {
+                  color: '#ccc'
+                }
+              },
               axisLabel:{
                 textStyle:{
                   fontSize:12,

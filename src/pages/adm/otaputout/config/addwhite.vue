@@ -4,20 +4,22 @@
       <breadcrumb :bread-detail="breadContent"></breadcrumb>
     </div>
     <div class="data-title-wrapper">
-      <div class="datepicker-wrapper dowm-forward">
-        <span class="list-title">应用名称：</span>
-        <el-input v-model="appName" placeholder="请输入内容" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中"></el-input>
-      </div>
-      <div class="create-select dowm-forward">
-        <span class="list-title">包名称：</span>
-        <el-input v-model="packageName" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">应用背景图：</span>
-        <imgupload :urls="urls" @get-file="getFile" :fileLists="fileList"></imgupload>
-      </div>
-      <el-button type="primary" @click="creates">新建</el-button>
-      <el-button type="default" @click="back">取消</el-button>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="应用名称：" prop="appName">
+          <el-input v-model="ruleForm.appName" placeholder="请输入内容" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中"></el-input>
+        </el-form-item>
+        <el-form-item label="包名称：" prop="packageName">
+          <el-input v-model="ruleForm.packageName" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <div class="dowm-forward">
+          <span class="list-title">应用背景图：</span>
+          <imgupload :urls="urls" @get-file="getFile" :fileLists="fileList"></imgupload>
+        </div>
+        <el-form-item>
+          <el-button type="primary" @click="creates('ruleForm')">新建</el-button>
+          <el-button type="default" @click="back">取消</el-button>
+        </el-form-item>
+      </el-form>  
     </div>
   </div>
 </template>
@@ -31,13 +33,24 @@ export default {
     return {
       id: this.$route.query.id,
       breadContent: [{ text: '应用白名单', path: '/adm/otaoutput/whitelist'}, { text: '新增白名单'}],
-      packageName: '',
-      appName: '',
+      ruleForm: {
+        packageName: '',
+        appName: ''
+      },
       urls: apiUtil.url('/v1/adm/ota/whiteapp/material'),
       fileName: '',
       fileUrl: '',
       fileList: [],
-      loadings: false
+      loadings: false,
+      labelPosition: 'top',
+      rules: {
+        packageName: [
+          { required: true, message: '请输入包名称', trigger: 'blur' }
+        ],
+        appName: [
+          { required: true, message: '请输入应用名称', trigger: 'blur' }
+        ]
+      }
     };
   },
   mounted () {
@@ -60,8 +73,8 @@ export default {
           });
         }
         let result = data.result;
-        this.packageName = result.packageName;
-        this.appName = result.appName;
+        this.ruleForm.packageName = result.packageName;
+        this.ruleForm.appName = result.appName;
         this.fileUrl = result.fileUrl;
         this.fileName = result.fileName;
         let item = {};
@@ -74,7 +87,18 @@ export default {
       this.fileName = filename;
       this.fileUrl = fileurl;
     },
-    creates () {
+    creates (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid && (this.fileName !== '' || this.fileUrl !== '')) {
+          this.configs();
+        } else {
+          return this.$alert('请正确输入相应选项或上传图片！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
+    },
+    configs () {
       if (this.fileName === '' || this.fileUrl === '') {
         return this.$alert('请先上传背景图文件！', '提示：', {
           confirmButtonText: '确定'
@@ -85,8 +109,8 @@ export default {
       if (this.id) {
         params.id = this.id;
       }
-      params.appName  = this.appName;
-      params.packageName  = this.packageName;
+      params.appName  = this.ruleForm.appName;
+      params.packageName  = this.ruleForm.packageName;
       params.fileName  = this.fileName;
       params.fileUrl  = this.fileUrl;
       this.$http.post('/v1/adm/ota/whiteapp', params).then((res) => {
@@ -122,17 +146,11 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
+      .el-form-item
+        width: 280px 
+        &:last-child
+          margin-bottom: 0 
       .dowm-forward
-        margin-bottom: 10px
-        width: 300px 
-        position: relative 
-        .el-select
-          display: block
-        .unit
-          position: absolute
-          width: 28px
-          top: 30px
-          right: -35px
-          color: #475669
-          font-size: 14px      
+        width: 280px
+        margin-bottom: 20px     
 </style>

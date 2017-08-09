@@ -10,7 +10,11 @@
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
       <el-table-column prop="name" label="角色"></el-table-column>
-      <el-table-column prop="createdAt" label="提交日期" sortable></el-table-column>
+      <el-table-column label="提交日期" sortable>
+        <template scope="props">
+          <span>{{props.row.createdAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button type="info" size="small" @click="edit(scope.row.autoId,scope.row.name)">编辑</el-button>

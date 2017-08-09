@@ -13,7 +13,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="roleName" label="角色"></el-table-column>
-      <el-table-column prop="modifiedAt" label="提交日期" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column label="提交日期" sortable show-overflow-tooltip>
+        <template scope="props">
+          <span>{{props.row.modifiedAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button type="info" size="small" @click="edit(scope.row.id,scope.row.userAccount,scope.row.passWord,scope.row.roleId,scope.row.userName)">编辑</el-button>

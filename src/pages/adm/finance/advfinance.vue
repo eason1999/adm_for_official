@@ -8,7 +8,11 @@
       </div>
     </div>
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-      <el-table-column prop="submitTime" label="日期" sortable show-overflow-tooltip></el-table-column>
+      <el-table-column label="日期" sortable show-overflow-tooltip>
+        <template scope="scope">
+          <span>{{scope.row.submitTime | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="advName" label="广告主名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="accountType" label="账户类型" show-overflow-tooltip></el-table-column>

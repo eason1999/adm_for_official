@@ -12,7 +12,11 @@
       <el-table-column prop="nativeInterval" label="信息流间隔（分钟）"></el-table-column>
       <el-table-column prop="deblock" label="解锁频次"></el-table-column>
       <el-table-column prop="adImpl" label="广告次数"></el-table-column>
-      <el-table-column prop="createdAt" label="创建日期"></el-table-column>
+      <el-table-column label="创建日期">
+        <template scope="props">
+          <span>{{props.row.createdAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
             <el-button type="primary" size="small" @click="changeOta(scope.row.id)">修改</el-button>
@@ -21,7 +25,7 @@
       </el-table-column>
     </el-table>
     <div class="pager-wrapper clearfix">
-      <el-button type="primary" class="pull-left" @click="downLoad">导出EXCEL</el-button>
+      <el-button type="primary" class="pull-left"><a :href="exportURL" download="123">导出EXCEL</a></el-button>
       <div class="pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
@@ -103,9 +107,6 @@ export default {
           appName: appname
         }
       });
-    },
-    downLoad () {
-      window.location.href = this.exportURL;
     }
   }
 };
@@ -125,5 +126,7 @@ export default {
         button 
           border-radius: 0 4px 4px 0
     .pager-wrapper
-      margin-top: 15px      
+      margin-top: 15px 
+      a 
+        color: #fff    
 </style>

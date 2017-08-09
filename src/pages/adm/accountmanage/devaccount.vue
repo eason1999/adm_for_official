@@ -16,7 +16,11 @@
           <span>{{ scope.row.verificationStatus | status }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="modifiedAt" label="提交日期" sortable></el-table-column>
+      <el-table-column label="提交日期" sortable>
+        <template scope="props">
+          <span>{{props.row.modifiedAt | date }}</span> 
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
           <el-button :disabled="scope.row.verificationStatus==='APPROVED'" type="info" size="small" @click="audit(scope.row.id,scope.row.managerId,scope.row.roleId,scope.row.userCompany,scope.row.userName)">审核</el-button>

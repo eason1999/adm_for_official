@@ -14,9 +14,9 @@
       </div>
       <div class="dowm-forward">
         <span class="list-title">白名单应用：</span>
-        <el-radio-group v-model="oprations" class="radio-wrapper">
-          <el-radio class="radio" v-model="radio" label="1">无应用</el-radio>
-          <el-radio class="radio" v-model="radio" label="2">指定应用</el-radio>
+        <el-radio-group v-model="radio" class="radio-wrapper">
+          <el-radio class="radio" label="1">无应用</el-radio>
+          <el-radio class="radio" label="2">指定应用</el-radio>
         </el-radio-group>
       </div>
       <div class="tranfer-wrapper" v-if="radio==='2'">
@@ -28,7 +28,7 @@
           :data="appData">
         </el-transfer>
       </div>
-      <el-button type="primary" @click="configs">新建</el-button>
+      <el-button type="primary" @click="configs" :disabled="radio === '2' && !appValues.length">新建</el-button>
       <el-button type="default" @click="back">取消</el-button>
     </div>
   </div>

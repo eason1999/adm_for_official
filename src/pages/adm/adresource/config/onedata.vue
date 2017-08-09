@@ -1,8 +1,8 @@
 <template>
   <div class="one-data-wrapper">
-      <div class="dowm-forward">
-        <span class="list-title">广告源名称：</span>
-        <el-select v-model="adName" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+    <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+      <el-form-item label="广告源名称：" prop="adName">
+        <el-select v-model="ruleForm.adName" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
           <el-option
             v-for="item in adsources"
             :key="item.channelCode"
@@ -11,31 +11,27 @@
             :extnote="item.extNote">
           </el-option>
         </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">接入形式：</span>
-        <el-radio-group v-model="accessFormat" class="radio-wrapper">
+      </el-form-item>  
+      <el-form-item label="接入形式：">
+        <el-radio-group v-model="ruleForm.accessFormat" class="radio-wrapper">
           <el-radio class="radio" label="API">API</el-radio>
           <el-radio class="radio" label="SDK">SDK</el-radio>
         </el-radio-group>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">流量类型：</span>
-        <el-radio-group v-model="deviceType" class="radio-wrapper">
+      </el-form-item>
+      <el-form-item label="流量类型：">
+        <el-radio-group v-model="ruleForm.deviceType" class="radio-wrapper">
           <el-radio class="radio" label="Android">Android</el-radio>
           <el-radio class="radio" label="IOS">IOS</el-radio>
         </el-radio-group>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">ID归属：</span>
-        <el-radio-group v-model="idAttr" class="radio-wrapper">
+      </el-form-item>
+      <el-form-item label="ID归属：">
+        <el-radio-group v-model="ruleForm.idAttr" class="radio-wrapper">
           <el-radio class="radio" label="selfuse">平台</el-radio>
           <el-radio class="radio" label="otheruse">外放</el-radio>
         </el-radio-group>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">广告位类型：</span>
-        <el-select v-model="slottype" filterable placeholder="请选择">
+      </el-form-item>
+      <el-form-item label="广告位类型：" prop="slottype">
+        <el-select v-model="ruleForm.slottype" filterable placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -43,42 +39,37 @@
             :value="item.id">
           </el-option>
         </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">应用名称：</span>
-        <el-input v-model="appName" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">应用版本：</span>
-        <el-input v-model="appVersion" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">应用ID：</span>
-        <el-input v-model="appId" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">应用包名：</span>
-        <el-input v-model="appPkg" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">广告位名称：</span>
-        <el-input v-model="slotname" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">广告位ID：</span>
-        <el-input v-model="adslotId" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">特殊需求属性：</span>
-        <el-input placeholder="请输入内容" v-model="extProps"></el-input>
-      </div>
+      </el-form-item>
+      <el-form-item label="应用名称：" prop="appName">
+        <el-input v-model="ruleForm.appName" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="应用版本：" prop="appVersion">
+        <el-input v-model="ruleForm.appVersion" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="应用ID：" prop="appId">
+        <el-input v-model="ruleForm.appId" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="应用包名：" prop="appPkg">
+        <el-input v-model="ruleForm.appPkg" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="广告位名称：" prop="slotname">
+        <el-input v-model="ruleForm.slotname" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="广告位ID：" prop="adslotId">
+        <el-input v-model="ruleForm.adslotId" placeholder="请输入内容"></el-input>
+      </el-form-item>
+      <el-form-item label="特殊需求属性：">
+        <el-input placeholder="请输入内容" v-model="ruleForm.extProps"></el-input>
+      </el-form-item>
       <div class="state-content">
         <lable class="list-title"></lable>
         <p class="red-mark">*应用名称，应用ID，广告位名称，广告位ID请和广告源的信息保持完全一致。</p>
       </div>
-      <el-button type="primary" @click="creates">新建</el-button>
-      <el-button type="default" @click="back">取消</el-button>
-    </div>
+      <el-form-item>
+        <el-button type="primary" @click="creates('ruleForm')">新建</el-button>
+        <el-button type="default" @click="back">取消</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -87,21 +78,56 @@ export default {
   data () {
     return {
       id: this.$route.query.id,
-      appVersion: '',
-      appName: '',
-      appId: '',
-      appPkg: '',
-      slotname: '',
-      textarea: '',
-      adslotId: '',
-      accessFormat: 'API',
-      deviceType: 'Android',
-      idAttr: 'selfuse',
-      slottype: '',
-      adName: '',
+      ruleForm: {
+        appVersion: '',
+        appName: '',
+        appId: '',
+        appPkg: '',
+        slotname: '',
+        extProps: '',
+        adslotId: '',
+        accessFormat: 'API',
+        deviceType: 'Android',
+        idAttr: 'selfuse',
+        slottype: '',
+        adName: ''
+      },
       options: [],
       adsources: [],
-      loadings: false
+      loadings: false,
+      labelPosition: 'top',
+      rules: {
+        appName: [
+          { required: true, message: '请输入应用名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ],
+        adName: [
+          { required: true, message: '请选择广告源', trigger: 'change' }
+        ],
+        appVersion: [
+          { required: true, message: '请输入版本号', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ],
+        appId: [
+          { required: true, message: '请输入应用ID', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ],
+        slottype: [
+          { required: true, message: '请选择广告类型', trigger: 'change' }
+        ],
+        resource: [
+          { required: true, message: '请选择活动资源', trigger: 'change' }
+        ],
+        appPkg: [
+          { required: true, message: '请填写应用包名', trigger: 'blur' }
+        ],
+        slotname: [
+          { required: true, message: '请填写广告位名称', trigger: 'blur' }
+        ],
+        adslotId: [
+          { required: true, message: '请填写广告位ID', trigger: 'blur' }
+        ]
+      }
     };
   },
   mounted () {
@@ -166,32 +192,43 @@ export default {
           });
         }
         let result = data.result;
-        this.accessFormat = result.accessFormat;
-        this.adslotId = result.adslotId;
-        this.slotname = result.adslotName;
-        this.slottype = result.adslotType;
-        this.appId = result.appId;
-        this.appName = result.appName;
-        this.appPkg = result.appPkg;
-        this.adName = result.channelCode;
-        this.deviceType = result.deviceType;
-        this.idAttr = result.idBelongTo;
-        this.extProps = result.extProps;
+        this.ruleForm.accessFormat = result.accessFormat;
+        this.ruleForm.adslotId = result.adslotId;
+        this.ruleForm.slotname = result.adslotName;
+        this.ruleForm.slottype = result.adslotType;
+        this.ruleForm.appId = result.appId;
+        this.ruleForm.appName = result.appName;
+        this.ruleForm.appPkg = result.appPkg;
+        this.ruleForm.adName = result.channelCode;
+        this.ruleForm.deviceType = result.deviceType;
+        this.ruleForm.idAttr = result.idBelongTo;
+        this.ruleForm.extProps = result.extProps;
       }, () => {this.loadings = false;});
     },
-    creates () {
+    creates (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submitcreate();
+        } else {
+          return this.$alert('请正确选择或输入相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
+    },
+    submitcreate () {
       let params={
-        channelcode: this.adName,
-        adslotid: this.adslotId,
-        adslottype: this.slottype,
-        adappid: this.appId,
-        apppkg: this.appPkg,
-        adslotname: this.slotname,
-        adappname: this.appName,
-        accessformat: this.accessFormat,
-        devicetype: this.deviceType,
-        idBelongTo: this.idAttr,
-        extProps: this.extProps
+        channelcode: this.ruleForm.adName,
+        adslotid: this.ruleForm.adslotId,
+        adslottype: this.ruleForm.slottype,
+        adappid: this.ruleForm.appId,
+        apppkg: this.ruleForm.appPkg,
+        adslotname: this.ruleForm.slotname,
+        adappname: this.ruleForm.appName,
+        accessformat: this.ruleForm.accessFormat,
+        devicetype: this.ruleForm.deviceType,
+        idBelongTo: this.ruleForm.idAttr,
+        extProps: this.ruleForm.extProps
       }
       let resource;
       if (this.id) {
@@ -208,10 +245,14 @@ export default {
           return this.$alert(data.message, '提示：', {
             confirmButtonText: '确定'
           });
+        } else {
+          return this.$alert('创建成功！！！', '提示：', {
+            confirmButtonText: '确定',
+            callback: () => {
+              this.back();
+            }
+          });
         }
-        this.$router.push({
-          path: '/adm/resource'
-        });
       }, () => {this.loadings = false;});
     },
     back () {
@@ -225,11 +266,11 @@ export default {
 
 <style lang="stylus" rel="stylesheet/stylus">
   .one-data-wrapper
-    .dowm-forward
-      margin-bottom: 10px
-      width: 280px 
+    .el-form-item
+      .el-input
+        width: 280px 
       .el-select
-          display: block 
+        width: 280px  
       .radio-wrapper
         margin: 5px 0
         display: block 
@@ -238,11 +279,13 @@ export default {
           width: 80px
         .radio:first-child
           margin-right: 30px
+      &:last-child
+        margin-bottom: 10px    
     .state-content
       width: 100% 
       margin-bottom: 10px         
       .red-mark
-        display: inline-block
+        display: inline-block 
         color: rgba(255, 0, 0, .8)  
-        font-size: 12px 
+        font-size: 12px     
 </style>

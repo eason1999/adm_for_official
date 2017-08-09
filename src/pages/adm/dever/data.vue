@@ -58,7 +58,11 @@
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column v-if="auths.date" prop="date" label="日期" sortable show-overflow-tooltip></el-table-column>
+        <el-table-column v-if="auths.date" label="日期" sortable show-overflow-tooltip>
+          <template scope="props">
+            <span>{{props.row.date | date }}</span> 
+          </template>
+        </el-table-column>
         <el-table-column v-if="auths.numOfAdReq" prop="numOfAdReq" label="请求数" sortable show-overflow-tooltip></el-table-column>
         <el-table-column v-if="auths.numOfAdRes" prop="numOfAdRes" label="返回数" sortable show-overflow-tooltip></el-table-column>
         <el-table-column v-if="auths.numOfAdImpressionsB4Filter" prop="numOfAdImpressionsB4Filter" label="展现数" sortable show-overflow-tooltip></el-table-column>
@@ -80,6 +84,7 @@
 </template>
 
 <script type="ecmascript-6">
+import apiUtil from '../../../util/api.js';
 import datepicker from '../../../components/datepicker/datepicker.vue';
 import totaldata from '../../../components/totaldata/totaldata.vue';
 import pager from '../../../components/pager/pager.vue';
@@ -119,7 +124,7 @@ export default {
   },
   computed: {
     exportURL () {
-      let url = ApiUtil.url('/v1/adm/dev/stats/adSlotOfDay/{appId}/{adslotId}/export');
+      let url = apiUtil.url('/v1/adm/dev/stats/adSlotOfDay/{appId}/{adslotId}/export');
       let params = [];
       params.push("startDate="+this.datepickers.value[0].getTime());
       params.push("endDate="+this.datepickers.value[1].getTime()); 

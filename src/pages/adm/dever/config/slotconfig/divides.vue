@@ -32,10 +32,10 @@
         <div class="dowm-forward">
           <span class="list-title" v-if="slotShareTypes==='PERCENT'">分成比例：</span>
           <span class="list-title" v-else>单价：</span>
-          <el-input v-model="slotShareNums" placeholder="请输入内容"></el-input>
+          <el-input v-model="slotShareNums" :placeholder="slotShareTypes==='PERCENT' ? '请输入0~1的数' : '请输入非负数'"></el-input>
         </div>
         <div class="footer-wrapper">
-          <el-button type="primary" @click="creates">新建</el-button>
+          <el-button type="primary" @click="creates" :disabled="!validators">新建</el-button>
           <el-button type="default" @click="back">取消</el-button>
         </div>
       </div>
@@ -105,6 +105,18 @@ export default {
         case 'ECPM':
           item = '固定单价（eCPM）';
           break;    
+      }
+      return item;
+    },
+    validators () {
+      let req1 = /^((0.\d{1,2})|([01]$))/, req2 = /^\d+(\.{0,1}\d+){0,1}$/, item;
+      switch (this.slotShareTypes) {
+        case 'PERCENT':
+          item = req1.test(this.slotShareNums);
+          break;
+        default:
+          item = req2.test(this.slotShareNums);
+          break;  
       }
       return item;
     }

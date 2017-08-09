@@ -138,9 +138,12 @@ export default {
           input
             height: 40px    
     .login-footer-wrapper
-      position: fixed
-      bottom: 20px
-      left: 50%
-      transform: translateX(-50%)      
+      position: relative
+      margin-top: 0
+      height: 100px
+      width: 100%
+      line-height: 100px
+      font-size: 14px
+      clear: both     
 </style>
 

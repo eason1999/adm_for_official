@@ -33,7 +33,7 @@
               <el-input class="form-control" value="系统" :disabled="true"></el-input>
               <el-input class="form-control" v-model="busIds" :disabled="true" placeholder="系统应用ID"></el-input>
               <el-input type="text" class="form-control" v-model="adslotBusIds" :disabled="true" placeholder="系统广告位ID"></el-input>
-              <el-input class="form-control" v-model="source.channelWeight" placeholder="请填写流量比重"></el-input>
+              <el-input class="form-control" v-model="source.channelWeight" placeholder="请输入非负整数"></el-input>
               <a class="delete-source " @click="deleteSource(source.id, index, $event)"><span class="el-icon-circle-cross"></span></a>
             </div>
             <div class="adv-source" v-else>
@@ -45,15 +45,15 @@
                 <el-option v-for="slot in ads[index].slots" :key="slot.slotId" :label="slot.slotName" :value="slot.slotId"></el-option>
               </el-select>
               <div class="distinction-content" v-if="types!='CONTENT'">
-                <el-input class="form-control" v-model="source.channelWeight" placeholder="请填写流量比重"></el-input>
+                <el-input class="form-control" v-model="source.channelWeight" placeholder="请输入非负整数"></el-input>
                 <el-select class="form-control" v-model="source.useTypeAPI">
                   <el-option key='0' label="正式" value='0'></el-option>
                   <el-option key='1' label="测试" value='1'></el-option>
                 </el-select>
               </div>
               <div class="distinction-content" v-else>
-                <el-input class="form-control" v-model="source.contentCount" placeholder="请输入数字"></el-input>
-                <el-input class="form-control" v-model="source.adCount" placeholder="请输入数字"></el-input>
+                <el-input class="form-control" v-model="source.contentCount" placeholder="请输入非负整数"></el-input>
+                <el-input class="form-control" v-model="source.adCount" placeholder="请输入非负整数"></el-input>
               </div> 
               <a class="delete-source" @click="deleteSource(source.id, index, $event)"><span class="el-icon-circle-cross"></a>
               <label class="form-title" style="margin-top: 8px;margin-left: 7px;width: 50%;text-align: left;">
@@ -70,7 +70,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <div class="footer-wrapper">
-          <el-button type="primary" @click="creates">新建</el-button>
+          <el-button type="primary" @click="creates" :disabled="!validators">新建</el-button>
           <el-button type="default" @click="back">取消</el-button>
         </div>
       </div>
@@ -147,6 +147,34 @@ export default {
       loadings: false,
       adshow: false
     };
+  },
+  computed: {
+    validators () {
+      let req = /^[1-9]\d*|0$/, item;
+      if (this.ads.length) {
+        for (let i = 0; i < this.ads.length; i++) {
+          if (this.types !== 'CONTENT') {
+            if (this.ads[i].channelCode === '0') {
+              item = req.test(this.ads[i].channelWeight);
+            } else {
+              item = req.test(this.ads[i].channelWeight) && 
+                     this.ads[i].channelAppId !== '' && 
+                     this.ads[i].channelSlotId !== '';
+            }
+          } else {
+            if (this.ads[i].channelCode === '0') {
+              item = req.test(this.ads[i].channelWeight);
+            } else {
+              item = req.test(this.ads[i].contentCount) && 
+                     req.test(this.ads[i].adCount) && 
+                     this.ads[i].channelAppId !== '' && 
+                     this.ads[i].channelSlotId !== '';
+            }
+          }
+        }
+      }
+      return item;
+    }
   },
   mounted () {
     this.$nextTick(() => {

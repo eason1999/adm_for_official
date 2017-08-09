@@ -4,54 +4,56 @@
       <breadcrumb :bread-detail="breadContent"></breadcrumb>
     </div>
     <div class="data-title-wrapper">
-      <div class="dowm-forward">
-        <span class="list-title">用户属性：</span>
-        <el-select v-model="userid" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-          <el-option v-for="item in users" :key="item.id" :label="item.text" :value="item.id"></el-option>
-        </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">角色：</span>
-        <el-input v-model="rolename" placeholder="请输入内容"></el-input>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">页面权限：</span>
-        <el-tree :data="treeData" show-checkbox node-key="id" ref="tree" accordion highlight-current :props="defaultProps" ref="tree" :default-checked-keys="defaults">
-        </el-tree>
-      </div>
-      <div class="dowm-forward page-control">
-        <div class="data-item">
-          <ul class="form-control parentUl">
-            <li class="graPaLi" v-for="(data0, index0) in datas0">
-              <span class="list-title">{{data0.name}}：</span>
-              <ul class="disInline wrapUl"><!-- v-if="idArr.indexOf(data0.id)>-1"-->
-                <li class="innerLi" v-for="(data1,index1) in datas0[index0].items" v-if="idArr.indexOf(data1.id)>-1">
-                  <span class="padBoth">{{data1.name}}</span>
-                  <ul class="disInline innerUl">
-                    <li class="innerTwoLi" v-for="(data2,index2) in datas0[index0].items[index1].items">
-                      <span class="padRight">{{data2.name}}</span>
-                      <ul class="disInline innerTwoUl clearfix">
-                        <li class="pull-left subSonLi" v-if="datas0[index0].items[index1].items[index2].dataColumnItems">
-                          <el-checkbox-group v-model="checkColum">
-                            <el-checkbox v-for="(data,index) in datas0[index0].items[index1].items[index2].dataColumnItems" :label="data.id" :key="data.id">{{data.text}}</el-checkbox>
-                          </el-checkbox-group>
-                        </li>
-                        <li class="pull-left subSonLi" v-else>
-                          <el-checkbox-group v-model="checkItem">
-                            <el-checkbox v-for="(data,index) in datas0[index0].items[index1].items[index2].actionItems" :label="data.id" :key="data.id">{{data.text}}</el-checkbox>
-                          </el-checkbox-group>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="用户属性：">
+          <el-select v-model="userid" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+            <el-option v-for="item in users" :key="item.id" :label="item.text" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色：" prop="rolename">
+          <el-input v-model="ruleForm.rolename" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <div class="dowm-forward">
+          <span class="list-title">页面权限：</span>
+          <el-tree :data="treeData" show-checkbox node-key="id" ref="tree" accordion highlight-current :props="defaultProps" :default-checked-keys="defaults">
+          </el-tree>
         </div>
-      </div>
-      <el-button type="primary" @click="creates">新建</el-button>
-      <el-button type="default" @click="back">取消</el-button>
+        <div class="dowm-forward page-control">
+          <div class="data-item">
+            <ul class="form-control parentUl">
+              <li class="graPaLi" v-for="(data0, index0) in datas0">
+                <span class="list-title">{{data0.name}}：</span>
+                <ul class="disInline wrapUl"><!-- v-if="idArr.indexOf(data0.id)>-1"-->
+                  <li class="innerLi" v-for="(data1,index1) in datas0[index0].items" v-if="idArr.indexOf(data1.id)>-1">
+                    <span class="padBoth">{{data1.name}}</span>
+                    <ul class="disInline innerUl">
+                      <li class="innerTwoLi" v-for="(data2,index2) in datas0[index0].items[index1].items">
+                        <span class="padRight">{{data2.name}}</span>
+                        <ul class="disInline innerTwoUl clearfix">
+                          <li class="pull-left subSonLi" v-if="datas0[index0].items[index1].items[index2].dataColumnItems">
+                            <el-checkbox-group v-model="checkColum">
+                              <el-checkbox v-for="(data,index) in datas0[index0].items[index1].items[index2].dataColumnItems" :label="data.id" :key="data.id">{{data.text}}</el-checkbox>
+                            </el-checkbox-group>
+                          </li>
+                          <li class="pull-left subSonLi" v-else>
+                            <el-checkbox-group v-model="checkItem">
+                              <el-checkbox v-for="(data,index) in datas0[index0].items[index1].items[index2].actionItems" :label="data.id" :key="data.id">{{data.text}}</el-checkbox>
+                            </el-checkbox-group>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <el-form-item>
+          <el-button type="primary" @click="creates('ruleForm')">新建</el-button>
+          <el-button type="default" @click="back">取消</el-button>
+        </el-form-item>
+      </el-form>    
     </div>
   </div>
 </template>
@@ -66,7 +68,15 @@ export default {
       defaults: [1, 3, 4, 5, 6, 7, 8, 17, 26, 27, 28, 33, 34, 43, 47],
       users: [{id: 0, text: '开发者'}, {id: 1, text: '广告主'}, {id: 2, text: '管理员'}],
       userid: 2,
-      rolename: '',
+      ruleForm: {
+        rolename: ''
+      },
+      rules: {
+        rolename: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
+        ]
+      },
+      labelPosition: 'top',
       breadContent: [{ text: '账户权限', path: '/adm/rolemanage'}, { text: '角色管理'}],
       defaultProps: {
         children: 'children',
@@ -104,7 +114,7 @@ export default {
   methods: {
     editrole () {
       if (this.name) {
-        this.rolename = this.name;
+        this.ruleForm.rolename = this.name;
       }
       let params = {};
       params.roleId = this.id;
@@ -269,13 +279,28 @@ export default {
         this.checkColum = [];
       }
     },
-    creates () {
+    creates (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+          return this.$alert('请正确输入相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        } else if (!this.$refs.tree.getCheckedKeys().length) {
+          return this.$alert('请选择相应页面权限！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        } else {
+          this.subcreate();
+        }
+      });
+    },
+    subcreate () {
       this.dealAcData();
       let menuIds = this.$refs.tree.getCheckedKeys().join(','),
         actionIds = this.checkItem.join(','),
         columnIds = this.checkColum.join(',');
       let params = {};
-      params.roleName = this.rolename;
+      params.roleName = this.ruleForm.rolename;
       params.memuIds = menuIds;
       params.actionIds = actionIds;
       params.columnIds = columnIds;
@@ -319,9 +344,18 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
+      .el-form-item
+        width: 280px
+        .el-select
+          display: block
+        .el-input
+          display: block
+          width: 100%
+        &:last-child
+          margin-bottom: 0  
       .dowm-forward
-        margin-bottom: 10px
-        width: 300px 
+        margin-bottom: 20px
+        width: 280px 
         .el-select
           display: block   
         .data-item

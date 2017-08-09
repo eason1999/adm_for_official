@@ -47,10 +47,19 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="提交时间" show-overflow-tooltip prop="createdAt"></el-table-column>
+        <el-table-column label="提交时间" show-overflow-tooltip>
+          <template scope="props">
+            <span>{{props.row.createdAt | date }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="公司名称" show-overflow-tooltip prop="company"></el-table-column>
         <el-table-column label="应用ID" show-overflow-tooltip prop="busId"></el-table-column>
         <el-table-column label="应用名称" show-overflow-tooltip prop="appName"></el-table-column>
+        <el-table-column label="审核状态" show-overflow-tooltip>
+          <template scope="props">
+            <span>{{ props.row.verificationStatus | verStatus }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="pager-wrapper clearfix">
@@ -192,10 +201,13 @@ export default {
     },
     sendAvail (id, availabilityStatus) {
       let params = {};
-      params.appId = id;
-      params.availabilityStatus = availabilityStatus;
+      if (availabilityStatus === 'ALLOWED') {
+        params.availabilityStatus = 'DISALLOWED';
+      } else {
+        params.availabilityStatus = 'ALLOWED';
+      }
       this.loadings = true;
-      this.$http.get('/v1/adm/apps/{appId}/availabilities', {params: params}).then((res) => {
+      this.$http.put('/v1/adm/apps/'+id+'/availabilities', params).then((res) => {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
@@ -283,6 +295,7 @@ export default {
           width: 230px
           input
             border-radius: 4px 0 0 4px
+            height: 35px
         button 
           border-radius: 0 4px 4px 0
     .apps-data-table
@@ -290,7 +303,7 @@ export default {
       .el-select
         width: 90px
         .el-input__inner
-          height: 28px
+          height: 28px 
       .sub-app-form
         padding: 10px
         border-bottom: 1px dashed #bbb

@@ -2,55 +2,54 @@
   <div class="shield-search-wrapper">
     <h2>黑名单查询</h2>
     <div class="shield-title-wrapper">
-      <div class="create-select dowm-forward">
-        <span class="list-title">开发者名称：</span>
-        <el-select @change="loadapps" v-model="devId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-          <el-option
-            v-for="item in devs"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">应用名称：</span>
-        <el-select @change="loadslots" v-model="appId" filterable placeholder="请选择">
-          <el-option
-            v-for="item in apps"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">广告位名称：</span>
-        <el-select v-model="slotId" filterable placeholder="请选择">
-          <el-option
-            v-for="item in slots"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">黑名单类型：</span>
-        <el-select v-model="typeId" filterable placeholder="请选择">
-          <el-option
-            v-for="item in types"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="plan-select dowm-forward">
-        <span class="list-title">黑名单内容：</span>
-        <el-input v-model="contents" placeholder="请输入内容"></el-input>
-      </div>
-      <el-button type="primary" @click="load()">查询</el-button>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="开发者名称：" prop="devId">
+          <el-select @change="loadapps" v-model="ruleForm.devId" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+            <el-option
+              v-for="item in devs"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="应用名称：" prop="appId">
+          <el-select @change="loadslots" v-model="ruleForm.appId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in apps"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="广告位名称：" prop="slotId">
+          <el-select v-model="ruleForm.slotId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in slots"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="黑名单类型：" prop="typeId">
+          <el-select v-model="ruleForm.typeId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in types"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="黑名单内容：" prop="contents">
+          <el-input v-model="ruleForm.contents" placeholder="请输入内容"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search('ruleForm')">查询</el-button>
+        </el-form-item>  
+      </el-form>  
     </div>
     <div class="shield-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -61,7 +60,6 @@
       </el-table>
     </div>
     <div class="shield-footer-wrapper clearfix" v-if="tableData.length">
-      <el-button type="primary" class="pull-left">导出EXCEL</el-button>
       <div class="page-wrapper pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
@@ -74,20 +72,40 @@ import pager from '../../../components/pager/pager.vue';
 export default {
   data () {
     return {
-      devId:'',
-      devs: [],
-      appId: '',
+      ruleForm: {
+        devId:'',
+        appId: '',
+        slotId: '',
+        typeId: '',
+        contents: ''
+      },
       apps: [],
-      slotId: '',
+      devs: [],
       slots: [],
-      typeId: '',
-      types: [{id: 1, text: "IMEI/IDFA"},{id: 2, text: "IP"}],
+      types: [{id: '1', text: "IMEI/IDFA"},{id: '2', text: "IP"}],
       loadings: false,
-      contents: '',
       tableData: [],
       totalRecords: -1,
       pageNum: 1,
-      pageSize: 20
+      pageSize: 20,
+      labelPosition: 'top',
+      rules: {
+        devId: [
+          { required: true, message: '请选择开发者', trigger: 'change' }
+        ],
+        appId: [
+          { required: true, message: '请选择应用', trigger: 'change' }
+        ],
+        slotId: [
+          { required: true, message: '请选择广告位', trigger: 'change' }
+        ],
+        typeId: [
+          { required: true, message: '请选择黑名单类型', trigger: 'change' }
+        ],
+        contents: [
+          { required: true, message: '请选输入内容', trigger: 'blur' }
+        ]
+      }
     };
   },
   mounted () {
@@ -109,20 +127,17 @@ export default {
         }
         let result = data.result;
         this.devs = result;
-        this.devId = '';
+        this.ruleForm.devId = '';
         this.apps = [];
-        this.appId = '',
+        this.ruleForm.appId = '',
         this.slots = [];
-        this.slotId = '';
+        this.ruleForm.slotId = '';
       }, () => {this.loadings = false;});
     },
     loadapps () {
-      if (this.oprations==='1') {
-        return false;
-      }
       this.loadings = true;
       let params = {};
-      params.devId = this.devId;
+      params.devId = this.ruleForm.devId;
       this.$http.get('/v1/adm/names/apps', {params: params}).then((res) => {
         this.loadings = false;
         let data = res.body;
@@ -133,17 +148,17 @@ export default {
         }
         let result = data.result;
         this.apps = result;
-        this.appId = '',
+        this.ruleForm.appId = '',
         this.slots = [];
-        this.slotId = '';
+        this.ruleForm.slotId = '';
       }, () => {this.loadings = false;});
     },
     loadslots () {
       this.loadings = true;
       let params = {};
-      params.devId = this.devId;
-      if (this.appId) {
-        params.appId = this.appId;
+      params.devId = this.ruleForm.devId;
+      if (this.ruleForm.appId) {
+        params.appId = this.ruleForm.appId;
       } else {
         params.appId = -1;
       }
@@ -157,20 +172,31 @@ export default {
         }
         let result = data.result;
         this.slots = result;
-        this.slotId = '';
+        this.ruleForm.slotId = '';
       }, () => {this.loadings = false;});
+    },
+    search (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.search(1, 20);
+        } else {
+          return this.$alert('请正确输入或选择相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
     },
     load (pageNum, pageSize) {
       let params = {};
-      params.slotId = this.slotId;
-      params.appId = this.appId;
-      params.developerId = this.devId;
-      params.keyWords = this.contents;
-      params.type = this.typeId;
+      params.slotId = this.ruleForm.slotId;
+      params.appId = this.ruleForm.appId;
+      params.developerId = this.ruleForm.devId;
+      params.keyWords = this.ruleForm.contents;
+      params.type = this.ruleForm.typeId;
       params.pageNum = pageNum || this.pageNum;
       params.pageSize = pageSize || this.pageSize;
       this.loadings = true;
-      this.$http.post('/black/show/'+params.pageNum+'/'+params.pageSize, params).then((res) => {
+      this.$http.post('/black/show/'+params.pageNum+'/'+ params.pageSize, params).then((res) => {
         this.loadings = false;
         let data = res.body;
         if (data.ret!=1) {
@@ -197,11 +223,14 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
-      .dowm-forward
-        margin-bottom: 10px
-        width: 300px  
+      .el-form-item
+        width: 280px  
         .el-select
           display: block
+        .el-input
+          display: block
+        &:last-child
+          margin-bottom: 0
     .shield-table-wrapper
       margin-bottom: 20px     
 </style>

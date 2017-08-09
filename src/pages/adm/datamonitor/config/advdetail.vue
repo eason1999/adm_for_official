@@ -8,52 +8,52 @@
         <span class="list-title">时间范围：</span>
         <datepicker :datepickers="datepickers" :picker-options="pickerOptions"></datepicker>
       </div>
-      <div class="dowm-forward">
-        <span class="list-title">公司名称：</span>
-        <el-select v-model="advId" @change="loadplans" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
-          <el-option
-            v-for="item in advs"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">计划名称：</span>
-        <el-select v-model="planId" @change="loadcreates" filterable placeholder="请选择">
-          <el-option
-            v-for="item in plans"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">创意名称：</span>
-        <el-select v-model="createId" @change="loadmedias" filterable placeholder="请选择">
-          <el-option
-            v-for="item in creates"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="dowm-forward">
-        <span class="list-title">定向媒体：</span>
-        <el-select v-model="mediaId" filterable placeholder="全部媒体">
-          <el-option
-            v-for="item in medias"
-            :key="item.id"
-            :label="item.text"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </div>
-      <el-button type="primary" @click="load()">查询</el-button>
-    </div>
+      <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+        <el-form-item label="公司名称：" prop="advId">
+          <el-select v-model="ruleForm.advId" @change="loadplans" filterable placeholder="请选择" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
+            <el-option
+              v-for="item in advs"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="计划名称：" prop="planId">
+          <el-select v-model="ruleForm.planId" @change="loadcreates" filterable placeholder="请选择">
+            <el-option
+              v-for="item in plans"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创意名称：" prop="createId">
+          <el-select v-model="ruleForm.createId" @change="loadmedias" filterable placeholder="请选择">
+            <el-option
+              v-for="item in creates"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="定向媒体：">
+          <el-select v-model="ruleForm.mediaId" filterable placeholder="全部媒体">
+            <el-option
+              v-for="item in medias"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="search('ruleForm')">查询</el-button>
+        </el-form-item>  
+      </el-form>
+    </div>   
     <div class="data-total-wrapper">
       <totaldata :items="totalData"></totaldata>
     </div>
@@ -91,17 +91,31 @@ export default {
       advs: [],
       plans: [],
       creates: [],
-      medias: [],
-      advId: '',
-      planId: '',
-      createId: '',
-      mediaId: '',
+      medias: [{id: '-1', text: '全部媒体'}],
+      ruleForm: {
+        advId: '',
+        planId: '',
+        createId: '',
+        mediaId: '-1'
+      },
+      rules: {
+        advId: [
+          { required: true, message: '请选择公司', trigger: 'change' }
+        ],
+        planId: [
+          { required: true, message: '请选择计划', trigger: 'change' }
+        ],
+        createId: [
+          { required: true, message: '请选择创意', trigger: 'change' }
+        ]
+      },
       totalData: [
         {icon: 'el-icon-star-on',num: 0,text: '展现数'},
         {icon: 'el-icon-message',num: 0,text: '点击数'},
         {icon: 'el-icon-share',num: 0,text: '点击率'},
         {icon: 'el-icon-menu',num: 0,text: '消费'}
       ],
+      labelPosition: 'top',
       tableData: [],
       totalRecords: -1,
       pageNum: 1,
@@ -142,7 +156,7 @@ export default {
     loadplans () {
       this.loadings = true;
       let params = {};
-      params.advId = this.advId;
+      params.advId = this.ruleForm.advId;
       this.$http.get('/v1/adm/names/campaigns', {params: params}).then((res) => {
         this.loadings = false;
         let data = res.body;
@@ -153,20 +167,20 @@ export default {
         }
         let result = data.result;
         this.plans = result;
-        this.planId = '';
-        this.createId = '';
+        this.ruleForm.planId = '';
+        this.ruleForm.createId = '';
         this.creates = [];
-        this.mediaId = '';
-        this.medias = [];
+        this.ruleForm.mediaId = '-1';
+        this.medias = [{id: '-1', text: '全部媒体'}];
       }, () => {this.loadings = false;});
     },
     loadcreates () {
       this.loadings = true;
       let params = {};
-      if (this.planId === '') {
+      if (this.ruleForm.planId === '') {
         params.campaignId = -1;
       } else {
-        params.campaignId = this.planId;
+        params.campaignId = this.ruleForm.planId;
       }
       this.$http.get('/v1/adm/names/campaigns/{campaignId}/creatives', {params: params}).then((res) => {
         this.loadings = false;
@@ -178,16 +192,16 @@ export default {
         }
         let result = data.result;
         this.creates = result;
-        this.createId = '';
-        this.mediaId = '';
-        this.medias = [];
+        this.ruleForm.createId = '';
+        this.ruleForm.mediaId = '-1';
+        this.medias = [{id: '-1', text: '全部媒体'}];
       }, () => {this.loadings = false;});
     },
     loadmedias () {
       this.loadings = true;
       let params = {};
-      params.campaignId = this.planId;
-      params.creativeId = this.createId;
+      params.campaignId = this.ruleForm.planId;
+      params.creativeId = this.ruleForm.createId;
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
       this.$http.get('/v1/adm/monitor/advs/hourData/getMedia', {params: params}).then((res) => {
@@ -199,21 +213,25 @@ export default {
           });
         }
         let result = data.result;
-        this.medias = result;
+        this.medias = [{id: '-1', text: '全部媒体'}].concat(result);
+        this.ruleForm.mediaId = '-1';
       }, () => {this.loadings = false;});
+    },
+    search (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.load();
+        } else {
+          return this.$alert('请正确输入相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
     },
     load (pageNum, pageSize) {
       let params = {};
-      if (this.createId!=='') {
-        params.creativeId = this.createId;
-      } else {
-        params.creativeId = -1;
-      }
-      if(this.mediaId!==''){
-        params.mediaId = this.mediaId;
-      }else{
-        params.mediaId = -1;
-      }
+      params.creativeId = this.ruleForm.createId;
+      params.mediaId = this.ruleForm.mediaId;
       params.pageNum = pageNum || this.pageNum;
       params.pageSize = pageSize || this.pageSize;
       params.startDate = this.datepickers.value[0].getTime();
@@ -236,12 +254,8 @@ export default {
     },
     loadall () {
       let params = {};
-      params.mediaId = this.mediaId;
-      if (this.createId!=='') {
-        params.creativeId = this.createId;
-      } else {
-        params.creativeId = -1;
-      }
+      params.mediaId = this.ruleForm.mediaId;
+      params.creativeId = this.ruleForm.createId;
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
       this.loadings = true;
@@ -273,11 +287,15 @@ export default {
       padding: 20px
       background: #fff
       border: 1px solid #eee
-      .dowm-forward
-        margin-bottom: 10px
-        width: 300px  
+      .el-form-item
+        width: 280px
         .el-select
           display: block
+        &:last-child
+          margin-bottom: 0  
+      .dowm-forward
+        margin-bottom: 20px
+        width: 280px  
         .el-input
           display: block
           width: 100%  
