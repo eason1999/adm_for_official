@@ -3,7 +3,7 @@
     <div class="resource-top-wrapper clearfix">
       <el-button type="primary" class="pull-left"><router-link class="search" to="resource/addid">新建广告位ID</router-link></el-button>
       <div class="resource-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keywords"></el-input>
+        <el-input placeholder="请输入内容" v-model="keywords" @keyup.native.enter="load(1, 20)"></el-input>
         <el-button type="primary" @click="load(1, 20)">搜索</el-button>
       </div>
     </div>

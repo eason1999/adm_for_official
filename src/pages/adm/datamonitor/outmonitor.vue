@@ -9,7 +9,7 @@
     <el-table :data="tableData" stripe style="width: 100%" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">
       <el-table-column label="日期" sortable show-overflow-tooltip>
         <template scope="props">
-          <span>{{props.row.date | date }}</span> 
+          <span>{{props.row.date }}</span> 
         </template>
       </el-table-column>
       <el-table-column prop="mediaName" label="广告主名称" show-overflow-tooltip></el-table-column>

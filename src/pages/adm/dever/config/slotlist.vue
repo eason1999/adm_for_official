@@ -62,6 +62,11 @@
         </el-table-column>
         <el-table-column label="广告位ID" show-overflow-tooltip prop="busId"></el-table-column>
         <el-table-column label="广告位名称" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="是否配置"> 
+          <template scope="props">
+            <div><span :class="{ 'el-icon-circle-cross': props.row.configuredResource === false, 'el-icon-circle-check': props.row.configuredResource === true }"></span> {{ props.row.configuredResource | configs }}</div> 
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div v-if="resourceshow" class="bottom-bg" @click="closes"></div>
@@ -160,6 +165,18 @@ export default {
           break;  
         default:
           item = '内容广告'; 
+          break;     
+      }
+      return item;
+    },
+    configs (val) {
+      let item;
+      switch (val) {
+        case false:
+          item = '未配置';
+          break;
+        case true:
+          item = '已配置';
           break;     
       }
       return item;

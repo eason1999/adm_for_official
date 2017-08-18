@@ -3,7 +3,7 @@
     <h2>应用管理</h2>
     <div class="apps-top-wrapper clearfix">
       <div class="apps-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
+        <el-input placeholder="请输入内容" v-model="keyword" @keyup.native.enter="load()"></el-input>
         <el-button type="primary" @click.enter="load()">搜索</el-button>
       </div>
     </div>
@@ -53,11 +53,20 @@
           </template>
         </el-table-column>
         <el-table-column label="公司名称" show-overflow-tooltip prop="company"></el-table-column>
-        <el-table-column label="应用ID" show-overflow-tooltip prop="busId"></el-table-column>
-        <el-table-column label="应用名称" show-overflow-tooltip prop="appName"></el-table-column>
+        <el-table-column label="应用名称/ID" show-overflow-tooltip> 
+          <template scope="scope">
+            <div>{{scope.row.appName }}</div> 
+            <div>ID: {{scope.row.busId }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="审核状态" show-overflow-tooltip>
           <template scope="props">
             <span>{{ props.row.verificationStatus | verStatus }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="投放状态" show-overflow-tooltip>
+          <template scope="props">
+            <span>{{ props.row.availabilityStatus | availStatus }}</span>
           </template>
         </el-table-column>
       </el-table>

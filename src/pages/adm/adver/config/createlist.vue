@@ -22,8 +22,8 @@
               </el-form-item>
               <el-form-item label="审核操作:">
                 <template>
-                  <el-button :disabled="props.row.verificationStatus === 'PENGDING'||props.row.verificationStatus === 'APPROVED'" type="success" size="small" @click="audits(props.$index, props.row.id, 'APPROVED')">通过</el-button>
-                  <el-button :disabled="props.row.verificationStatus === 'PENGDING'||props.row.verificationStatus === 'DENIED'" type="danger" size="small" @click="audits(props.$index, props.row.id, 'DENIED')">拒绝</el-button>
+                  <el-button :disabled="props.row.verificationStatus === 'APPROVED'" type="success" size="small" @click="audits(props.$index, props.row.id, 'APPROVED')">通过</el-button>
+                  <el-button :disabled="props.row.verificationStatus === 'DENIED'" type="danger" size="small" @click="audits(props.$index, props.row.id, 'DENIED')">拒绝</el-button>
                 </template>
               </el-form-item>
               <el-form-item label="投放操作:">
@@ -44,8 +44,22 @@
             <span>{{ props.row.adTypeOnProduct | filetypes }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="创意ID" show-overflow-tooltip prop="id"></el-table-column>
-        <el-table-column label="创意名称" show-overflow-tooltip prop="codeName"></el-table-column>
+        <el-table-column label="创意名称/ID" show-overflow-tooltip> 
+          <template scope="scope">
+            <div>{{scope.row.codeName }}</div> 
+            <div>ID: {{scope.row.id }}</div>
+          </template> 
+        </el-table-column>
+        <el-table-column label="审核状态" show-overflow-tooltip> 
+          <template scope="scope">
+            <span>{{ scope.row.verificationStatus | verstatus }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="投放状态" show-overflow-tooltip> 
+          <template scope="scope">
+            <span>{{ scope.row.availabilityStatus | avastatus }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <el-dialog v-model="dialogVisible" size="tiny">

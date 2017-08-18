@@ -4,7 +4,7 @@
     <div class="monitor-top-wrapper clearfix">
       <el-button type="primary" class="pull-left"><router-link class="search" to="monitor/create">新建监测</router-link></el-button>
       <div class="apps-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
+        <el-input placeholder="请输入内容" v-model="keyword" @keyup.native.enter="load()"></el-input>
         <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>

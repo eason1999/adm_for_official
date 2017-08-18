@@ -3,7 +3,7 @@
     <div class="resource-top-wrapper clearfix">
       <el-button type="primary" class="pull-left"><router-link class="search" to="vouchor/addvouch">新增</router-link></el-button>
       <div class="resource-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
+        <el-input placeholder="请输入内容" v-model="keyword" @keyup.native.enter="load()"></el-input>
         <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>
@@ -51,8 +51,8 @@ export default {
   components: { pager },
   methods: {
     showDialog (fileUrl) {
+      this.dialogImageUrl = 'about:blank;';
       this.$nextTick(() => {
-        this.dialogImageUrl = '';
         this.dialogImageUrl = fileUrl;
         this.dialogVisible = true;
       });

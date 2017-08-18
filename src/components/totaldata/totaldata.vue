@@ -58,6 +58,7 @@ export default {
       .grid-title
         font-size: 14px
         color: #797979
+        text-align: right
   .total-data-content:hover
       .grid-num 
         font-size: 22px   

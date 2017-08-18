@@ -75,7 +75,7 @@
       </el-table>
     </div>
     <div class="data-footer-wrapper clearfix">
-      <el-button type="primary" class="pull-left" @click="exportUrl">导出EXCEL</el-button>
+      <el-button type="primary" class="pull-left"><a :href="exportURL" download="123">导出EXCEL</a></el-button>
       <div class="page-wrapper pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
@@ -98,18 +98,18 @@ export default {
         {icon: 'el-icon-share',num: 0,text: '点击率'},
         {icon: 'el-icon-menu',num: 0,text: '消费'}
       ],
-      devId: '',
-      devs: [],
-      appId: '',
-      apps: [],
-      slotId: '',
-      slots: [],
+      devId: -1,
+      devs: [{id: -1, text: '全部开发者'}],
+      appId: -1,
+      apps: [{id: -1, text: '全部应用'}],
+      slotId: -1,
+      slots: [{id: -1, text: '全部广告位'}],
       platId: 'PLATFORM',
       plats: [{id:'PLATFORM',text:'平台'},{id:'EFFECT',text:'效果'}],
       tableData: [],
-      totalRecords: 100,
+      totalRecords: -1,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       datepickers: {value: [new Date(new Date().getTime()-7*24*3600*1000), new Date()], align: 'right', type: 'daterange'},
       pickerOptions: {
         disabledDate (time) {
@@ -128,22 +128,10 @@ export default {
       let params = [];
       params.push("startDate="+this.datepickers.value[0].getTime());
       params.push("endDate="+this.datepickers.value[1].getTime()); 
+      params.push("devId="+this.devId);
+      params.push("appId="+this.appId);
+      params.push("adslotId="+this.slotId);
       params.push("dataType="+this.platId); 
-      if (this.devId === '') {
-        params.push("devId=-1");
-      } else {
-        params.push("devId="+this.devId);
-      }
-      if (this.appId === '') {
-        params.push("appId=-1");
-      } else {
-        params.push("appId="+this.appId);
-      }
-      if (this.slotId === '') {
-        params.push("adslotId=-1");
-      } else {
-        params.push("adslotId="+this.slotId);
-      }
       if (params.length) {
         url+="?"+params.join("&");
       }
@@ -157,9 +145,6 @@ export default {
   },
   components: { datepicker, totaldata, pager },
   methods: {
-    exportUrl () {
-      window.location.href = this.exportURL;
-    },
     loadDevs () {
       this.loadings = true;
       this.$http.get('/v1/adm/names/devs').then((res) => {
@@ -171,11 +156,12 @@ export default {
           });
         }
         let result = data.result;
-        this.devs = result;
-        this.devId = '';
-        this.appId = '';
-        this.slotId = '';
-        this.slots = [];
+        this.devs = [{id: -1, text: '全部开发者'}].concat(result);
+        this.apps = [{id: -1, text: '全部应用'}];
+        this.slots = [{id: -1, text: '全部广告位'}];
+        this.devId = -1;
+        this.appId = -1;
+        this.slotId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
@@ -192,21 +178,17 @@ export default {
           });
         }
         let result = data.result;
-        this.apps = result;
-        this.appId = '';
-        this.slotId = '';
-        this.slots = [];
+        this.apps = [{id: -1, text: '全部应用'}].concat(result);
+        this.slots = [{id: -1, text: '全部广告位'}];
+        this.appId = -1;
+        this.slotId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
     loadslots () {
       this.loadings = true;
       let params = {};
-      if (this.appId === '') {
-        params.appId = -1;
-      } else {
-        params.appId = this.appId;
-      }
+      params.appId = this.appId;
       params.devId = this.devId;
       this.$http.get('/v1/adm/names/apps/{appId}/adslots', {params: params}).then((res) => {
         this.loadings = false;
@@ -217,8 +199,8 @@ export default {
           });
         }
         let result = data.result;
-        this.slots = result;
-        this.slotId = '';
+        this.slots = [{id: -1, text: '全部广告位'}].concat(result);
+        this.slotId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
@@ -229,21 +211,9 @@ export default {
       params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.dataType = this.platId;
-      if (this.appId==='') {
-        params.appId = -1;
-      } else {
-        params.appId = this.appId;
-      }
-      if (this.devId==='') {
-        params.devId = -1;
-      } else {
-        params.devId = this.devId;
-      }
-      if (this.slotId==='') {
-        params.adslotId = -1;
-      } else {
-        params.adslotId = this.slotId;
-      }
+      params.appId = this.appId;
+      params.devId = this.devId;
+      params.adslotId = this.slotId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/dev/adslotOfDay/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;
@@ -254,7 +224,6 @@ export default {
           });
         }
         let result = data.result;
-        this.pageNum = result.pageNum;
         this.pageSize = result.pageSize;
         this.totalRecords = result.total;
         this.tableData = result.list;
@@ -268,21 +237,9 @@ export default {
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
       params.dataType = this.platId;
-      if (this.appId==='') {
-        params.appId = -1;
-      } else {
-        params.appId = this.appId;
-      }
-      if (this.devId==='') {
-        params.devId = -1;
-      } else {
-        params.devId = this.devId;
-      }
-      if (this.slotId==='') {
-        params.adslotId = -1;
-      } else {
-        params.adslotId = this.slotId;
-      }
+      params.appId = this.appId;
+      params.devId = this.devId;
+      params.adslotId = this.slotId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/dev/adslotOfDayForAll', {params: params}).then((res) => {
         this.loadings = false;
@@ -304,21 +261,9 @@ export default {
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
       params.dataType = this.platId;
-      if (this.appId==='') {
-        params.appId = -1;
-      } else {
-        params.appId = this.appId;
-      }
-      if (this.devId==='') {
-        params.devId = -1;
-      } else {
-        params.devId = this.devId;
-      }
-      if (this.slotId==='') {
-        params.adslotId = -1;
-      } else {
-        params.adslotId = this.slotId;
-      }
+      params.appId = this.appId;
+      params.devId = this.devId;
+      params.adslotId = this.slotId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/dev/adslotOfDay', {params: params}).then((res) => {
         this.loadings = false;
@@ -641,7 +586,7 @@ export default {
           margin-left: 10px
       @media screen and (max-width: 1280px)
         .inline-block
-          width: 150px
+          width: 150px 
     .data-total-wrapper
       margin-bottom: 15px      
     .echarts-wrapper
@@ -654,4 +599,9 @@ export default {
         height: 400px  
     .data-table-wrapper
       margin-bottom: 20px     
+    .data-footer-wrapper
+      .el-button
+        a
+          color: #fff
+          text-decoration: none
 </style>

@@ -3,7 +3,7 @@
     <h2>ADV财务信息</h2>
     <div class="adv-top-wrapper clearfix">
       <div class="adv-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
+        <el-input placeholder="请输入内容" v-model="keyword" @keyup.native.enter="load()"></el-input>
         <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>

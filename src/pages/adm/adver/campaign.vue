@@ -3,8 +3,8 @@
     <h2>广告管理</h2>
     <div class="campaign-top-wrapper clearfix">
       <div class="campaign-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keyword"></el-input>
-        <el-button type="primary">搜索</el-button>
+        <el-input placeholder="请输入内容" v-model="keyword" @keyup.native.enter="load()"></el-input>
+        <el-button type="primary" @click="load()">搜索</el-button>
       </div>
     </div>
     <div class="apps-data-table">
@@ -47,8 +47,22 @@
           </template>
         </el-table-column>
         <el-table-column label="公司名称" show-overflow-tooltip prop="company"></el-table-column>
-        <el-table-column label="计划名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="计划ID" show-overflow-tooltip prop="id"></el-table-column>
+        <el-table-column label="计划名称/ID" show-overflow-tooltip>
+          <template scope="scope">
+            <div>{{scope.row.name }}</div> 
+            <div>ID: {{scope.row.id }}</div>
+          </template> 
+        </el-table-column>
+        <el-table-column label="审核状态" show-overflow-tooltip> 
+          <template scope="scope">
+            <span>{{ scope.row.verificationStatus | verstatus }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="投放状态" show-overflow-tooltip> 
+          <template scope="scope">
+            <span>{{ scope.row.availabilityStatus | avastatus }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="pager-wrapper clearfix">

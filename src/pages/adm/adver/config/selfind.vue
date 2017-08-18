@@ -35,7 +35,7 @@
           </div>
         </div>
       </div>
-      <el-button type="primary" @click="load()" :disabled="dimsChoice.length === 1">生成报告</el-button>
+      <el-button type="primary" @click="load()">生成报告</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -73,8 +73,8 @@ export default {
     return {
       dimsChoice:[{choiceId:'',list:[]}],
       dims: [],
-      targets: [],
-      advId: '',
+      targets: [{id: -1, text: '全部广告主'}],
+      advId: -1,
       tableData: [],
       totalRecords: -1,
       pageNum: 1,
@@ -108,11 +108,7 @@ export default {
       if (this.endDate) {
         params.push("endDate="+this.datepickers.value[1].getTime());
       }
-      if (this.advId === '') {
-        params.push("advId=-1");
-      } else {
-        params.push("advId="+this.advId);
-      }
+      params.push("advId="+this.advId);
       if (arrs.length) {
         for(let i = 0; i < arrs.length; i++){
           params.push("choiceId%5B%5D="+arrs[i]);
@@ -157,7 +153,8 @@ export default {
           });
         }
         let result = data.result;
-        this.targets = result;
+        this.targets = [{id: -1, text: '全部广告主'}].concat(result);
+        this.advId = -1;
       }, () => {this.loadings = false;});
     },
     //中间处理
@@ -207,6 +204,11 @@ export default {
       return choiceArr;
     },
     load (pageNum, pageSize) {
+      if (this.dimsChoice.length === 1) {
+      	return this.$alert('请选择筛选维度！', '提示：', {
+      		confirmButtonText: '确定'
+      	});
+      }
       let arrs = this.getChoiceArr();
       let params = {};
       //控制列表项
@@ -235,18 +237,17 @@ export default {
       } else {
         this.medias = false;
       }
-      if(this.advId!=''){
+      if(this.advId!=-1){
         this.showAdName = true;
-        params.advId = this.advId;
       } else {
         this.showAdName = false;
-        params.advId = -1;
       }
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
       params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.choiceId = arrs;
+      params.advId = this.advId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/adv/userDefined/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;
@@ -279,7 +280,7 @@ export default {
       background: #fff
       border: 1px solid #eee
       .dowm-forward
-        margin-bottom: 10px
+        margin-bottom: 20px
         width: 260px 
         .el-select 
           display: block

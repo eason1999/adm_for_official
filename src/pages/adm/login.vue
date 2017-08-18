@@ -6,22 +6,23 @@
       <div class="login-body">
         <div class="login-title">管理员账号</div>
         <div class="login-content">
-          <div class="dowm-forward">
-            <label for="userName" class="list-title">用户名/邮箱/手机号：</label>
-            <el-input v-model="userName" placeholder="请输入内容" id="userName"></el-input>
-          </div>
-          <div class="dowm-forward">
-            <label for="passwords" class="list-title">密码：</label>
-            <el-input type="password" v-model="passwords" placeholder="请输入内容" id="passwords"></el-input>
-          </div>
-          <div class="dowm-forward">
-            <label for="validateCode" class="list-title">验证码：</label>
-            <div class="code-wrapper">
-              <el-input v-model="validateCode" placeholder="请输入内容" id="validateCode"></el-input>
-              <img :src="verificationCodeUrl" @click="changeCode"/>
-            </div>
-          </div>
-          <el-button type="primary" @click="signin" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">登录</el-button>
+          <el-form :model="ruleForm" :rules="rules" :label-position="labelPosition" ref="ruleForm">
+            <el-form-item label="用户名/邮箱/手机号：" prop="userName">
+              <el-input v-model="ruleForm.userName" placeholder="请输入内容" @keyup.native.enter="signin('ruleForm')"></el-input>
+            </el-form-item>
+            <el-form-item label="密码：" prop="passwords">
+              <el-input type="password" v-model="ruleForm.passwords" placeholder="请输入内容" @keyup.native.enter="signin('ruleForm')"></el-input>
+            </el-form-item>
+            <el-form-item label="验证码：" prop="validateCode">
+              <div class="code-wrapper">
+                <el-input v-model="ruleForm.validateCode" placeholder="请输入内容" @keyup.native.enter="signin('ruleForm')"></el-input>
+                <img :src="verificationCodeUrl" @click="changeCode"/>
+              </div>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="signin('ruleForm')" v-loading.fullscreen.lock="loadings" element-loading-text="拼命加载中">登录</el-button>
+            </el-form-item>  
+          </el-form>  
         </div>
       </div>
     </div>
@@ -40,10 +41,55 @@ import config from '../../config.js';
 export default {
   components: { top, footers },
   data () {
+  	var checkname = (rule, value, callback) => {
+      let req = /^[a-zA-Z][a-zA-Z0-9_@\.]+$/;
+      if (!value) {
+        return callback(new Error('用户名不能为空'));
+      }
+      setTimeout(() => {
+        if (!req.test(value)) {
+          callback(new Error('用户名请使用字母数字_，以字母开头'));
+        } else if (value.length < 3) {
+          callback(new Error('用户名长度不能小于3位'));
+        } else if (value.length > 20) {
+          callback(new Error('用户名长度不能大于20位'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
+    var checkpsw = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('密码不能为空'));
+      }
+      setTimeout(() => {
+        if (value.length < 6) {
+          callback(new Error('密码长度不能小于6位'));
+        } else if (value.length > 18) {
+          callback(new Error('密码长度不能大于18位'));	
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
     return {
-      userName: '',
-      validateCode: '',
-      passwords: '',
+      ruleForm: {
+        userName: '',
+        validateCode: '',
+        passwords: ''
+      },
+      rules: {
+      	userName: [
+          { required: true, validator: checkname, trigger: 'blur' }
+        ],
+        validateCode: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ],
+        passwords: [
+          { required: true, validator: checkpsw, trigger: 'blur' }
+        ]
+      },
+      labelPosition: 'top',
       verificationCodeUrl: 'about:blank',
       loadings: false
     }
@@ -52,12 +98,23 @@ export default {
     this.changeCode();
   },
   methods: {
-    signin () {
+  	signin (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.subsignin();
+        } else {
+          return this.$alert('请正确输入相应选项！！！', '提示：', {
+            confirmButtonText: '确定'
+          });
+        }
+      });
+    }, 
+    subsignin () {
       this.loadings = true;
       let params = {};
-          params.userName = this.userName;
-          params.userPass = this.passwords;
-          params.verificationCode = this.validateCode;
+          params.userName = this.ruleForm.userName;
+          params.userPass = this.ruleForm.passwords;
+          params.verificationCode = this.ruleForm.validateCode;
       this.$http.post('/v1/login/adm', params).then((res) => {
         this.loadings = false;
         let data = res.body;
@@ -96,11 +153,34 @@ export default {
   .login-adm-content
     height: 100%
     width: 100%
-    background: #eee
-    background-size: cover
+    &:before
+      content: ''
+      background: url('../../asset/img/bg.jpg') no-repeat center center
+      background-size: cover
+      position: fixed
+      width: 100%
+      height: 100%
+      top: 0
+      left: 0
+      z-index: -1
+      -webkit-filter: blur(5px)
+      -moz-filter: blur(5px)
+      -o-filter: blur(5px)
+      -ms-filter: blur(5px)
+      filter: blur(5px)
+    &:after
+      content: ''
+      background: url('../../asset/img/bg.jpg') no-repeat center center
+      background-size: cover
+      position: fixed
+      width: 100%
+      height: 100%
+      top: 0
+      left: 0
+      z-index: -2
     .login-wrapper
-        width: 430px
-        margin: 80px auto 0
+      width: 430px
+      margin: 80px auto 0
       .login-logo
         color: #0098ce
         font-size: 24px
@@ -125,13 +205,14 @@ export default {
       .login-content  
         width: 100% 
         margin-top: 36px
-        .dowm-forward
-          margin-bottom: 20px
+        .el-form-item
           width: 100% 
           .code-wrapper 
             .el-input
               width: 47%
-              vertical-align: top
+              vertical-align: top 
+          &:last-child 
+            margin-bottom: 0
         .el-button
           width: 100% 
         .el-input
@@ -144,6 +225,8 @@ export default {
       width: 100%
       line-height: 100px
       font-size: 14px
-      clear: both     
+      clear: both
+      div 
+        color: #fff
 </style>
 

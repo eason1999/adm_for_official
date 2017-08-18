@@ -10,7 +10,7 @@
           <label>展现数低于：</label>
           <el-input placeholder="请输入内容" v-model="reveals"></el-input>
         </div>
-        <el-button type="primary" @click="load(1, 20)" :disabled="reveals === '' || reveals < 0">查询</el-button>
+        <el-button type="primary" @click="load(1, 20)">查询</el-button>
       </div>
       <div class="resource-search pull-right">
         <el-input placeholder="请输入内容" v-model="keywords"></el-input>
@@ -100,6 +100,12 @@ export default {
   },
   methods: {
     load (pageNum,pageSize) {
+      let req = /^\d+$/;
+      if ( this.reveals === '' || !req.test(this.reveals)) {
+      	return this.$alert('请输入展现数，且为为非负整数！', '提示：', {
+      		confirmButtonText: '确定'
+      	});
+      }	
       this.loadings = true;
       let params = {};
       params.keywords = this.keywords;

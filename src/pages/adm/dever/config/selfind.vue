@@ -36,14 +36,14 @@
                 :key="item.id"
                 :label="item.text"
                 :value="item.id"
-                :disabled="(devId!=''&&item.id==='8')||(!idArr&&item.id==='10')">
+                :disabled="(devId!=-1&&item.id==='8')||(!idArr&&item.id==='10')">
               </el-option>
             </el-select>
             <span v-if="index != (dimsChoice.length-1)" class="el-icon-circle-close" @click="removeSelect(index, $event, resources.choiceId)"></span>
           </div>
         </div>
       </div>
-      <el-button type="primary" @click="load()" :disabled="dimsChoice.length === 1">生成报告</el-button>
+      <el-button type="primary" @click="load()">生成报告</el-button>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -85,8 +85,8 @@ export default {
     return {
       dimsChoice:[{choiceId:'',list:[]}],
       dims: [],
-      devId: '',
-      targets: [],
+      devId: -1,
+      targets: [{id: -1, text: '全部开发者'}],
       dataType: 'PLATFORM',
       tableData: [{
         date: '2016-05-02',
@@ -199,7 +199,8 @@ export default {
           });
         }
         let result = data.result;
-        this.targets = result;
+        this.targets = [{id: -1, text: '全部开发者'}].concat(result);
+        this.devId = -1;
       }, () => {this.loadings = false;});
     },
     //中间处理
@@ -254,6 +255,11 @@ export default {
       return choiceArr;
     },
     load (pageNum, pageSize) {
+      if (this.dimsChoice.length === 1) {
+      	return this.$alert('请选择筛选维度！', '提示：', {
+      		confirmButtonText: '确定'
+      	});
+      }	
       let arrs = this.getChoiceArr();
       let params = {};
       // 控制列表项
@@ -282,12 +288,10 @@ export default {
       } else {
         this.showAdApp = false;
       }
-      if (this.devId!=''||(arrs.indexOf('8')>-1)) {
+      if (this.devId!=-1||(arrs.indexOf('8')>-1)) {
         this.showAdName = true;
-        params.devId = this.devId;
       } else {
         this.showAdName = false;
-        params.devId = -1;
       }
       if (arrs.indexOf('9')>-1) {
         this.adAppBelong = true;
@@ -305,6 +309,7 @@ export default {
       params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
       params.choiceId = arrs;
+      params.devId = this.devId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/dev/userDefined/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;
@@ -334,7 +339,7 @@ export default {
       background: #fff
       border: 1px solid #eee
       .dowm-forward
-        margin-bottom: 10px
+        margin-bottom: 20px
         width: 260px  
         .el-select
           display: block

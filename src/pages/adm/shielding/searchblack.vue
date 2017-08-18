@@ -82,7 +82,7 @@ export default {
       apps: [],
       devs: [],
       slots: [],
-      types: [{id: '1', text: "IMEI/IDFA"},{id: '2', text: "IP"}],
+      types: [{id: '1', text: "IMEI/IDFA"}, {id: '2', text: "IP"}],
       loadings: false,
       tableData: [],
       totalRecords: -1,
@@ -178,7 +178,7 @@ export default {
     search (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.search(1, 20);
+          this.load(1, 20);
         } else {
           return this.$alert('请正确输入或选择相应选项！！！', '提示：', {
             confirmButtonText: '确定'

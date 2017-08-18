@@ -62,7 +62,7 @@
       </el-table>
     </div>
     <div class="data-footer-wrapper clearfix" v-if="tableData.length">
-      <el-button type="primary" class="pull-left" @click="exportUrl">导出EXCEL</el-button>
+      <el-button type="primary" class="pull-left"><a :href="exportURL" download="123">导出EXCEL</a></el-button>
       <div class="page-wrapper pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
       </div>
@@ -74,6 +74,7 @@
 import datepicker from '../../../components/datepicker/datepicker.vue';
 import totaldata from '../../../components/totaldata/totaldata.vue';
 import pager from '../../../components/pager/pager.vue';
+import apiUtil from '../../../util/api.js';
 import echarts from 'echarts';
 export default {
   data () {
@@ -84,12 +85,12 @@ export default {
         {icon: 'el-icon-share',num: 0,text: '点击率'},
         {icon: 'el-icon-menu',num: 0,text: '消费'}
       ],
-      advId: '',
-      advs: [],
-      planId: '',
-      plans: [],
-      creativeId: '',
-      creatives: [],
+      advId: -1,
+      advs: [{id: -1, text: '全部广告主'}],
+      planId: -1,
+      plans: [{id: -1, text: '全部计划'}],
+      creativeId: -1,
+      creatives: [{id: -1, text: '全部创意'}],
       tableData: [],
       totalRecords: -1,
       pageNum: 1,
@@ -108,25 +109,13 @@ export default {
   },
   computed: {
     exportURL () {
-      let url = ApiUtil.url('/v1/adm/adv/stats/creativeOfDay/{campaignId}/{creativeId}/export');
+      let url = apiUtil.url('/v1/adm/adv/stats/creativeOfDay/{campaignId}/{creativeId}/export');
       let params = [];
       params.push("startDate="+this.datepickers.value[0].getTime());
-      params.push("endDate="+this.datepickers.value[1].getTime()); 
-      if (this.advId === '') {
-        params.push("advId=-1");
-      } else {
-        params.push("advId="+this.advId);
-      }
-      if (this.planId === '') {
-        params.push("campaignId=-1");
-      } else {
-        params.push("campaignId="+this.planId);
-      }
-      if (this.creativeId === '') {
-        params.push("creativeId=-1");
-      } else {
-        params.push("creativeId="+this.creativeId);
-      }
+      params.push("endDate="+this.datepickers.value[1].getTime());
+      params.push("advId="+this.advId);
+      params.push("campaignId="+this.planId);
+      params.push("creativeId="+this.creativeId);
       if (params.length) {
         url+="?"+params.join("&");
       }
@@ -140,9 +129,6 @@ export default {
   },
   components: { datepicker, totaldata, pager },
   methods: {
-    exportUrl () {
-      window.location.href = this.exportURL;
-    },
     loadadvs () {
       this.loadings = true;
       this.$http.get('/v1/adm/names/advs').then((res) => {
@@ -154,11 +140,12 @@ export default {
           });
         }
         let result = data.result;
-        this.advs = result;
-        this.advId = '';
-        this.planId = '';
-        this.creativeId = '';
-        this.creatives = [];
+        this.advs = [{id: -1, text: '全部广告主'}].concat(result);
+        this.creatives = [{id: -1, text: '全部创意'}];
+        this.plans = [{id: -1, text: '全部计划'}];
+        this.advId = -1;
+        this.planId = -1;
+        this.creativeId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
@@ -175,21 +162,17 @@ export default {
           });
         }
         let result = data.result;
-        this.plans = result;
-        this.planId = '';
-        this.creativeId = '';
-        this.creatives = [];
+        this.plans = [{id: -1, text: '全部计划'}].concat(result);
+        this.creatives = [{id: -1, text: '全部创意'}];
+        this.planId = -1;
+        this.creativeId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
     loadcreate () {
       this.loadings = true;
       let params = {};
-      if (this.planId === '') {
-        params.campaignId = -1;
-      } else {
-        params.campaignId = this.planId;
-      }
+      params.campaignId = this.planId;
       this.$http.get('/v1/adm/names/campaigns/{campaignId}/creatives', {params: params}).then((res) => {
         this.loadings = false;
         let data = res.body;
@@ -199,8 +182,8 @@ export default {
           });
         }
         let result = data.result;
-        this.creatives = result;
-        this.creativeId = '';
+        this.creatives = [{id: -1, text: '全部创意'}].concat(result);
+        this.creativeId = -1;
         this.load();
       }, () => {this.loadings = false;});
     },
@@ -210,21 +193,9 @@ export default {
       params.endDate = this.datepickers.value[1].getTime();
       params.pageSize = pageSize || this.pageSize;
       params.pageNum = pageNum || this.pageNum;
-      if (this.planId==='') {
-        params.campaignId = -1;
-      } else {
-        params.campaignId = this.planId;
-      }
-      if (this.creativeId==='') {
-        params.creativeId = -1;
-      } else {
-        params.creativeId = this.creativeId;
-      }
-      if (this.advId==='') {
-        params.advId = -1;
-      } else {
-        params.advId = this.advId;
-      }
+      params.campaignId = this.planId;
+      params.creativeId = this.creativeId;
+      params.advId = this.advId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/adv/creativeOfDay/{pageNum}/{pageSize}', {params: params}).then((res) => {
         this.loadings = false;
@@ -248,21 +219,9 @@ export default {
       var params = {};
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
-      if (this.planId==='') {
-        params.campaignId = -1;
-      } else {
-        params.campaignId = this.planId;
-      }
-      if (this.creativeId==='') {
-        params.creativeId = -1;
-      } else {
-        params.creativeId = this.creativeId;
-      }
-      if (this.advId==='') {
-        params.advId = -1;
-      } else {
-        params.advId = this.advId;
-      }
+      params.campaignId = this.planId;
+      params.creativeId = this.creativeId;
+      params.advId = this.advId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/adv/creativeOfDayForAll', {params: params}).then((res) => {
         this.loadings = false;
@@ -283,21 +242,9 @@ export default {
       var params = {};
       params.startDate = this.datepickers.value[0].getTime();
       params.endDate = this.datepickers.value[1].getTime();
-      if (this.planId==='') {
-        params.campaignId = -1;
-      } else {
-        params.campaignId = this.planId;
-      }
-      if (this.creativeId==='') {
-        params.creativeId = -1;
-      } else {
-        params.creativeId = this.creativeId;
-      }
-      if (this.advId==='') {
-        params.advId = -1;
-      } else {
-        params.advId = this.advId;
-      }
+      params.campaignId = this.planId;
+      params.creativeId = this.creativeId;
+      params.advId = this.advId;
       this.loadings = true;
       this.$http.get('/v1/adm/stats/adv/creativeOfDay', {params: params}).then((res) => {
         this.loadings = false;
@@ -639,5 +586,10 @@ export default {
         width: 100%
         height: 400px  
     .data-table-wrapper
-      margin-bottom: 20px     
+      margin-bottom: 20px 
+    .data-footer-wrapper
+      .el-button
+        a
+          color: #fff
+          text-decoration: none
 </style>

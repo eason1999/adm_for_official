@@ -2,7 +2,7 @@
   <div class="resource-seo-wrapper">
     <div class="resource-top-wrapper clearfix">
       <div class="resource-search pull-right">
-        <el-input placeholder="请输入内容" v-model="keywords"></el-input>
+        <el-input placeholder="请输入内容" v-model="keywords" @keyup.native.enter="load(1, 20)"></el-input>
         <el-button type="primary" @click="load(1, 20)">搜索</el-button>
       </div>
     </div>

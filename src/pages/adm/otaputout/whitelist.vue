@@ -57,8 +57,8 @@ export default {
   },
   methods: {
     previewImg (url) {
+      this.dialogImageUrl = 'about:blank';
       this.$nextTick(() => {
-        this.dialogImageUrl = '';
         this.dialogImageUrl = url;
         this.dialogVisible = true;
       });
