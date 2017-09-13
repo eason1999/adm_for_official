@@ -479,7 +479,16 @@ export default {
       }      
       let option = {
           title: {
-            text: '数据区域图'
+            text: '数据区域图',
+            textAlign: 'left',
+            textStyle: {
+              color: '#333',
+              fontWeight: 'normal',
+              fontFamily: '微软雅黑',
+              fontSize: 18
+            },
+            top: 10,
+            left: 10
           },
           tooltip : {
             trigger: 'axis',

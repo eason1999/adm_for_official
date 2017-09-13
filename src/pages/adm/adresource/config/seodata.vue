@@ -133,7 +133,7 @@ export default {
             this.load();
           }, () => {this.loadings = false;});
         }
-      }).catch((res) => {console.log(res)});;
+      }).catch((res) => {console.log(res)});
     }
   }
 };

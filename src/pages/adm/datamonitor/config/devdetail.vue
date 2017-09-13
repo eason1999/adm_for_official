@@ -218,7 +218,7 @@ export default {
     search (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.load();
+          this.load(1, 20);
         } else {
           return this.$alert('请正确输入相应选项！！！', '提示：', {
             confirmButtonText: '确定'
@@ -247,6 +247,7 @@ export default {
         }
         let result = data.result;
         this.tableData = result.list;
+        this.pageNum = result.pageNum;
         this.pageSize = result.pageSize;
         this.totalRecords = result.totalRecords;
         this.loadall();

@@ -54,7 +54,6 @@
     </div>
     <div class="echarts-wrapper">
       <div id="charts" class="chart-cnt"></div>
-      <div v-show="false" class="chart-empty">抱歉，暂无数据！</div>
     </div>
     <div class="data-table-wrapper">
       <el-table :data="tableData" stripe style="width: 100%">
@@ -74,7 +73,7 @@
         <el-table-column v-if="auths.chargeFinalData" prop="chargeFinalData" sortable label="结算金额（￥）" show-overflow-tooltip></el-table-column>
       </el-table>
     </div>
-    <div class="data-footer-wrapper clearfix">
+    <div class="data-footer-wrapper clearfix" v-if="tableData.length">
       <el-button type="primary" class="pull-left"><a :href="exportURL" download="123">导出EXCEL</a></el-button>
       <div class="page-wrapper pull-right">
         <pager :total-records="totalRecords" @pagechange="load" :page-sizes="pageSize" :page-nums="pageNum"></pager>
